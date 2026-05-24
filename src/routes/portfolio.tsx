@@ -1,0 +1,87 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+import Reveal from "@/components/Reveal";
+import { portfolio, type PortCategory } from "@/data/site";
+
+export const Route = createFileRoute("/portfolio")({
+  component: PortfolioPage,
+  head: () => ({
+    meta: [
+      { title: "أعمالنا — Faii House" },
+      { name: "description", content: "معرض أعمال فَيّ هاوس — أفلام قصيرة، وثائقيات وإعلانات سينمائية." },
+    ],
+  }),
+});
+
+const filters: { id: PortCategory; label: string }[] = [
+  { id: "all", label: "الكل" },
+  { id: "film", label: "أفلام قصيرة" },
+  { id: "documentary", label: "وثائقيات" },
+  { id: "ads", label: "إعلانات" },
+];
+
+function PortfolioPage() {
+  const [active, setActive] = useState<PortCategory>("all");
+  const items = useMemo(
+    () => (active === "all" ? portfolio : portfolio.filter((p) => p.category === active)),
+    [active]
+  );
+
+  return (
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+
+      <section className="pt-40 pb-12 px-6 lg:px-10">
+        <div className="max-w-7xl mx-auto">
+          <Reveal>
+            <div className="text-xs tracking-[0.35em] text-primary mb-4">— PORTFOLIO</div>
+            <h1 className="font-display text-5xl md:text-7xl text-foreground leading-tight text-balance">
+              قصص <span className="text-primary">صنعناها</span> بكاميراتنا.
+            </h1>
+          </Reveal>
+
+          <Reveal delay={120}>
+            <div className="mt-12 flex flex-wrap gap-2">
+              {filters.map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setActive(f.id)}
+                  className={`px-5 py-2.5 rounded-full text-sm border transition-all ${
+                    active === f.id
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "border-border text-foreground/80 hover:text-primary hover:border-primary"
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="pb-24 px-6 lg:px-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {items.map((p, i) => (
+              <Reveal key={p.title + i} delay={(i % 6) * 60}>
+                <div className="group relative aspect-[4/5] rounded-2xl overflow-hidden bg-surface">
+                  <img src={p.image} alt={p.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent opacity-90" />
+                  <div className="absolute bottom-0 inset-x-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform">
+                    <div className="text-xs tracking-[0.25em] text-primary uppercase">{p.category}</div>
+                    <div className="mt-1 text-lg text-foreground">{p.title}</div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <SiteFooter />
+    </div>
+  );
+}

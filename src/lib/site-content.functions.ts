@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { z } from "zod";
+import type { Json } from "@/integrations/supabase/types";
 
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async () => {
   const { data, error } = await supabaseAdmin
@@ -10,23 +11,22 @@ export const getSiteContent = createServerFn({ method: "GET" }).handler(async ()
     .maybeSingle();
   if (error) {
     console.error("getSiteContent error", error);
-    return { data: null as null | Record<string, unknown>, updated_at: null as null | string };
+    return { data: null, updated_at: null };
   }
   return {
-    data: (data?.data ?? null) as null | Record<string, unknown>,
+    data: (data?.data ?? null) as Json | null,
     updated_at: data?.updated_at ?? null,
   };
 });
 
 const updateSchema = z.object({
   token: z.string().min(10).max(200),
-  data: z.record(z.string(), z.unknown()),
+  data: z.any(),
 });
 
 export const updateSiteContent = createServerFn({ method: "POST" })
   .inputValidator((input) => updateSchema.parse(input))
   .handler(async ({ data }) => {
-    // Verify session token
     const { data: session, error: sErr } = await supabaseAdmin
       .from("admin_sessions")
       .select("expires_at")
@@ -39,7 +39,7 @@ export const updateSiteContent = createServerFn({ method: "POST" })
 
     const { error } = await supabaseAdmin
       .from("site_content")
-      .upsert({ id: 1, data: data.data, updated_at: new Date().toISOString() });
+      .upsert({ id: 1, data: data.data as Json, updated_at: new Date().toISOString() });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

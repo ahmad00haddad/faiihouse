@@ -10,8 +10,8 @@ export default function SiteFooter() {
         <div className="md:col-span-2">
           <img src={logo} alt="Faii House" className="h-12 w-auto mb-4" />
           <p className="text-muted-foreground max-w-md leading-relaxed">
-            مجموعة من الأصدقاء، نطمح لإيصال رؤيتنا الفنية كما هي في مخيلتنا — إنتاج سينمائي،
-            إعلانات، وثائقيات، وتلوين سينمائي من الأردن إلى العالم.
+            فَيّ هاوس — شركة إنتاج سينمائي من إربد. فريق وأصدقاء من الشباب،
+            نُترجم الأفكار إلى صور تتنفّس من الأردن إلى العالم.
           </p>
           <div className="flex gap-3 mt-6">
             {[

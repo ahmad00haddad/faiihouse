@@ -4,6 +4,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
 import { portfolio, type PortCategory } from "@/data/site";
+import { ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/portfolio")({
   component: PortfolioPage,
@@ -26,7 +27,7 @@ function PortfolioPage() {
   const [active, setActive] = useState<PortCategory>("all");
   const items = useMemo(
     () => (active === "all" ? portfolio : portfolio.filter((p) => p.category === active)),
-    [active]
+    [active],
   );
 
   return (
@@ -40,6 +41,9 @@ function PortfolioPage() {
             <h1 className="font-display text-5xl md:text-7xl text-foreground leading-tight text-balance">
               قصص <span className="text-primary">صنعناها</span> بكاميراتنا.
             </h1>
+            <p className="mt-4 text-muted-foreground max-w-2xl">
+              اضغط على أي مشروع لمشاهدة تفاصيله الكاملة على Behance.
+            </p>
           </Reveal>
 
           <Reveal delay={120}>
@@ -67,14 +71,24 @@ function PortfolioPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {items.map((p, i) => (
               <Reveal key={p.title + i} delay={(i % 6) * 60}>
-                <div className="group relative aspect-[4/5] rounded-2xl overflow-hidden bg-surface">
+                <a
+                  href={p.behance ?? "https://www.behance.net/faiihouse"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block group relative aspect-[4/5] rounded-2xl overflow-hidden bg-surface"
+                >
                   <img src={p.image} alt={p.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent opacity-90" />
+                  <div className="absolute top-4 left-4 w-9 h-9 rounded-full bg-primary/90 text-primary-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-y-2 group-hover:translate-y-0 transition-all">
+                    <ExternalLink size={14} />
+                  </div>
                   <div className="absolute bottom-0 inset-x-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform">
                     <div className="text-xs tracking-[0.25em] text-primary uppercase">{p.category}</div>
                     <div className="mt-1 text-lg text-foreground">{p.title}</div>
                   </div>
-                </div>
+                  <div className="absolute top-0 inset-x-0 h-2 film-strip translate-y-[-100%] group-hover:translate-y-0 transition-transform duration-500" />
+                  <div className="absolute bottom-0 inset-x-0 h-2 film-strip translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500" />
+                </a>
               </Reveal>
             ))}
           </div>

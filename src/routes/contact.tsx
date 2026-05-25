@@ -3,14 +3,14 @@ import { useState } from "react";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
-import { Mail, MapPin, Phone, Clock, Instagram, Facebook, Linkedin, Send } from "lucide-react";
+import { Mail, MapPin, Phone, Instagram, Facebook, Linkedin, Send } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
   head: () => ({
     meta: [
       { title: "تواصل معنا — Faii House" },
-      { name: "description", content: "تواصل مع فَيّ هاوس — استوديو الإنتاج السينمائي في إربد، الأردن." },
+      { name: "description", content: "تواصل مع فَيّ هاوس — شركة الإنتاج السينمائي في إربد، الأردن." },
     ],
   }),
 });
@@ -23,7 +23,7 @@ function ContactPage() {
     e.preventDefault();
     const body = `الاسم: ${form.name}\nالبريد: ${form.email}\n\n${form.message}`;
     window.location.href = `mailto:faii.house.jo@gmail.com?subject=${encodeURIComponent(
-      "رسالة جديدة من موقع فَيّ"
+      "رسالة جديدة من موقع فَيّ",
     )}&body=${encodeURIComponent(body)}`;
     setSent(true);
   };
@@ -32,7 +32,6 @@ function ContactPage() {
     { Icon: MapPin, title: "العنوان", value: "الأردن — إربد" },
     { Icon: Phone, title: "اتصل بنا", value: "+962 79 925 6345" },
     { Icon: Mail, title: "البريد", value: "faii.house.jo@gmail.com" },
-    { Icon: Clock, title: "ساعات العمل", value: "الأحد - الخميس · 10AM - 5PM" },
   ];
 
   return (
@@ -47,7 +46,8 @@ function ContactPage() {
               لنتحدّث عن <span className="text-primary">فكرتك.</span>
             </h1>
             <p className="mt-6 text-lg text-muted-foreground max-w-2xl">
-              سواء كنت مهتمًا بخدماتنا أو فقط ترغب بإلقاء التحية — يسعدنا أن نسمع منك.
+              نحن فريلانسر — متاحون في كل الأوقات. أرسل لنا فكرتك متى ما جاءتك،
+              وسنرجع لك في أقرب وقت ممكن.
             </p>
           </Reveal>
         </div>

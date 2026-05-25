@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type ElementType } from "react";
 
 export default function SplitText({
   text,
   className = "",
   delay = 0,
   staggerMs = 35,
-  as: Tag = "span",
+  as: Tag = "span" as ElementType,
 }: {
   text: string;
   className?: string;
   delay?: number;
   staggerMs?: number;
-  as?: keyof JSX.IntrinsicElements;
+  as?: ElementType;
 }) {
   const ref = useRef<HTMLElement>(null);
   const [show, setShow] = useState(false);
@@ -45,7 +45,7 @@ export default function SplitText({
     i++;
   }
 
-  const Component = Tag as unknown as React.ElementType;
+  const Component = Tag;
   return (
     <Component ref={ref} className={`reveal-letter ${show ? "in" : ""} ${className}`}>
       {chars}

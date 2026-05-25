@@ -37,7 +37,7 @@ export default function SiteHeader() {
         <Link to="/" className="flex items-center gap-3 group">
           <img src={logo} alt="Faii House" className="h-10 w-auto" />
           <span className="hidden sm:inline text-xs tracking-[0.3em] text-muted-foreground group-hover:text-primary transition-colors">
-            FAII&nbsp;HOUSE
+            FAII&nbsp;HOUSE · PRODUCTION
           </span>
         </Link>
 

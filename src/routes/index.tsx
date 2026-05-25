@@ -3,31 +3,35 @@ import { ArrowLeft, Play } from "lucide-react";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
-import { clients, portfolio, services } from "@/data/site";
+import SplitText from "@/components/SplitText";
+import { clients, portfolio, services, SHOWREEL_URL } from "@/data/site";
 import slide1 from "@/assets/faii/slide1.webp";
 import banner from "@/assets/faii/baner.webp";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
   head: () => ({
     meta: [
-      { title: "Faii House — استوديو سينمائي من الأردن" },
-      { name: "description", content: "نصنع الأفلام، الإعلانات السينمائية، الوثائقيات والتلوين السينمائي. شركة فَيّ هاوس من إربد، الأردن." },
+      { title: "Faii House — شركة إنتاج سينمائي من الأردن" },
+      { name: "description", content: "فَيّ هاوس — شركة إنتاج سينمائي من إربد. أفلام، إعلانات سينمائية، وثائقيات وتلوين سينمائي." },
     ],
   }),
 });
 
 function HomePage() {
   const featured = portfolio.slice(0, 6);
+  const [showAllClients, setShowAllClients] = useState(false);
+  const visibleClients = showAllClients ? clients : clients.slice(0, 10);
 
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center overflow-hidden grain vignette">
         <div className="absolute inset-0">
-          <img src={slide1} alt="" className="w-full h-full object-cover scale-105" />
+          <img src={slide1} alt="" className="w-full h-full object-cover scale-105 flicker" />
           <div className="absolute inset-0 bg-gradient-to-l from-background/40 via-background/70 to-background" />
           <div className="absolute inset-0 bg-fade-bottom" />
         </div>
@@ -36,22 +40,22 @@ function HomePage() {
           <div className="lg:col-span-8">
             <Reveal>
               <div className="inline-flex items-center gap-3 text-xs tracking-[0.35em] text-primary mb-6">
-                <span className="w-10 h-px bg-primary" /> CINEMATIC STUDIO · EST. AMMAN
+                <span className="w-10 h-px bg-primary" /> CINEMATIC PRODUCTION · IRBID · JO
               </div>
             </Reveal>
-            <Reveal delay={120}>
-              <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl text-foreground leading-[0.95] text-balance">
-                نروي <span className="text-primary">الحكاية</span><br />
-                كما تتراءى في مخيّلتنا
-              </h1>
-            </Reveal>
-            <Reveal delay={240}>
+            <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl text-foreground leading-[0.95] text-balance">
+              <SplitText text="نروي " as="span" />
+              <SplitText text="الحكاية" as="span" className="text-primary" delay={200} />
+              <br />
+              <SplitText text="كما تتراءى في مخيّلتنا" as="span" delay={500} staggerMs={28} />
+            </h1>
+            <Reveal delay={900}>
               <p className="mt-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                فَيّ هاوس استوديو إنتاج سينمائي من إربد. نُترجم الأفكار إلى صور تتنفّس،
-                وأصوات تترك أثرًا، ولقطات تظلّ في الذاكرة.
+                فَيّ هاوس — شركة إنتاج سينمائي من إربد. فريق وأصدقاء من الشباب،
+                نُترجم الأفكار إلى صور تتنفّس، وأصوات تترك أثرًا، ولقطات تظلّ في الذاكرة.
               </p>
             </Reveal>
-            <Reveal delay={360}>
+            <Reveal delay={1050}>
               <div className="mt-10 flex flex-wrap gap-4">
                 <Link to="/portfolio" className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary px-7 py-3.5 text-primary-foreground font-medium hover:shadow-glow transition-all">
                   شاهد أعمالنا
@@ -66,12 +70,23 @@ function HomePage() {
 
           <div className="lg:col-span-4 hidden lg:block">
             <Reveal delay={500}>
-              <div className="relative">
-                <div className="absolute -inset-4 bg-primary/10 blur-3xl rounded-full" />
-                <div className="relative rounded-3xl border border-border bg-surface/60 backdrop-blur-md p-8 shadow-elevated">
-                  <div className="text-xs tracking-[0.3em] text-primary mb-2">SHOWREEL</div>
-                  <div className="font-display text-4xl text-foreground">2025</div>
-                  <p className="mt-3 text-sm text-muted-foreground">آخر أعمال الاستوديو، مجموعة مختارة من المشاريع.</p>
+              <a
+                href={SHOWREEL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group relative cursor-pointer"
+                aria-label="مشاهدة الشوريل على يوتيوب"
+              >
+                <div className="absolute -inset-4 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all" />
+                <div className="relative rounded-3xl border border-border bg-surface/60 backdrop-blur-md p-8 shadow-elevated group-hover:border-primary/60 transition-all">
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs tracking-[0.3em] text-primary">SHOWREEL</div>
+                    <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                      <Play size={16} className="translate-x-px" />
+                    </div>
+                  </div>
+                  <div className="font-display text-4xl text-foreground mt-2">2025</div>
+                  <p className="mt-3 text-sm text-muted-foreground">آخر أعمال فَيّ، مجموعة مختارة من المشاريع.</p>
                   <div className="mt-6 grid grid-cols-3 gap-2">
                     {featured.slice(0, 6).map((p) => (
                       <div key={p.title} className="aspect-square rounded-lg overflow-hidden">
@@ -80,7 +95,7 @@ function HomePage() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </a>
             </Reveal>
           </div>
         </div>
@@ -90,12 +105,12 @@ function HomePage() {
         </div>
       </section>
 
-      {/* MARQUEE STATS */}
+      {/* STATS */}
       <section className="border-y border-border bg-surface/40">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
-            { n: "+50", l: "مشروع منجز" },
-            { n: "+30", l: "علامة تجارية" },
+            { n: "+300", l: "مشروع منجز" },
+            { n: "+140", l: "علامة تجارية" },
             { n: "+8", l: "سنوات من الإبداع" },
             { n: "100%", l: "شغف بالحرفة" },
           ].map((s, i) => (
@@ -158,14 +173,21 @@ function HomePage() {
           <div className="grid md:grid-cols-3 gap-4">
             {featured.map((p, i) => (
               <Reveal key={p.title} delay={i * 80}>
-                <div className="group relative aspect-[4/5] rounded-2xl overflow-hidden">
+                <a
+                  href={p.behance ?? "https://www.behance.net/faiihouse"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block group relative aspect-[4/5] rounded-2xl overflow-hidden"
+                >
                   <img src={p.image} alt={p.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-80" />
                   <div className="absolute bottom-0 inset-x-0 p-6">
                     <div className="text-xs tracking-[0.25em] text-primary mb-1 uppercase">{p.category}</div>
                     <div className="text-lg text-foreground">{p.title}</div>
                   </div>
-                </div>
+                  <div className="absolute top-0 inset-x-0 h-2 film-strip translate-y-[-100%] group-hover:translate-y-0 transition-transform duration-500" />
+                  <div className="absolute bottom-0 inset-x-0 h-2 film-strip translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500" />
+                </a>
               </Reveal>
             ))}
           </div>
@@ -179,17 +201,41 @@ function HomePage() {
             <div className="text-center mb-12">
               <div className="text-xs tracking-[0.35em] text-primary mb-3">— TRUSTED BY</div>
               <h2 className="font-display text-3xl md:text-5xl text-foreground">شركاء النجاح</h2>
+              <p className="mt-3 text-sm text-muted-foreground">+140 علامة تجارية وثقت بنا</p>
             </div>
           </Reveal>
+
+          {/* Marquee strip */}
+          <div className="marquee mb-12">
+            <div className="marquee-track">
+              {[...clients, ...clients].map((c, i) => (
+                <div key={i} className="shrink-0 w-32 h-16 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity">
+                  <img src={c.image} alt={c.name} loading="lazy" className="max-h-full max-w-full object-contain" />
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center">
-            {clients.map((c, i) => (
-              <Reveal key={i} delay={i * 40}>
+            {visibleClients.map((c, i) => (
+              <Reveal key={c.name + i} delay={(i % 10) * 40}>
                 <div className="aspect-[3/2] rounded-xl bg-surface border border-border flex items-center justify-center p-6 hover:border-primary/50 transition-all">
-                  <img src={c} alt="" loading="lazy" className="max-h-full max-w-full object-contain opacity-70 hover:opacity-100 transition-opacity" />
+                  <img src={c.image} alt={c.name} loading="lazy" className="max-h-full max-w-full object-contain opacity-70 hover:opacity-100 transition-opacity" />
                 </div>
               </Reveal>
             ))}
           </div>
+
+          {clients.length > 10 && (
+            <div className="text-center mt-10">
+              <button
+                onClick={() => setShowAllClients((v) => !v)}
+                className="inline-flex items-center gap-2 rounded-full border border-primary/50 px-7 py-3 text-primary hover:bg-primary hover:text-primary-foreground transition-all"
+              >
+                {showAllClients ? "عرض أقل" : `عرض المزيد (${clients.length - 10}+)`}
+              </button>
+            </div>
+          )}
         </div>
       </section>
 

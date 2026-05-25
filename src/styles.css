@@ -45,7 +45,6 @@
 }
 
 :root {
-  /* Cinematic dark palette built around Faii House orange */
   --background: oklch(0.16 0.012 60);
   --foreground: oklch(0.96 0.008 80);
   --surface: oklch(0.20 0.015 60);
@@ -54,7 +53,7 @@
   --muted-foreground: oklch(0.72 0.02 70);
   --border: oklch(0.30 0.02 60 / 0.5);
 
-  --primary: oklch(0.74 0.17 55);          /* #f49921 ish */
+  --primary: oklch(0.74 0.17 55);
   --primary-foreground: oklch(0.16 0.012 60);
   --primary-glow: oklch(0.82 0.16 65);
   --accent: oklch(0.74 0.17 55);
@@ -111,14 +110,60 @@
   .shadow-elevated { box-shadow: var(--shadow-elevated); }
   .font-display { font-family: var(--font-display); }
 
-  .grain::before {
+  /* --- Vintage cinematic FX --- */
+  .grain {
+    position: relative;
+  }
+  .grain::after {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image: radial-gradient(oklch(1 0 0 / 0.03) 1px, transparent 1px);
-    background-size: 3px 3px;
+    z-index: 2;
+    background-image:
+      radial-gradient(oklch(1 0 0 / 0.04) 1px, transparent 1px),
+      radial-gradient(oklch(1 0 0 / 0.025) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
     mix-blend-mode: overlay;
+    animation: grainShift 1.6s steps(6) infinite;
+    opacity: 0.55;
+  }
+
+  .film-grain-global {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 60;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: radial-gradient(oklch(1 0 0 / 0.7) 1px, transparent 1px);
+    background-size: 3px 3px;
+    animation: grainShift 1.4s steps(8) infinite;
+  }
+
+  .scanlines::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      oklch(0 0 0 / 0.18) 3px,
+      transparent 4px
+    );
+    mix-blend-mode: multiply;
+    z-index: 2;
+  }
+
+  .vignette::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 50%, oklch(0 0 0 / 0.55) 100%);
+    z-index: 3;
   }
 
   .reveal {
@@ -130,4 +175,76 @@
     opacity: 1;
     transform: none;
   }
+
+  .reveal-letter > span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.6em) rotate(2deg);
+    transition: opacity 0.7s var(--ease-cinematic), transform 0.7s var(--ease-cinematic);
+  }
+  .reveal-letter.in > span {
+    opacity: 1;
+    transform: none;
+  }
+
+  .flicker {
+    animation: flicker 4.5s infinite;
+  }
+
+  .marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee-track {
+    display: inline-flex;
+    gap: 3rem;
+    animation: marquee 40s linear infinite;
+    will-change: transform;
+  }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+
+  /* Film strip border that slides in on hover */
+  .film-strip {
+    background-image:
+      linear-gradient(90deg, transparent 6px, transparent 12px),
+      repeating-linear-gradient(
+        90deg,
+        oklch(0.18 0.01 60),
+        oklch(0.18 0.01 60) 8px,
+        oklch(0.95 0 0 / 0.85) 8px,
+        oklch(0.95 0 0 / 0.85) 14px
+      );
+  }
+
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+    z-index: 100;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+}
+
+@keyframes grainShift {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-2%, -1%); }
+  30% { transform: translate(1%, 2%); }
+  50% { transform: translate(-1%, 3%); }
+  70% { transform: translate(2%, -2%); }
+  90% { transform: translate(-3%, 1%); }
+}
+
+@keyframes flicker {
+  0%, 19%, 22%, 62%, 64%, 100% { opacity: 1; }
+  20%, 21% { opacity: 0.6; }
+  63% { opacity: 0.4; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(50%); }
 }

@@ -60,7 +60,7 @@ export default function SiteHeader() {
             );
           })}
           <a
-            href="/quote-builder/"
+            href="/quote-builder/index.html"
             target="_blank"
             rel="noopener noreferrer"
             className="ms-2 px-4 py-2 rounded-full border border-primary/40 text-primary text-sm hover:bg-primary/10 transition-all"

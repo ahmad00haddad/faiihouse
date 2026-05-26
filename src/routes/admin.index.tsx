@@ -1,0 +1,199 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useEffect, useMemo, useState } from "react";
+import { adminVerify, adminLogout } from "@/lib/admin-auth.functions";
+import { getSiteContent, updateSiteContent } from "@/lib/site-content.functions";
+import { defaultContent, type SiteContent } from "@/data/site";
+import { LogOut, Save, Plus, Trash2 } from "lucide-react";
+
+export const Route = createFileRoute("/admin/")({
+  component: AdminPage,
+  head: () => ({ meta: [{ title: "Faii House — لوحة التحكم" }] }),
+});
+
+type Tab = "hero" | "about" | "stats" | "contact" | "services" | "portfolio" | "clients";
+
+function AdminPage() {
+  const verify = useServerFn(adminVerify);
+  const logout = useServerFn(adminLogout);
+  const fetchContent = useServerFn(getSiteContent);
+  const saveContent = useServerFn(updateSiteContent);
+  const navigate = useNavigate();
+
+  const [ready, setReady] = useState(false);
+  const [content, setContent] = useState<SiteContent>(defaultContent);
+  const [tab, setTab] = useState<Tab>("hero");
+  const [saving, setSaving] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+
+  const token = useMemo(() => (typeof window !== "undefined" ? localStorage.getItem("faii_admin_token") : null), []);
+
+  useEffect(() => {
+    (async () => {
+      if (!token) { navigate({ to: "/admin/login" }); return; }
+      const v = await verify({ data: { token } });
+      if (!v.valid) { localStorage.removeItem("faii_admin_token"); navigate({ to: "/admin/login" }); return; }
+      const c = await fetchContent();
+      if (c.data) setContent({ ...defaultContent, ...(c.data as Partial<SiteContent>) } as SiteContent);
+      setReady(true);
+    })();
+  }, []);
+
+  const onSave = async () => {
+    if (!token) return;
+    setSaving(true);
+    try {
+      await saveContent({ data: { token, data: content } });
+      setSavedAt(new Date().toLocaleTimeString("ar"));
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "فشل الحفظ");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onLogout = async () => {
+    if (token) await logout({ data: { token } });
+    localStorage.removeItem("faii_admin_token");
+    navigate({ to: "/admin/login" });
+  };
+
+  if (!ready) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">جارٍ التحميل...</div>;
+
+  const tabs: { id: Tab; label: string }[] = [
+    { id: "hero", label: "الهيرو" },
+    { id: "about", label: "عن فَيّ" },
+    { id: "stats", label: "الإحصائيات" },
+    { id: "contact", label: "التواصل" },
+    { id: "services", label: "الخدمات" },
+    { id: "portfolio", label: "المشاريع" },
+    { id: "clients", label: "الشركاء" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-border bg-card/50 backdrop-blur sticky top-0 z-30">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <h1 className="font-display text-xl text-primary">لوحة فَيّ هاوس</h1>
+          <div className="flex items-center gap-3">
+            {savedAt && <span className="text-xs text-muted-foreground">تم الحفظ {savedAt}</span>}
+            <button onClick={onSave} disabled={saving} className="inline-flex items-center gap-2 bg-gradient-primary text-primary-foreground px-4 py-2 rounded-lg text-sm disabled:opacity-60">
+              <Save size={16} /> {saving ? "..." : "حفظ"}
+            </button>
+            <button onClick={onLogout} className="inline-flex items-center gap-2 border border-border px-4 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground">
+              <LogOut size={16} /> خروج
+            </button>
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto px-6 flex gap-1 overflow-x-auto">
+          {tabs.map((t) => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              className={`px-4 py-2 text-sm border-b-2 whitespace-nowrap transition-colors ${tab === t.id ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-6 py-8 space-y-4">
+        {tab === "hero" && <HeroEditor content={content} setContent={setContent} />}
+        {tab === "about" && <AboutEditor content={content} setContent={setContent} />}
+        {tab === "stats" && <ListEditor items={content.stats} setItems={(stats) => setContent({ ...content, stats })} fields={[{ k: "value", l: "القيمة" }, { k: "label", l: "الوصف" }]} blank={{ value: "", label: "" }} />}
+        {tab === "contact" && <ContactEditor content={content} setContent={setContent} />}
+        {tab === "services" && <ListEditor items={content.services} setItems={(services) => setContent({ ...content, services })} fields={[{ k: "title", l: "العنوان" }, { k: "desc", l: "الوصف", textarea: true }]} blank={{ title: "", desc: "" }} />}
+        {tab === "portfolio" && <ListEditor items={content.portfolio} setItems={(portfolio) => setContent({ ...content, portfolio })} fields={[{ k: "title", l: "العنوان" }, { k: "image", l: "رابط الصورة" }, { k: "category", l: "التصنيف (film/documentary/ads)" }, { k: "behance", l: "رابط Behance" }]} blank={{ title: "", image: "", category: "film", behance: "" }} />}
+        {tab === "clients" && <ListEditor items={content.clients} setItems={(clients) => setContent({ ...content, clients })} fields={[{ k: "name", l: "الاسم" }, { k: "image", l: "رابط اللوغو" }]} blank={{ name: "", image: "" }} />}
+      </main>
+    </div>
+  );
+}
+
+function Field({ label, value, onChange, textarea }: { label: string; value: string; onChange: (v: string) => void; textarea?: boolean }) {
+  return (
+    <label className="block space-y-1">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      {textarea ? (
+        <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={4} className="w-full bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary" />
+      ) : (
+        <input value={value} onChange={(e) => onChange(e.target.value)} className="w-full bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary" />
+      )}
+    </label>
+  );
+}
+
+function HeroEditor({ content, setContent }: { content: SiteContent; setContent: (c: SiteContent) => void }) {
+  const h = content.hero;
+  const set = (p: Partial<SiteContent["hero"]>) => setContent({ ...content, hero: { ...h, ...p } });
+  return (
+    <div className="space-y-3 bg-card/40 border border-border rounded-xl p-5">
+      <Field label="نص علوي صغير (Kicker)" value={h.kicker} onChange={(v) => set({ kicker: v })} />
+      <Field label="السطر الأول" value={h.title1} onChange={(v) => set({ title1: v })} />
+      <Field label="الكلمة المُبرَزة" value={h.titleHighlight} onChange={(v) => set({ titleHighlight: v })} />
+      <Field label="الوصف" value={h.subtitle} onChange={(v) => set({ subtitle: v })} textarea />
+      <Field label="رابط الشوريل (YouTube)" value={content.showreelUrl} onChange={(v) => setContent({ ...content, showreelUrl: v })} />
+    </div>
+  );
+}
+
+function AboutEditor({ content, setContent }: { content: SiteContent; setContent: (c: SiteContent) => void }) {
+  const a = content.about;
+  const set = (p: Partial<SiteContent["about"]>) => setContent({ ...content, about: { ...a, ...p } });
+  return (
+    <div className="space-y-3 bg-card/40 border border-border rounded-xl p-5">
+      <Field label="العنوان" value={a.title} onChange={(v) => set({ title: v })} />
+      <Field label="النبذة" value={a.body} onChange={(v) => set({ body: v })} textarea />
+      <Field label="أهدافنا" value={a.goals} onChange={(v) => set({ goals: v })} textarea />
+      <Field label="طموحنا" value={a.ambition} onChange={(v) => set({ ambition: v })} textarea />
+    </div>
+  );
+}
+
+function ContactEditor({ content, setContent }: { content: SiteContent; setContent: (c: SiteContent) => void }) {
+  const c = content.contact;
+  const set = (p: Partial<SiteContent["contact"]>) => setContent({ ...content, contact: { ...c, ...p } });
+  return (
+    <div className="grid md:grid-cols-2 gap-3 bg-card/40 border border-border rounded-xl p-5">
+      <Field label="الهاتف" value={c.phone} onChange={(v) => set({ phone: v })} />
+      <Field label="الإيميل" value={c.email} onChange={(v) => set({ email: v })} />
+      <Field label="العنوان" value={c.address} onChange={(v) => set({ address: v })} />
+      <Field label="Instagram" value={c.instagram} onChange={(v) => set({ instagram: v })} />
+      <Field label="Facebook" value={c.facebook} onChange={(v) => set({ facebook: v })} />
+      <Field label="LinkedIn" value={c.linkedin} onChange={(v) => set({ linkedin: v })} />
+      <Field label="Behance" value={c.behance} onChange={(v) => set({ behance: v })} />
+    </div>
+  );
+}
+
+function ListEditor<T extends Record<string, string>>({
+  items, setItems, fields, blank,
+}: {
+  items: T[];
+  setItems: (v: T[]) => void;
+  fields: { k: keyof T & string; l: string; textarea?: boolean }[];
+  blank: T;
+}) {
+  return (
+    <div className="space-y-3">
+      {items.map((it, idx) => (
+        <div key={idx} className="bg-card/40 border border-border rounded-xl p-4 space-y-2 relative">
+          <button onClick={() => setItems(items.filter((_, i) => i !== idx))}
+            className="absolute top-3 left-3 text-destructive/70 hover:text-destructive p-1.5 rounded hover:bg-destructive/10">
+            <Trash2 size={16} />
+          </button>
+          {fields.map((f) => (
+            <Field key={f.k} label={f.l} value={String(it[f.k] ?? "")} textarea={f.textarea}
+              onChange={(v) => {
+                const next = [...items];
+                next[idx] = { ...next[idx], [f.k]: v };
+                setItems(next);
+              }} />
+          ))}
+        </div>
+      ))}
+      <button onClick={() => setItems([...items, { ...blank }])}
+        className="w-full border border-dashed border-border rounded-xl py-4 text-muted-foreground hover:text-primary hover:border-primary inline-flex items-center justify-center gap-2">
+        <Plus size={16} /> إضافة عنصر
+      </button>
+    </div>
+  );
+}

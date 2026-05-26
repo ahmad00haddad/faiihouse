@@ -59,9 +59,17 @@ export default function SiteHeader() {
               </Link>
             );
           })}
+          <a
+            href="/quote-builder/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ms-2 px-4 py-2 rounded-full border border-primary/40 text-primary text-sm hover:bg-primary/10 transition-all"
+          >
+            احسب تسعيرتك
+          </a>
           <Link
             to="/contact"
-            className="ms-4 px-5 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-medium hover:shadow-glow transition-all"
+            className="ms-2 px-5 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-medium hover:shadow-glow transition-all"
           >
             ابدأ مشروعك
           </Link>

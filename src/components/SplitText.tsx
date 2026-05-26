@@ -1,10 +1,14 @@
-import { useEffect, useRef, useState, type ReactNode, type ElementType } from "react";
+import { useEffect, useRef, useState, type ElementType } from "react";
 
+/**
+ * Word-level reveal that preserves Arabic letter shaping (ligatures).
+ * Splitting on characters breaks Arabic — so each word is wrapped as a unit.
+ */
 export default function SplitText({
   text,
   className = "",
   delay = 0,
-  staggerMs = 35,
+  staggerMs = 80,
   as: Tag = "span" as ElementType,
 }: {
   text: string;
@@ -34,21 +38,20 @@ export default function SplitText({
     return () => obs.disconnect();
   }, [delay]);
 
-  const chars: ReactNode[] = [];
-  let i = 0;
-  for (const ch of Array.from(text)) {
-    chars.push(
-      <span key={i} style={{ transitionDelay: `${i * staggerMs}ms` }}>
-        {ch === " " ? "\u00A0" : ch}
-      </span>,
-    );
-    i++;
-  }
-
+  const words = text.split(/(\s+)/);
   const Component = Tag;
+
   return (
-    <Component ref={ref} className={`reveal-letter ${show ? "in" : ""} ${className}`}>
-      {chars}
+    <Component ref={ref} className={`reveal-word ${show ? "in" : ""} ${className}`}>
+      {words.map((w, i) =>
+        /^\s+$/.test(w) ? (
+          <span key={i}>{w}</span>
+        ) : (
+          <span key={i} className="rw-word" style={{ transitionDelay: `${i * staggerMs}ms` }}>
+            {w}
+          </span>
+        ),
+      )}
     </Component>
   );
 }

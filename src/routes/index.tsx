@@ -62,7 +62,7 @@ function HomePage() {
                   <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                 </Link>
                 <a
-                  href="/quote-builder/"
+                  href="/quote-builder/index.html"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-primary/50 px-7 py-3.5 text-primary hover:bg-primary/10 transition-all"

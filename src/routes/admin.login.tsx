@@ -20,9 +20,13 @@ function AdminLoginPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    if (!username.trim() || !password.trim()) {
+      setError("الرجاء إدخال اسم المستخدم وكلمة المرور");
+      return;
+    }
     setLoading(true);
     try {
-      const res = await login({ data: { username, password } });
+      const res = await login({ data: { username: username.trim(), password } });
       localStorage.setItem("faii_admin_token", res.token);
       navigate({ to: "/admin" });
     } catch (err) {
@@ -46,7 +50,7 @@ function AdminLoginPage() {
         </div>
         <div className="space-y-2">
           <label className="text-xs text-muted-foreground">كلمة المرور</label>
-          <input type="password" value={password} onChange={(e) => setP(e.target.value)} className="w-full bg-background border border-border rounded-lg px-4 py-3 outline-none focus:border-primary" />
+          <input type="password" required value={password} onChange={(e) => setP(e.target.value)} className="w-full bg-background border border-border rounded-lg px-4 py-3 outline-none focus:border-primary" />
         </div>
         {error && <div className="text-sm text-destructive">{error}</div>}
         <button disabled={loading} className="w-full bg-gradient-primary text-primary-foreground rounded-lg py-3 font-medium hover:shadow-glow transition-all disabled:opacity-60">

@@ -61,6 +61,14 @@ function HomePage() {
                   شاهد أعمالنا
                   <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                 </Link>
+                <a
+                  href="/quote-builder/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-primary/50 px-7 py-3.5 text-primary hover:bg-primary/10 transition-all"
+                >
+                  احسب تسعيرة مشروعك
+                </a>
                 <Link to="/contact" className="inline-flex items-center gap-2 rounded-full border border-border px-7 py-3.5 text-foreground hover:border-primary hover:text-primary transition-all">
                   <Play size={16} /> ابدأ مشروعك
                 </Link>

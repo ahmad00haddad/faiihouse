@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
-import { services } from "@/data/site";
+import { useSiteContent } from "@/hooks/use-site-content";
 import { Film, Megaphone, Palette, Camera, Lightbulb, Music, ArrowLeft, type LucideIcon } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = { Film, Megaphone, Palette, Camera, Lightbulb, Music };
@@ -18,6 +18,7 @@ export const Route = createFileRoute("/services")({
 });
 
 function ServicesPage() {
+  const { services } = useSiteContent();
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -41,7 +42,7 @@ function ServicesPage() {
       <section className="pb-24 px-6 lg:px-10">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-6">
           {services.map((s, i) => {
-            const Icon = iconMap[s.icon] ?? Film;
+            const Icon = iconMap[(s as { icon?: string }).icon ?? "Film"] ?? Film;
             return (
               <Reveal key={s.title} delay={i * 60}>
                 <div className="group relative p-10 rounded-3xl border border-border bg-surface hover:bg-surface-elevated transition-all duration-500 overflow-hidden">

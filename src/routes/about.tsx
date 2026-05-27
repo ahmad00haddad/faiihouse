@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
+  const { about } = useSiteContent();
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -23,22 +25,12 @@ function AboutPage() {
           <Reveal>
             <div className="text-xs tracking-[0.35em] text-primary mb-4">— ABOUT US</div>
             <h1 className="font-display text-5xl md:text-7xl text-foreground leading-tight text-balance">
-              فريق وأصدقاء من إربد، <br />
-              <span className="text-primary">شغفنا واحد</span> — السينما.
+              {about.title}
             </h1>
           </Reveal>
           <Reveal delay={150}>
-            <p className="mt-8 text-lg text-muted-foreground leading-relaxed max-w-3xl">
-              فَيّ هاوس شركة إنتاج سينمائي من إربد. لسنا استوديو تقليدي — نحن
-              مجموعة من الأصدقاء، شباب يجمعنا حبّ الصورة والحكاية، نعمل معًا
-              كفريق متكامل من المرحلة الأولى للفكرة وحتى تسليم اللقطة الأخيرة،
-              لنُنجز كل مشروع على أكمل وجه.
-            </p>
-          </Reveal>
-          <Reveal delay={280}>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed max-w-3xl">
-              ما يميّزنا هو هذا الترابط — أصدقاء قبل أن نكون زملاء عمل، نعشق ما
-              نفعله، ونعامل كل مشروع كأنّه فيلمنا الأول.
+            <p className="mt-8 text-lg text-muted-foreground leading-relaxed max-w-3xl whitespace-pre-line">
+              {about.body}
             </p>
           </Reveal>
         </div>
@@ -49,17 +41,15 @@ function AboutPage() {
           <Reveal>
             <div className="text-xs tracking-[0.35em] text-primary mb-3">— OUR GOALS</div>
             <h2 className="font-display text-3xl md:text-5xl text-foreground mb-4">أهدافنا</h2>
-            <p className="text-muted-foreground leading-relaxed text-lg">
-              أن نقدّم محتوى سينمائي عربي بمعايير عالمية، ونرفع سقف الجودة في
-              السوق المحلي عبر مشاريع تجمع بين الحرفة العالية والروح الأصيلة.
+            <p className="text-muted-foreground leading-relaxed text-lg whitespace-pre-line">
+              {about.goals}
             </p>
           </Reveal>
           <Reveal delay={120}>
             <div className="text-xs tracking-[0.35em] text-primary mb-3">— OUR AMBITION</div>
             <h2 className="font-display text-3xl md:text-5xl text-foreground mb-4">طموحاتنا</h2>
-            <p className="text-muted-foreground leading-relaxed text-lg">
-              أن نصبح من أبرز شركات الإنتاج السينمائي في المنطقة، وأن ندعم الجيل
-              الجديد من صنّاع الصورة ليجدوا بيتًا حقيقيًا لمواهبهم.
+            <p className="text-muted-foreground leading-relaxed text-lg whitespace-pre-line">
+              {about.ambition}
             </p>
           </Reveal>
         </div>

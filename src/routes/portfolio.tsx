@@ -3,7 +3,8 @@ import { useMemo, useState } from "react";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
-import { portfolio, type PortCategory } from "@/data/site";
+import { type PortCategory } from "@/data/site";
+import { useSiteContent } from "@/hooks/use-site-content";
 import { ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/portfolio")({
@@ -24,10 +25,11 @@ const filters: { id: PortCategory; label: string }[] = [
 ];
 
 function PortfolioPage() {
+  const { portfolio } = useSiteContent();
   const [active, setActive] = useState<PortCategory>("all");
   const items = useMemo(
     () => (active === "all" ? portfolio : portfolio.filter((p) => p.category === active)),
-    [active],
+    [active, portfolio],
   );
 
   return (

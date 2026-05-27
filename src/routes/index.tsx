@@ -224,26 +224,6 @@ function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center">
-            {visibleClients.map((c, i) => (
-              <Reveal key={c.name + i} delay={(i % 10) * 40}>
-                <div className="aspect-[3/2] rounded-xl bg-surface border border-border flex items-center justify-center p-6 hover:border-primary/50 transition-all">
-                  <img src={c.image} alt={c.name} loading="lazy" className="max-h-full max-w-full object-contain opacity-70 hover:opacity-100 transition-opacity" />
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          {clients.length > 10 && (
-            <div className="text-center mt-10">
-              <button
-                onClick={() => setShowAllClients((v) => !v)}
-                className="inline-flex items-center gap-2 rounded-full border border-primary/50 px-7 py-3 text-primary hover:bg-primary hover:text-primary-foreground transition-all"
-              >
-                {showAllClients ? "عرض أقل" : `عرض المزيد (${clients.length - 10}+)`}
-              </button>
-            </div>
-          )}
         </div>
       </section>
 

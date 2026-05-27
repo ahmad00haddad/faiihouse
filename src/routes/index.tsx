@@ -114,16 +114,11 @@ function HomePage() {
       {/* STATS */}
       <section className="border-y border-border bg-surface/40">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { n: "+300", l: "مشروع منجز" },
-            { n: "+140", l: "علامة تجارية" },
-            { n: "+8", l: "سنوات من الإبداع" },
-            { n: "100%", l: "شغف بالحرفة" },
-          ].map((s, i) => (
+          {stats.map((s, i) => (
             <Reveal key={i} delay={i * 80}>
               <div>
-                <div className="font-display text-4xl md:text-5xl text-primary">{s.n}</div>
-                <div className="mt-2 text-sm text-muted-foreground tracking-wide">{s.l}</div>
+                <div className="font-display text-4xl md:text-5xl text-primary">{s.value}</div>
+                <div className="mt-2 text-sm text-muted-foreground tracking-wide">{s.label}</div>
               </div>
             </Reveal>
           ))}

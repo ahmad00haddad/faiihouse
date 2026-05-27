@@ -21,8 +21,6 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const featured = portfolio.slice(0, 6);
-  const [showAllClients, setShowAllClients] = useState(false);
-  const visibleClients = showAllClients ? clients : clients.slice(0, 10);
 
   return (
     <div className="min-h-screen bg-background">

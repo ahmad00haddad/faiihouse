@@ -78,7 +78,7 @@ function HomePage() {
           <div className="lg:col-span-4 hidden lg:block">
             <Reveal delay={500}>
               <a
-                href={SHOWREEL_URL}
+                href={showreelUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block group relative cursor-pointer"

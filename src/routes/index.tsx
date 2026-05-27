@@ -4,10 +4,9 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
 import SplitText from "@/components/SplitText";
-import { clients, portfolio, services, SHOWREEL_URL } from "@/data/site";
+import { useSiteContent } from "@/hooks/use-site-content";
 import slide1 from "@/assets/faii/slide1.webp";
 import banner from "@/assets/faii/baner.webp";
-import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -20,6 +19,8 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const content = useSiteContent();
+  const { hero, stats, services, portfolio, clients, showreelUrl } = content;
   const featured = portfolio.slice(0, 6);
 
   return (
@@ -38,19 +39,18 @@ function HomePage() {
           <div className="lg:col-span-8">
             <Reveal>
               <div className="inline-flex items-center gap-3 text-xs tracking-[0.35em] text-primary mb-6">
-                <span className="w-10 h-px bg-primary" /> CINEMATIC PRODUCTION · IRBID · JO
+                <span className="w-10 h-px bg-primary" /> {hero.kicker}
               </div>
             </Reveal>
             <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl text-foreground leading-[0.95] text-balance">
-              <SplitText text="نروي " as="span" />
-              <SplitText text="الحكاية" as="span" className="text-primary" delay={200} />
+              <SplitText text={`${hero.title1} `} as="span" />
+              <SplitText text={hero.titleHighlight} as="span" className="text-primary" delay={200} />
               <br />
               <SplitText text="كما تتراءى في مخيّلتنا" as="span" delay={500} staggerMs={28} />
             </h1>
             <Reveal delay={900}>
               <p className="mt-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                فَيّ هاوس — شركة إنتاج سينمائي من إربد. فريق وأصدقاء من الشباب،
-                نُترجم الأفكار إلى صور تتنفّس، وأصوات تترك أثرًا، ولقطات تظلّ في الذاكرة.
+                {hero.subtitle}
               </p>
             </Reveal>
             <Reveal delay={1050}>
@@ -77,7 +77,7 @@ function HomePage() {
           <div className="lg:col-span-4 hidden lg:block">
             <Reveal delay={500}>
               <a
-                href={SHOWREEL_URL}
+                href={showreelUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block group relative cursor-pointer"
@@ -114,16 +114,11 @@ function HomePage() {
       {/* STATS */}
       <section className="border-y border-border bg-surface/40">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { n: "+300", l: "مشروع منجز" },
-            { n: "+140", l: "علامة تجارية" },
-            { n: "+8", l: "سنوات من الإبداع" },
-            { n: "100%", l: "شغف بالحرفة" },
-          ].map((s, i) => (
+          {stats.map((s, i) => (
             <Reveal key={i} delay={i * 80}>
               <div>
-                <div className="font-display text-4xl md:text-5xl text-primary">{s.n}</div>
-                <div className="mt-2 text-sm text-muted-foreground tracking-wide">{s.l}</div>
+                <div className="font-display text-4xl md:text-5xl text-primary">{s.value}</div>
+                <div className="mt-2 text-sm text-muted-foreground tracking-wide">{s.label}</div>
               </div>
             </Reveal>
           ))}

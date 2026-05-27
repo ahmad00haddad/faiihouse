@@ -4,10 +4,9 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
 import SplitText from "@/components/SplitText";
-import { clients, portfolio, services, SHOWREEL_URL } from "@/data/site";
+import { useSiteContent } from "@/hooks/use-site-content";
 import slide1 from "@/assets/faii/slide1.webp";
 import banner from "@/assets/faii/baner.webp";
-import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -20,6 +19,8 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const content = useSiteContent();
+  const { hero, stats, services, portfolio, clients, showreelUrl } = content;
   const featured = portfolio.slice(0, 6);
 
   return (

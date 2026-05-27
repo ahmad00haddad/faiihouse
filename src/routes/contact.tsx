@@ -3,6 +3,7 @@ import { useState } from "react";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
+import { useSiteContent } from "@/hooks/use-site-content";
 import { Mail, MapPin, Phone, Instagram, Facebook, Linkedin, Send } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
@@ -16,22 +17,23 @@ export const Route = createFileRoute("/contact")({
 });
 
 function ContactPage() {
+  const { contact } = useSiteContent();
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const body = `الاسم: ${form.name}\nالبريد: ${form.email}\n\n${form.message}`;
-    window.location.href = `mailto:faii.house.jo@gmail.com?subject=${encodeURIComponent(
+    window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(
       "رسالة جديدة من موقع فَيّ",
     )}&body=${encodeURIComponent(body)}`;
     setSent(true);
   };
 
   const info = [
-    { Icon: MapPin, title: "العنوان", value: "الأردن — إربد" },
-    { Icon: Phone, title: "اتصل بنا", value: "+962 79 925 6345" },
-    { Icon: Mail, title: "البريد", value: "faii.house.jo@gmail.com" },
+    { Icon: MapPin, title: "العنوان", value: contact.address },
+    { Icon: Phone, title: "اتصل بنا", value: contact.phone },
+    { Icon: Mail, title: "البريد", value: contact.email },
   ];
 
   return (
@@ -72,9 +74,9 @@ function ContactPage() {
             <Reveal delay={240}>
               <div className="flex gap-3 p-6">
                 {[
-                  { Icon: Instagram, href: "https://www.instagram.com/faii.house/" },
-                  { Icon: Facebook, href: "https://www.facebook.com/faii.house.jo" },
-                  { Icon: Linkedin, href: "https://www.linkedin.com/company/faiihouse/" },
+                  { Icon: Instagram, href: contact.instagram },
+                  { Icon: Facebook, href: contact.facebook },
+                  { Icon: Linkedin, href: contact.linkedin },
                 ].map(({ Icon, href }, i) => (
                   <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full border border-border flex items-center justify-center text-foreground/80 hover:text-primary hover:border-primary transition-all">
                     <Icon size={16} />

@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import logo from "@/assets/faii/logo-white.png";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 export default function SiteFooter() {
+  const { contact } = useSiteContent();
   return (
     <footer className="relative mt-32 border-t border-border bg-surface/40">
       <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-l from-transparent via-primary/50 to-transparent" />
@@ -15,9 +17,9 @@ export default function SiteFooter() {
           </p>
           <div className="flex gap-3 mt-6">
             {[
-              { Icon: Instagram, href: "https://www.instagram.com/faii.house/" },
-              { Icon: Facebook, href: "https://www.facebook.com/faii.house.jo" },
-              { Icon: Linkedin, href: "https://www.linkedin.com/company/faiihouse/" },
+              { Icon: Instagram, href: contact.instagram },
+              { Icon: Facebook, href: contact.facebook },
+              { Icon: Linkedin, href: contact.linkedin },
             ].map(({ Icon, href }, i) => (
               <a
                 key={i}
@@ -45,9 +47,9 @@ export default function SiteFooter() {
         <div>
           <h4 className="text-sm tracking-[0.25em] text-primary mb-4">تواصل</h4>
           <ul className="space-y-3 text-muted-foreground text-sm">
-            <li className="flex items-center gap-2"><MapPin size={14} className="text-primary" /> الأردن — إربد</li>
-            <li className="flex items-center gap-2" dir="ltr"><Phone size={14} className="text-primary" /> +962 79 925 6345</li>
-            <li className="flex items-center gap-2"><Mail size={14} className="text-primary" /> faii.house.jo@gmail.com</li>
+            <li className="flex items-center gap-2"><MapPin size={14} className="text-primary" /> {contact.address}</li>
+            <li className="flex items-center gap-2" dir="ltr"><Phone size={14} className="text-primary" /> {contact.phone}</li>
+            <li className="flex items-center gap-2"><Mail size={14} className="text-primary" /> {contact.email}</li>
           </ul>
         </div>
       </div>

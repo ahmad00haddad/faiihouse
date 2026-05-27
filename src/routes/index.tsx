@@ -39,19 +39,18 @@ function HomePage() {
           <div className="lg:col-span-8">
             <Reveal>
               <div className="inline-flex items-center gap-3 text-xs tracking-[0.35em] text-primary mb-6">
-                <span className="w-10 h-px bg-primary" /> CINEMATIC PRODUCTION · IRBID · JO
+                <span className="w-10 h-px bg-primary" /> {hero.kicker}
               </div>
             </Reveal>
             <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl text-foreground leading-[0.95] text-balance">
-              <SplitText text="نروي " as="span" />
-              <SplitText text="الحكاية" as="span" className="text-primary" delay={200} />
+              <SplitText text={`${hero.title1} `} as="span" />
+              <SplitText text={hero.titleHighlight} as="span" className="text-primary" delay={200} />
               <br />
               <SplitText text="كما تتراءى في مخيّلتنا" as="span" delay={500} staggerMs={28} />
             </h1>
             <Reveal delay={900}>
               <p className="mt-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                فَيّ هاوس — شركة إنتاج سينمائي من إربد. فريق وأصدقاء من الشباب،
-                نُترجم الأفكار إلى صور تتنفّس، وأصوات تترك أثرًا، ولقطات تظلّ في الذاكرة.
+                {hero.subtitle}
               </p>
             </Reveal>
             <Reveal delay={1050}>

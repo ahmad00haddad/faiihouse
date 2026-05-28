@@ -248,3 +248,44 @@
   from { transform: translateX(0); }
   to { transform: translateX(50%); }
 }
+
+/* Lenis smooth scroll guards */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Vintage film grain hover effect for cards */
+.grain-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.grain-card::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 0.85  0 0 0 0 0.55  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+  transition: opacity .35s ease;
+  animation: grainShift 1.6s steps(6) infinite;
+}
+.grain-card:hover::after { opacity: 0.55; }
+.grain-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%),
+    linear-gradient(180deg, rgba(255,180,90,0.08), transparent 30%, transparent 70%, rgba(255,140,60,0.06));
+  transition: opacity .4s ease;
+}
+.grain-card:hover::before { opacity: 1; }
+

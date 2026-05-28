@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { adminVerify, adminLogout } from "@/lib/admin-auth.functions";
 import { getSiteContent, updateSiteContent } from "@/lib/site-content.functions";
+import { uploadImage } from "@/lib/upload.functions";
 import { defaultContent, type SiteContent } from "@/data/site";
-import { LogOut, Save, Plus, Trash2 } from "lucide-react";
+import { LogOut, Save, Plus, Trash2, Upload } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminPage,
@@ -109,15 +110,57 @@ function AdminPage() {
 }
 
 function Field({ label, value, onChange, textarea }: { label: string; value: string; onChange: (v: string) => void; textarea?: boolean }) {
+  const isImage = /صورة|لوغو|logo|image|avatar/i.test(label);
   return (
     <label className="block space-y-1">
       <span className="text-xs text-muted-foreground">{label}</span>
       {textarea ? (
         <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={4} className="w-full bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary" />
       ) : (
-        <input value={value} onChange={(e) => onChange(e.target.value)} className="w-full bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary" />
+        <div className="flex gap-2 items-stretch">
+          <input value={value} onChange={(e) => onChange(e.target.value)} className="flex-1 bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary" />
+          {isImage && <ImageUploadButton onUploaded={onChange} />}
+        </div>
+      )}
+      {isImage && value && (
+        <img src={value} alt="" className="mt-1 h-16 w-auto rounded border border-border object-cover" />
       )}
     </label>
+  );
+}
+
+function ImageUploadButton({ onUploaded }: { onUploaded: (url: string) => void }) {
+  const upload = useServerFn(uploadImage);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const onPick = async (file: File) => {
+    const token = localStorage.getItem("faii_admin_token");
+    if (!token) return;
+    if (file.size > 8 * 1024 * 1024) { alert("الحد الأقصى 8MB"); return; }
+    setBusy(true);
+    try {
+      const buf = new Uint8Array(await file.arrayBuffer());
+      let bin = "";
+      for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
+      const base64 = btoa(bin);
+      const res = await upload({ data: { token, filename: file.name, contentType: file.type || "image/jpeg", base64 } });
+      onUploaded(res.url);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "فشل الرفع");
+    } finally {
+      setBusy(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  };
+  return (
+    <>
+      <input ref={inputRef} type="file" accept="image/*" hidden
+        onChange={(e) => e.target.files?.[0] && onPick(e.target.files[0])} />
+      <button type="button" onClick={() => inputRef.current?.click()} disabled={busy}
+        className="inline-flex items-center gap-1.5 px-3 rounded-lg border border-border text-xs text-muted-foreground hover:text-primary hover:border-primary disabled:opacity-60">
+        <Upload size={14} /> {busy ? "..." : "رفع"}
+      </button>
+    </>
   );
 }
 

@@ -43,7 +43,7 @@ export function useSiteContent(): SiteContent {
 
   useEffect(() => {
     const channel = supabase
-      .channel("site-content-changes")
+      .channel(`site-content-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "site_content" },

@@ -62,8 +62,9 @@ function AdminPage() {
       await saveContent({ data: { token, data: content } });
       // Re-fetch from DB to confirm persistence and reflect source of truth
       const c = await fetchContent();
-      if (c.data) setContent({ ...defaultContent, ...(c.data as Partial<SiteContent>) } as SiteContent);
+      setContent(mergeFromDb(c.data as Partial<SiteContent> | null));
       setSavedAt(new Date().toLocaleTimeString("ar"));
+
     } catch (e) {
       alert(e instanceof Error ? e.message : "فشل الحفظ");
     } finally {

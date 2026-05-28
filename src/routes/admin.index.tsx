@@ -29,29 +29,49 @@ function AdminPage() {
 
   const token = useMemo(() => (typeof window !== "undefined" ? localStorage.getItem("faii_admin_token") : null), []);
 
+  const mergeFromDb = (remote: Partial<SiteContent> | null | undefined): SiteContent => {
+    if (!remote) return defaultContent;
+    return {
+      hero: { ...defaultContent.hero, ...(remote.hero ?? {}) },
+      about: { ...defaultContent.about, ...(remote.about ?? {}) },
+      contact: { ...defaultContent.contact, ...(remote.contact ?? {}) },
+      showreelUrl: remote.showreelUrl || defaultContent.showreelUrl,
+      stats: remote.stats?.length ? remote.stats : defaultContent.stats,
+      services: remote.services?.length ? remote.services : defaultContent.services,
+      portfolio: remote.portfolio?.length ? remote.portfolio : defaultContent.portfolio,
+      clients: remote.clients?.length ? remote.clients : defaultContent.clients,
+    };
+  };
+
   useEffect(() => {
     (async () => {
       if (!token) { navigate({ to: "/admin/login" }); return; }
       const v = await verify({ data: { token } });
       if (!v.valid) { localStorage.removeItem("faii_admin_token"); navigate({ to: "/admin/login" }); return; }
       const c = await fetchContent();
-      if (c.data) setContent({ ...defaultContent, ...(c.data as Partial<SiteContent>) } as SiteContent);
+      setContent(mergeFromDb(c.data as Partial<SiteContent> | null));
       setReady(true);
     })();
   }, []);
+
 
   const onSave = async () => {
     if (!token) return;
     setSaving(true);
     try {
       await saveContent({ data: { token, data: content } });
+      // Re-fetch from DB to confirm persistence and reflect source of truth
+      const c = await fetchContent();
+      setContent(mergeFromDb(c.data as Partial<SiteContent> | null));
       setSavedAt(new Date().toLocaleTimeString("ar"));
+
     } catch (e) {
       alert(e instanceof Error ? e.message : "فشل الحفظ");
     } finally {
       setSaving(false);
     }
   };
+
 
   const onLogout = async () => {
     if (token) await logout({ data: { token } });

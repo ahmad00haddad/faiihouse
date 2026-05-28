@@ -37,9 +37,12 @@ export function useSiteContent(): SiteContent {
   const { data } = useQuery({
     queryKey: KEY,
     queryFn: fetchSiteContent,
-    staleTime: 30_000,
-    initialData: defaultContent,
+    staleTime: 10_000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    placeholderData: defaultContent,
   });
+
 
   useEffect(() => {
     const channel = supabase

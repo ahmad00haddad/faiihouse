@@ -143,7 +143,7 @@ function HomePage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-border rounded-3xl overflow-hidden">
             {services.map((s, i) => (
               <Reveal key={s.title} delay={i * 60}>
-                <div className="group h-full bg-surface p-8 hover:bg-surface-elevated transition-all duration-500">
+                <div className="grain-card group h-full bg-surface p-8 hover:bg-surface-elevated transition-all duration-500">
                   <div className="text-5xl font-display text-primary/40 group-hover:text-primary transition-colors">
                     {String(i + 1).padStart(2, "0")}
                   </div>
@@ -178,7 +178,7 @@ function HomePage() {
                   href={p.behance ?? "https://www.behance.net/faiihouse"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block group relative aspect-[4/5] rounded-2xl overflow-hidden"
+                  className="grain-card block group relative aspect-[4/5] rounded-2xl overflow-hidden"
                 >
                   <img src={p.image} alt={p.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-80" />

@@ -45,6 +45,9 @@ function AdminPage() {
     setSaving(true);
     try {
       await saveContent({ data: { token, data: content } });
+      // Re-fetch from DB to confirm persistence and reflect source of truth
+      const c = await fetchContent();
+      if (c.data) setContent({ ...defaultContent, ...(c.data as Partial<SiteContent>) } as SiteContent);
       setSavedAt(new Date().toLocaleTimeString("ar"));
     } catch (e) {
       alert(e instanceof Error ? e.message : "فشل الحفظ");
@@ -52,6 +55,7 @@ function AdminPage() {
       setSaving(false);
     }
   };
+
 
   const onLogout = async () => {
     if (token) await logout({ data: { token } });

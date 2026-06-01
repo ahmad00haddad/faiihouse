@@ -114,10 +114,13 @@
   .grain {
     position: relative;
   }
+  .grain {
+    overflow: hidden;
+  }
   .grain::after {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: -10%;
     pointer-events: none;
     z-index: 2;
     background-image:

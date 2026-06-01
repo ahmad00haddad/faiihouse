@@ -121,7 +121,7 @@ export const SHOWREEL_URL = "https://www.youtube.com/watch?v=yB-VOx0gS54";
 // Default content shape — used as fallback when no Cloud content has been saved yet
 // and as the seed structure for the admin editor.
 export type SiteContent = {
-  hero: { kicker: string; title1: string; titleHighlight: string; subtitle: string };
+  hero: { kicker: string; title1: string; titleHighlight: string; tagline: string; subtitle: string };
   about: { title: string; body: string; goals: string; ambition: string };
   stats: { value: string; label: string }[];
   contact: { phone: string; email: string; address: string; instagram: string; facebook: string; linkedin: string; behance: string };
@@ -136,6 +136,7 @@ export const defaultContent: SiteContent = {
     kicker: "CINEMATIC PRODUCTION · EST. IRBID",
     title1: "نروي",
     titleHighlight: "الحكاية",
+    tagline: "كما تتراءى في مخيّلتنا",
     subtitle:
       "فَيّ هاوس — شركة إنتاج سينمائي من إربد، فريق وأصدقاء من الشباب نُترجم الأفكار إلى صور تتنفّس، وأصوات تترك أثرًا، ولقطات تظلّ في الذاكرة.",
   },

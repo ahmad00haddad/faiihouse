@@ -134,7 +134,7 @@
 
   .film-grain-global {
     position: fixed;
-    inset: 0;
+    inset: -10%;
     pointer-events: none;
     z-index: 60;
     opacity: 0.06;

@@ -192,6 +192,7 @@ function HeroEditor({ content, setContent }: { content: SiteContent; setContent:
       <Field label="نص علوي صغير (Kicker)" value={h.kicker} onChange={(v) => set({ kicker: v })} />
       <Field label="السطر الأول" value={h.title1} onChange={(v) => set({ title1: v })} />
       <Field label="الكلمة المُبرَزة" value={h.titleHighlight} onChange={(v) => set({ titleHighlight: v })} />
+      <Field label="السطر الثاني (التاغ لاين)" value={h.tagline ?? ""} onChange={(v) => set({ tagline: v })} />
       <Field label="الوصف" value={h.subtitle} onChange={(v) => set({ subtitle: v })} textarea />
       <Field label="رابط الشوريل (YouTube)" value={content.showreelUrl} onChange={(v) => setContent({ ...content, showreelUrl: v })} />
     </div>

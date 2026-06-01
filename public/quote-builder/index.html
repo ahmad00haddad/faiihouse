@@ -34,8 +34,8 @@ body{background:var(--dark);color:var(--text);font-family:'SFMada','Inter',sans-
 /* HEADER */
 .header{background:rgba(12,13,15,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .logo-wrap{display:flex;align-items:center;gap:12px;}
-.logo-icon{width:38px;height:38px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.logo-icon svg{width:20px;height:20px;fill:#0c0d0f;}
+.logo-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-icon img{width:100%;height:100%;object-fit:contain;display:block;}
 .logo-text .name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text);}
 .logo-text .sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
 .header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
@@ -386,7 +386,7 @@ textarea{resize:vertical;min-height:70px;}
   <div class="header">
     <div class="logo-wrap">
       <div class="logo-icon" onclick="handleLogoClick()" style="cursor:pointer;" title="">
-        <svg viewBox="0 0 24 24" stroke="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <img src="logo-white.png" alt="Faii House">
       </div>
       <div class="logo-text">
         <div class="name">Faii House</div>
@@ -1084,7 +1084,6 @@ function renderTypeGrid() {
     <div class="type-card ${state.projectType===t.id?'sel':''}" onclick="selectType('${t.id}')">
       <span class="type-icon">${t.icon}</span>
       <div class="type-name">${L(t.ar, t.name)}</div>
-      <div class="type-range">${t.range}</div>
     </div>`).join('');
 }
 

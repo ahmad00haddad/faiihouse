@@ -27,10 +27,10 @@ const filters: { id: PortCategory; label: string }[] = [
 function PortfolioPage() {
   const { portfolio } = useSiteContent();
   const [active, setActive] = useState<PortCategory>("all");
-  const items = useMemo(
-    () => (active === "all" ? portfolio : portfolio.filter((p) => p.category === active)),
-    [active, portfolio],
-  );
+  const items = useMemo(() => {
+    const reversed = [...portfolio].reverse();
+    return active === "all" ? reversed : reversed.filter((p) => p.category === active);
+  }, [active, portfolio]);
 
   return (
     <div className="min-h-screen bg-background">

@@ -52,7 +52,7 @@ export default function CountUp({
           }
         });
       },
-      { threshold: 0.4 },
+      { threshold: 0.6, rootMargin: "0px 0px -10% 0px" },
     );
     obs.observe(el);
     return () => obs.disconnect();

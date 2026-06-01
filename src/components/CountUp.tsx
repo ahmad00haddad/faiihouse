@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
  */
 export default function CountUp({
   value,
-  duration = 1600,
+  duration = 2800,
   className = "",
 }: {
   value: string;

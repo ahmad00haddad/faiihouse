@@ -4,6 +4,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
 import SplitText from "@/components/SplitText";
+import CountUp from "@/components/CountUp";
 import { useSiteContent } from "@/hooks/use-site-content";
 import slide1 from "@/assets/faii/slide1.webp";
 import banner from "@/assets/faii/baner.webp";
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const content = useSiteContent();
   const { hero, stats, services, portfolio, clients, showreelUrl } = content;
-  const featured = portfolio.slice(0, 6);
+  const featured = [...portfolio].reverse().slice(0, 6);
 
   return (
     <div className="min-h-screen bg-background">
@@ -30,7 +31,7 @@ function HomePage() {
       {/* HERO */}
       <section className="relative min-h-screen flex items-center overflow-hidden grain vignette">
         <div className="absolute inset-0">
-          <img src={slide1} alt="" className="w-full h-full object-cover scale-105 flicker" />
+          <img src={slide1} alt="" className="w-full h-full object-cover scale-105" />
           <div className="absolute inset-0 bg-gradient-to-l from-background/40 via-background/70 to-background" />
           <div className="absolute inset-0 bg-fade-bottom" />
         </div>
@@ -46,7 +47,7 @@ function HomePage() {
               <SplitText text={`${hero.title1} `} as="span" />
               <SplitText text={hero.titleHighlight} as="span" className="text-primary" delay={200} />
               <br />
-              <SplitText text="كما تتراءى في مخيّلتنا" as="span" delay={500} staggerMs={28} />
+              <SplitText text={hero.tagline} as="span" delay={500} staggerMs={28} />
             </h1>
             <Reveal delay={900}>
               <p className="mt-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
@@ -117,7 +118,7 @@ function HomePage() {
           {stats.map((s, i) => (
             <Reveal key={i} delay={i * 80}>
               <div>
-                <div className="font-display text-4xl md:text-5xl text-primary">{s.value}</div>
+                <div className="font-display text-4xl md:text-5xl text-primary"><CountUp value={s.value} /></div>
                 <div className="mt-2 text-sm text-muted-foreground tracking-wide">{s.label}</div>
               </div>
             </Reveal>

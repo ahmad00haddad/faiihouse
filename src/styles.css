@@ -292,3 +292,56 @@ html.lenis, html.lenis body { height: auto; }
 }
 .grain-card:hover::before { opacity: 1; }
 
+
+/* ============ Film-cut Page Transition ============ */
+.film-cut-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+}
+.film-cut-active .film-cut-flash {
+  animation: filmFlash 180ms ease-out forwards;
+}
+@keyframes filmFlash {
+  0%   { opacity: 0; }
+  35%  { opacity: 0.92; }
+  100% { opacity: 0; }
+}
+.film-cut-sweep {
+  position: absolute;
+  inset: 0;
+  transform: translateX(101%);
+  background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.88) 18%, #000 50%, rgba(0,0,0,0.88) 82%, rgba(0,0,0,0) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 14px 0;
+}
+.film-cut-active .film-cut-sweep {
+  animation: filmSweep 520ms cubic-bezier(.7,.0,.2,1) forwards;
+}
+[dir="rtl"] .film-cut-active .film-cut-sweep {
+  animation-name: filmSweepRtl;
+}
+@keyframes filmSweep {
+  0%   { transform: translateX(-101%); }
+  100% { transform: translateX(101%); }
+}
+@keyframes filmSweepRtl {
+  0%   { transform: translateX(101%); }
+  100% { transform: translateX(-101%); }
+}
+.sprocket-row {
+  display: flex;
+  gap: 22px;
+  padding: 0 14px;
+  justify-content: space-around;
+}
+.sprocket-row span {
+  width: 22px;
+  height: 16px;
+  border-radius: 3px;
+  background: #0a0a0a;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+}

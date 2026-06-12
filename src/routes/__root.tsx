@@ -67,6 +67,32 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico" },
+      { rel: "canonical", href: "https://faiihouse.lovable.app/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "@id": "https://faiihouse.lovable.app/#business",
+          name: "Faii House",
+          alternateName: "فَيّ هاوس",
+          description:
+            "شركة إنتاج سينمائي من إربد، الأردن — أفلام، إعلانات سينمائية، وثائقيات وتلوين سينمائي.",
+          url: "https://faiihouse.lovable.app",
+          image: "https://faiihouse.lovable.app/favicon.ico",
+          telephone: "+962-7-0000-0000",
+          priceRange: "$$",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Irbid",
+            addressCountry: "JO",
+          },
+          areaServed: "JO",
+          sameAs: ["https://www.behance.net/faiihouse"],
+        }),
+      },
     ],
   }),
   shellComponent: RootShell,

@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-router";
 
 import SmoothScroll from "@/components/SmoothScroll";
+import PageTransition from "@/components/PageTransition";
+import MagneticCursor from "@/components/MagneticCursor";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -92,6 +94,8 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <SmoothScroll />
+      <MagneticCursor />
+      <PageTransition />
       <Outlet />
     </QueryClientProvider>
   );

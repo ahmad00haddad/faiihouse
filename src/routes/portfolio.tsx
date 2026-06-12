@@ -114,15 +114,15 @@ function PortfolioPage() {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent opacity-90 z-[1]" />
-                  <div className="absolute top-4 left-4 w-9 h-9 rounded-full bg-primary/90 text-primary-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-y-2 group-hover:translate-y-0 transition-all">
+                  <div className="absolute top-4 left-4 z-[2] w-9 h-9 rounded-full bg-primary/90 text-primary-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-y-2 group-hover:translate-y-0 transition-all">
                     <ExternalLink size={14} />
                   </div>
-                  <div className="absolute bottom-0 inset-x-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform">
+                  <div className="absolute bottom-0 inset-x-0 z-[2] p-5 translate-y-2 group-hover:translate-y-0 transition-transform">
                     <div className="text-xs tracking-[0.25em] text-primary uppercase">{p.category}</div>
                     <div className="mt-1 text-lg text-foreground">{p.title}</div>
                   </div>
-                  <div className="absolute top-0 inset-x-0 h-2 film-strip translate-y-[-100%] group-hover:translate-y-0 transition-transform duration-500" />
-                  <div className="absolute bottom-0 inset-x-0 h-2 film-strip translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500" />
+                  <div className="absolute top-0 inset-x-0 z-[2] h-2 film-strip translate-y-[-100%] group-hover:translate-y-0 transition-transform duration-500" />
+                  <div className="absolute bottom-0 inset-x-0 z-[2] h-2 film-strip translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500" />
                 </a>
               </Reveal>
             ))}

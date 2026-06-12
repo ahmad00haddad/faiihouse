@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { defaultContent, type SiteContent } from "@/data/site";
 
 const KEY = ["site-content"];
+const LS_KEY = "faii_site_content_cache_v1";
 
 function mergeContent(remote: Partial<SiteContent> | null | undefined): SiteContent {
   if (!remote) return defaultContent;
@@ -19,6 +20,22 @@ function mergeContent(remote: Partial<SiteContent> | null | undefined): SiteCont
   };
 }
 
+function readCache(): SiteContent | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return null;
+    return mergeContent(JSON.parse(raw) as Partial<SiteContent>);
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(c: SiteContent) {
+  if (typeof window === "undefined") return;
+  try { localStorage.setItem(LS_KEY, JSON.stringify(c)); } catch { /* noop */ }
+}
+
 async function fetchSiteContent(): Promise<SiteContent> {
   const { data, error } = await supabase
     .from("site_content")
@@ -27,20 +44,25 @@ async function fetchSiteContent(): Promise<SiteContent> {
     .maybeSingle();
   if (error) {
     console.error("[site-content] fetch error", error);
-    return defaultContent;
+    return readCache() ?? defaultContent;
   }
-  return mergeContent(data?.data as Partial<SiteContent> | null);
+  const merged = mergeContent(data?.data as Partial<SiteContent> | null);
+  writeCache(merged);
+  return merged;
 }
 
 export function useSiteContent(): SiteContent {
   const qc = useQueryClient();
+  const initial = readCache() ?? defaultContent;
   const { data } = useQuery({
     queryKey: KEY,
     queryFn: fetchSiteContent,
     staleTime: 10_000,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
-    placeholderData: defaultContent,
+    placeholderData: initial,
+    initialData: typeof window !== "undefined" ? (readCache() ?? undefined) : undefined,
+    initialDataUpdatedAt: 0,
   });
 
 

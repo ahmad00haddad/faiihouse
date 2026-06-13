@@ -1,61 +1,37 @@
-import { useMemo, useState } from "react";
-import { Calculator, ArrowLeft, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { Sparkles, ArrowLeft } from "lucide-react";
 
 /**
- * Mini budget calculator widget.
- * Maps a budget + duration to a suggested project type, then deep-links into
- * the full quote builder with state pre-filled via localStorage.
+ * Lightweight project-type picker.
+ * No prices shown — pricing lives in the full quote builder.
+ * Deep-links into /quote-builder/ with project type + days pre-filled.
  */
 
 type TypeOpt = {
   id: string; // matches PROJECT_TYPES id in /quote-builder/index.html
   icon: string;
   ar: string;
-  min: number;
-  max: number;
-  defaultDays: number;
 };
 
 const TYPES: TypeOpt[] = [
-  { id: "reels",       icon: "📱", ar: "ريلز انستغرام",    min: 100,  max: 250,  defaultDays: 1 },
-  { id: "interview",   icon: "🎙", ar: "مقابلة / بودكاست", min: 300,  max: 800,  defaultDays: 1 },
-  { id: "event",       icon: "🎤", ar: "تغطية فعالية",     min: 300,  max: 1500, defaultDays: 1 },
-  { id: "photovideo",  icon: "📷", ar: "صور + فيديو",      min: 500,  max: 2500, defaultDays: 1 },
-  { id: "corporate",   icon: "🏢", ar: "فيديو مؤسسي",      min: 600,  max: 2000, defaultDays: 2 },
-  { id: "documentary", icon: "🎥", ar: "فيلم وثائقي",      min: 600,  max: 3000, defaultDays: 3 },
-  { id: "commercial",  icon: "📺", ar: "إعلان تجاري",      min: 800,  max: 4000, defaultDays: 2 },
-  { id: "shortfilm",   icon: "🎞", ar: "فيلم قصير",        min: 800,  max: 3800, defaultDays: 3 },
+  { id: "reels",       icon: "📱", ar: "ريلز انستغرام" },
+  { id: "interview",   icon: "🎙", ar: "مقابلة / بودكاست" },
+  { id: "event",       icon: "🎤", ar: "تغطية فعالية" },
+  { id: "photovideo",  icon: "📷", ar: "صور + فيديو" },
+  { id: "corporate",   icon: "🏢", ar: "فيديو مؤسسي" },
+  { id: "documentary", icon: "🎥", ar: "فيلم وثائقي" },
+  { id: "commercial",  icon: "📺", ar: "إعلان تجاري" },
+  { id: "shortfilm",   icon: "🎞", ar: "فيلم قصير" },
 ];
 
-const MIN_BUDGET = 100;
-const MAX_BUDGET = 5000;
 const LS_KEY = "faii_house_state";
 
-function fmt(n: number) {
-  return n.toLocaleString("en-US");
-}
-
-function suggestType(budget: number): TypeOpt {
-  // Prefer types whose range contains the budget; pick the one whose midpoint is closest.
-  const inRange = TYPES.filter((t) => budget >= t.min && budget <= t.max);
-  const pool = inRange.length ? inRange : TYPES;
-  return pool.reduce((best, t) => {
-    const mid = (t.min + t.max) / 2;
-    const bestMid = (best.min + best.max) / 2;
-    return Math.abs(budget - mid) < Math.abs(budget - bestMid) ? t : best;
-  });
-}
-
 export default function BudgetCalculatorWidget() {
-  const [budget, setBudget] = useState(800);
+  const [typeId, setTypeId] = useState<string>("corporate");
   const [days, setDays] = useState(1);
-
-  const suggested = useMemo(() => suggestType(budget), [budget]);
-  const fits = budget >= suggested.min && budget <= suggested.max;
 
   const openBuilder = () => {
     try {
-      // Read existing saved state (if any) so we don't wipe the user's other progress.
       let saved: { state?: Record<string, unknown>; lang?: string } = {};
       try {
         const raw = localStorage.getItem(LS_KEY);
@@ -65,7 +41,7 @@ export default function BudgetCalculatorWidget() {
       const nextState = {
         ...(saved.state ?? {}),
         step: 1,
-        projectType: suggested.id,
+        projectType: typeId,
         days,
       };
       localStorage.setItem(
@@ -78,71 +54,68 @@ export default function BudgetCalculatorWidget() {
     }
   };
 
-  const pct = ((budget - MIN_BUDGET) / (MAX_BUDGET - MIN_BUDGET)) * 100;
-
   return (
     <div className="relative overflow-hidden rounded-3xl border border-border bg-surface p-8 md:p-12">
-      {/* Glow */}
       <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-primary/5 blur-3xl" />
 
-      <div className="relative grid gap-10 lg:grid-cols-2 lg:items-center">
-        {/* Left — controls */}
-        <div>
-          <div className="mb-3 flex items-center gap-2 text-xs tracking-[0.35em] text-primary">
-            <Calculator size={14} />
-            <span>— BUDGET ESTIMATOR</span>
-          </div>
-          <h3 className="font-display text-3xl md:text-4xl text-foreground leading-tight">
-            كم سيكلّفك مشروعك؟
-          </h3>
-          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-            حرّك الميزانية وعدد أيام التصوير — نقترح عليك نوع المشروع الأنسب، ثم ننقلك للحاسبة الكاملة بكل التفاصيل.
-          </p>
+      <div className="relative">
+        <div className="mb-3 flex items-center gap-2 text-xs tracking-[0.35em] text-primary">
+          <Sparkles size={14} />
+          <span>— PROJECT ESTIMATOR</span>
+        </div>
+        <h3 className="font-display text-3xl md:text-4xl text-foreground leading-tight">
+          ابدأ تسعيرة مشروعك
+        </h3>
+        <p className="mt-3 max-w-2xl text-sm text-muted-foreground leading-relaxed">
+          اختر نوع المشروع وعدد أيام التصوير، ثم انتقل إلى الحاسبة التفصيلية لرؤية السعر الحقيقي مع كل التفاصيل — معدات، طاقم، ما بعد الإنتاج وأكثر.
+        </p>
 
-          {/* Budget slider */}
-          <div className="mt-8">
-            <div className="flex items-baseline justify-between">
-              <label className="text-xs tracking-[0.25em] text-muted-foreground">
-                الميزانية التقريبية
-              </label>
-              <div className="font-display text-2xl text-primary tabular-nums">
-                {fmt(budget)} <span className="text-sm text-muted-foreground">JD</span>
-              </div>
-            </div>
-            <input
-              type="range"
-              min={MIN_BUDGET}
-              max={MAX_BUDGET}
-              step={50}
-              value={budget}
-              onChange={(e) => setBudget(Number(e.target.value))}
-              className="mt-3 w-full accent-primary"
-              aria-label="Budget"
-              style={{
-                background: `linear-gradient(to left, hsl(var(--primary) / 0.6) ${pct}%, hsl(var(--border)) ${pct}%)`,
-                height: 4,
-                borderRadius: 9999,
-                appearance: "none",
-              }}
-            />
-            <div className="mt-2 flex justify-between text-[10px] tracking-widest text-muted-foreground">
-              <span>{fmt(MIN_BUDGET)} JD</span>
-              <span>{fmt(MAX_BUDGET)}+ JD</span>
-            </div>
+        {/* Type grid */}
+        <div className="mt-8">
+          <div className="mb-3 text-xs tracking-[0.25em] text-muted-foreground">
+            نوع المشروع
           </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
+            {TYPES.map((t) => {
+              const active = typeId === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setTypeId(t.id)}
+                  className={`group relative rounded-2xl border px-3 py-4 text-center transition-all ${
+                    active
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-background/60 hover:border-primary/40"
+                  }`}
+                >
+                  <div className="text-2xl leading-none">{t.icon}</div>
+                  <div
+                    className={`mt-2 text-sm ${
+                      active ? "text-primary" : "text-foreground"
+                    }`}
+                  >
+                    {t.ar}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-          {/* Days */}
-          <div className="mt-6">
-            <div className="flex items-baseline justify-between">
-              <label className="text-xs tracking-[0.25em] text-muted-foreground">
+        {/* Days */}
+        <div className="mt-6 grid gap-6 md:grid-cols-2 md:items-end">
+          <div>
+            <div className="mb-3 flex items-baseline justify-between">
+              <span className="text-xs tracking-[0.25em] text-muted-foreground">
                 أيام التصوير
-              </label>
-              <div className="font-display text-xl text-foreground tabular-nums">
+              </span>
+              <span className="font-display text-xl text-foreground tabular-nums">
                 {days} {days === 1 ? "يوم" : "أيام"}
-              </div>
+              </span>
             </div>
-            <div className="mt-3 grid grid-cols-5 gap-2">
+            <div className="grid grid-cols-5 gap-2">
               {[1, 2, 3, 4, 5].map((d) => (
                 <button
                   key={d}
@@ -159,51 +132,14 @@ export default function BudgetCalculatorWidget() {
               ))}
             </div>
           </div>
-        </div>
-
-        {/* Right — suggestion */}
-        <div className="rounded-2xl border border-border bg-background/60 backdrop-blur p-6 md:p-8">
-          <div className="flex items-center gap-2 text-[11px] tracking-[0.3em] text-primary">
-            <Sparkles size={12} />
-            <span>اقتراحنا لك</span>
-          </div>
-
-          <div className="mt-4 flex items-start gap-4">
-            <div className="text-5xl leading-none">{suggested.icon}</div>
-            <div className="flex-1">
-              <div className="font-display text-2xl text-foreground">{suggested.ar}</div>
-              <div className="mt-1 text-sm text-muted-foreground">
-                النطاق المعتاد: {fmt(suggested.min)} – {fmt(suggested.max)} JD
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-5 rounded-xl border border-border bg-surface/60 p-4 text-sm">
-            {fits ? (
-              <span className="text-foreground">
-                ميزانيتك ضمن النطاق المتوقع لهذا النوع — جاهز للانطلاق.
-              </span>
-            ) : budget < suggested.min ? (
-              <span className="text-muted-foreground">
-                ميزانيتك أقل قليلاً من النطاق المعتاد. يمكننا تخصيص باقة مناسبة — افتح الحاسبة لتعديل التفاصيل.
-              </span>
-            ) : (
-              <span className="text-muted-foreground">
-                ميزانيتك أعلى من النطاق المعتاد — مساحة جيدة لرفع جودة المعدات والطاقم.
-              </span>
-            )}
-          </div>
 
           <button
             type="button"
             onClick={openBuilder}
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-primary px-7 py-3.5 text-primary-foreground font-medium hover:shadow-glow transition-all"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-primary px-7 py-3.5 text-primary-foreground font-medium hover:shadow-glow transition-all"
           >
             افتح الحاسبة التفصيلية <ArrowLeft size={18} />
           </button>
-          <p className="mt-3 text-center text-[11px] text-muted-foreground">
-            * الأرقام تقديرية. السعر النهائي يعتمد على المعدات والطاقم والموقع.
-          </p>
         </div>
       </div>
     </div>

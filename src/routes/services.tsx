@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
+import BudgetCalculatorWidget from "@/components/BudgetCalculatorWidget";
 import { useSiteContent } from "@/hooks/use-site-content";
 import { Film, Megaphone, Palette, Camera, Lightbulb, Music, ArrowLeft, type LucideIcon } from "lucide-react";
 
@@ -63,6 +64,14 @@ function ServicesPage() {
               </Reveal>
             );
           })}
+        </div>
+      </section>
+
+      <section className="py-20 px-6 lg:px-10 border-t border-border">
+        <div className="max-w-7xl mx-auto">
+          <Reveal>
+            <BudgetCalculatorWidget />
+          </Reveal>
         </div>
       </section>
 

@@ -129,12 +129,18 @@ function AdminPage() {
   );
 }
 
-function Field({ label, value, onChange, textarea }: { label: string; value: string; onChange: (v: string) => void; textarea?: boolean }) {
+function Field({ label, value, onChange, textarea, options }: { label: string; value: string; onChange: (v: string) => void; textarea?: boolean; options?: { value: string; label: string }[] }) {
   const isImage = /صورة|لوغو|logo|image|avatar/i.test(label);
   return (
     <label className="block space-y-1">
       <span className="text-xs text-muted-foreground">{label}</span>
-      {textarea ? (
+      {options ? (
+        <select value={value} onChange={(e) => onChange(e.target.value)} className="w-full bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary">
+          {options.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+      ) : textarea ? (
         <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={4} className="w-full bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary" />
       ) : (
         <div className="flex gap-2 items-stretch">

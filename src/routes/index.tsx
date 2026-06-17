@@ -114,15 +114,26 @@ function HomePage() {
 
       {/* STATS */}
       <section className="border-y border-border bg-surface/40">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((s, i) => (
-            <Reveal key={i} delay={i * 80}>
-              <div>
-                <div className="font-display text-4xl md:text-5xl text-primary"><CountUp value={s.value} /></div>
-                <div className="mt-2 text-sm text-muted-foreground tracking-wide">{s.label}</div>
-              </div>
-            </Reveal>
-          ))}
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
+          <Reveal>
+            <div className="text-center mb-10">
+              <div className="text-xs tracking-[0.35em] text-primary mb-2">— BY THE NUMBERS</div>
+              <h2 className="font-display text-2xl md:text-3xl text-foreground">أرقام تحكي قصتنا</h2>
+            </div>
+          </Reveal>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((s, i) => (
+              <Reveal key={i} delay={i * 80}>
+                <div className="group">
+                  <div className="font-display text-4xl md:text-5xl text-primary"><CountUp value={s.value} /></div>
+                  <div className="mt-2 text-sm text-foreground tracking-wide">{s.label}</div>
+                  {s.hint && (
+                    <div className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{s.hint}</div>
+                  )}
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -15,15 +15,36 @@ import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="font-display text-8xl text-primary">404</h1>
-        <h2 className="mt-4 text-xl text-foreground">المشهد غير موجود</h2>
-        <p className="mt-2 text-sm text-muted-foreground">الصفحة التي تبحث عنها انسحبت من الكادر.</p>
-        <div className="mt-6">
-          <Link to="/" className="inline-flex items-center rounded-full bg-gradient-primary px-5 py-2.5 text-sm text-primary-foreground">
+    <div className="relative flex min-h-screen items-center justify-center bg-background px-4 overflow-hidden grain vignette">
+      {/* film strips */}
+      <div className="absolute top-0 inset-x-0 h-3 film-strip opacity-60" />
+      <div className="absolute bottom-0 inset-x-0 h-3 film-strip opacity-60" />
+      {/* glow */}
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] bg-primary/10 blur-3xl rounded-full pointer-events-none" />
+
+      <div className="relative max-w-xl text-center">
+        <div className="inline-flex items-center gap-3 text-xs tracking-[0.4em] text-primary mb-6">
+          <span className="w-8 h-px bg-primary" /> SCENE MISSING <span className="w-8 h-px bg-primary" />
+        </div>
+        <h1 className="font-display text-[7rem] md:text-[10rem] leading-none text-primary drop-shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+          404
+        </h1>
+        <h2 className="mt-2 font-display text-2xl md:text-3xl text-foreground">
+          هذا المشهد لم يُصوَّر بعد.
+        </h2>
+        <p className="mt-4 text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+          يبدو أن اللقطة التي تبحث عنها خرجت من الكادر. لنعد إلى البداية ونلتقط مشهداً جديداً.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link to="/" className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-6 py-3 text-sm text-primary-foreground hover:shadow-glow transition-all">
             العودة للرئيسية
           </Link>
+          <Link to="/portfolio" className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm text-foreground hover:border-primary hover:text-primary transition-all">
+            تصفّح أعمالنا
+          </Link>
+        </div>
+        <div className="mt-12 text-[10px] tracking-[0.5em] text-muted-foreground/60">
+          FAII HOUSE · TAKE 404
         </div>
       </div>
     </div>

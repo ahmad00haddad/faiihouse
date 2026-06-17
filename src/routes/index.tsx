@@ -95,6 +95,14 @@ function HomePage() {
                   </div>
                 </div>
               </a>
+              <a
+                href="/quote-builder/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 block text-center rounded-2xl border border-primary/40 px-5 py-3 text-sm text-primary hover:bg-primary/10 transition-all"
+              >
+                احسب تكلفة مشروعك ←
+              </a>
             </Reveal>
           </div>
         </div>

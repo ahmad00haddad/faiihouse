@@ -239,7 +239,7 @@ function ListEditor<T extends Record<string, string>>({
 }: {
   items: T[];
   setItems: (v: T[]) => void;
-  fields: { k: keyof T & string; l: string; textarea?: boolean }[];
+  fields: { k: keyof T & string; l: string; textarea?: boolean; options?: { value: string; label: string }[] }[];
   blank: T;
 }) {
   return (
@@ -251,7 +251,7 @@ function ListEditor<T extends Record<string, string>>({
             <Trash2 size={16} />
           </button>
           {fields.map((f) => (
-            <Field key={f.k} label={f.l} value={String(it[f.k] ?? "")} textarea={f.textarea}
+            <Field key={f.k} label={f.l} value={String(it[f.k] ?? "")} textarea={f.textarea} options={f.options}
               onChange={(v) => {
                 const next = [...items];
                 next[idx] = { ...next[idx], [f.k]: v };

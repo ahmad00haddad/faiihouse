@@ -55,21 +55,13 @@ function HomePage() {
               </p>
             </Reveal>
             <Reveal delay={1050}>
-              <div className="mt-10 flex flex-wrap gap-4">
-                <Link to="/portfolio" className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary px-7 py-3.5 text-primary-foreground font-medium hover:shadow-glow transition-all">
-                  شاهد أعمالنا
+              <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <Link to="/contact" className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary px-8 py-4 text-primary-foreground font-medium hover:shadow-glow transition-all">
+                  <Play size={16} /> ابدأ مشروعك
                   <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
                 </Link>
-                <a
-                  href="/quote-builder/index.html"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-primary/50 px-7 py-3.5 text-primary hover:bg-primary/10 transition-all"
-                >
-                  احسب تسعيرة مشروعك
-                </a>
-                <Link to="/contact" className="inline-flex items-center gap-2 rounded-full border border-border px-7 py-3.5 text-foreground hover:border-primary hover:text-primary transition-all">
-                  <Play size={16} /> ابدأ مشروعك
+                <Link to="/portfolio" className="story-link text-sm text-foreground/80 hover:text-primary transition-colors">
+                  شاهد أعمالنا ←
                 </Link>
               </div>
             </Reveal>

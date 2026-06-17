@@ -119,10 +119,10 @@ function AdminPage() {
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-4">
         {tab === "hero" && <HeroEditor content={content} setContent={setContent} />}
         {tab === "about" && <AboutEditor content={content} setContent={setContent} />}
-        {tab === "stats" && <ListEditor items={content.stats} setItems={(stats) => setContent({ ...content, stats })} fields={[{ k: "value", l: "القيمة" }, { k: "label", l: "الوصف" }]} blank={{ value: "", label: "" }} />}
+        {tab === "stats" && <ListEditor items={content.stats} setItems={(stats) => setContent({ ...content, stats })} fields={[{ k: "value", l: "القيمة" }, { k: "label", l: "الوصف" }, { k: "hint", l: "السياق (سطر تفسيري صغير)" }]} blank={{ value: "", label: "", hint: "" }} />}
         {tab === "contact" && <ContactEditor content={content} setContent={setContent} />}
         {tab === "services" && <ListEditor items={content.services} setItems={(services) => setContent({ ...content, services })} fields={[{ k: "title", l: "العنوان" }, { k: "desc", l: "الوصف", textarea: true }]} blank={{ title: "", desc: "" }} />}
-        {tab === "portfolio" && <ListEditor items={content.portfolio} setItems={(portfolio) => setContent({ ...content, portfolio: portfolio as SiteContent["portfolio"] })} fields={[{ k: "title", l: "العنوان" }, { k: "image", l: "رابط الصورة" }, { k: "category", l: "التصنيف (film/documentary/ads)" }, { k: "behance", l: "رابط Behance" }]} blank={{ title: "", image: "", category: "film", behance: "" }} />}
+        {tab === "portfolio" && <ListEditor items={content.portfolio} setItems={(portfolio) => setContent({ ...content, portfolio: portfolio as SiteContent["portfolio"] })} fields={[{ k: "title", l: "العنوان" }, { k: "image", l: "رابط الصورة" }, { k: "category", l: "التصنيف", options: [{ value: "film", label: "فيلم" }, { value: "documentary", label: "وثائقي" }, { value: "ads", label: "إعلان" }] }, { k: "behance", l: "رابط Behance" }]} blank={{ title: "", image: "", category: "film", behance: "" }} />}
         {tab === "clients" && <ListEditor items={content.clients} setItems={(clients) => setContent({ ...content, clients })} fields={[{ k: "name", l: "الاسم" }, { k: "image", l: "رابط اللوغو" }]} blank={{ name: "", image: "" }} />}
       </main>
     </div>

@@ -123,7 +123,7 @@ export const SHOWREEL_URL = "https://www.youtube.com/watch?v=yB-VOx0gS54";
 export type SiteContent = {
   hero: { kicker: string; title1: string; titleHighlight: string; tagline: string; subtitle: string };
   about: { title: string; body: string; goals: string; ambition: string };
-  stats: { value: string; label: string }[];
+  stats: { value: string; label: string; hint?: string }[];
   contact: { phone: string; email: string; address: string; instagram: string; facebook: string; linkedin: string; behance: string };
   showreelUrl: string;
   services: { title: string; desc: string }[];
@@ -149,10 +149,10 @@ export const defaultContent: SiteContent = {
       "أن نصبح من أبرز شركات الإنتاج السينمائي في المنطقة، وأن ندعم الجيل الجديد من صنّاع الصورة ليجدوا بيتًا حقيقيًا لمواهبهم.",
   },
   stats: [
-    { value: "+300", label: "مشروع منجز" },
-    { value: "+140", label: "علامة تجارية" },
-    { value: "+8", label: "سنوات من الإبداع" },
-    { value: "100%", label: "شغف بالحرفة" },
+    { value: "+300", label: "مشروع منجز", hint: "أفلام، إعلانات ووثائقيات سُلّمت للعملاء" },
+    { value: "+140", label: "علامة تجارية", hint: "محلية وإقليمية وثقت بنا منذ 2017" },
+    { value: "+8", label: "سنوات من الإبداع", hint: "خبرة متواصلة في صناعة الصورة" },
+    { value: "100%", label: "شغف بالحرفة", hint: "نعامل كل مشروع كأنه فيلمنا الأول" },
   ],
   contact: {
     phone: "+962 79 925 6345",

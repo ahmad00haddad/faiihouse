@@ -119,22 +119,28 @@ function AdminPage() {
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-4">
         {tab === "hero" && <HeroEditor content={content} setContent={setContent} />}
         {tab === "about" && <AboutEditor content={content} setContent={setContent} />}
-        {tab === "stats" && <ListEditor items={content.stats} setItems={(stats) => setContent({ ...content, stats })} fields={[{ k: "value", l: "القيمة" }, { k: "label", l: "الوصف" }]} blank={{ value: "", label: "" }} />}
+        {tab === "stats" && <ListEditor items={content.stats} setItems={(stats) => setContent({ ...content, stats })} fields={[{ k: "value", l: "القيمة" }, { k: "label", l: "الوصف" }, { k: "hint", l: "السياق (سطر تفسيري صغير)" }]} blank={{ value: "", label: "", hint: "" }} />}
         {tab === "contact" && <ContactEditor content={content} setContent={setContent} />}
         {tab === "services" && <ListEditor items={content.services} setItems={(services) => setContent({ ...content, services })} fields={[{ k: "title", l: "العنوان" }, { k: "desc", l: "الوصف", textarea: true }]} blank={{ title: "", desc: "" }} />}
-        {tab === "portfolio" && <ListEditor items={content.portfolio} setItems={(portfolio) => setContent({ ...content, portfolio: portfolio as SiteContent["portfolio"] })} fields={[{ k: "title", l: "العنوان" }, { k: "image", l: "رابط الصورة" }, { k: "category", l: "التصنيف (film/documentary/ads)" }, { k: "behance", l: "رابط Behance" }]} blank={{ title: "", image: "", category: "film", behance: "" }} />}
+        {tab === "portfolio" && <ListEditor items={content.portfolio} setItems={(portfolio) => setContent({ ...content, portfolio: portfolio as SiteContent["portfolio"] })} fields={[{ k: "title", l: "العنوان" }, { k: "image", l: "رابط الصورة" }, { k: "category", l: "التصنيف", options: [{ value: "film", label: "فيلم" }, { value: "documentary", label: "وثائقي" }, { value: "ads", label: "إعلان" }] }, { k: "behance", l: "رابط Behance" }]} blank={{ title: "", image: "", category: "film", behance: "" }} />}
         {tab === "clients" && <ListEditor items={content.clients} setItems={(clients) => setContent({ ...content, clients })} fields={[{ k: "name", l: "الاسم" }, { k: "image", l: "رابط اللوغو" }]} blank={{ name: "", image: "" }} />}
       </main>
     </div>
   );
 }
 
-function Field({ label, value, onChange, textarea }: { label: string; value: string; onChange: (v: string) => void; textarea?: boolean }) {
+function Field({ label, value, onChange, textarea, options }: { label: string; value: string; onChange: (v: string) => void; textarea?: boolean; options?: { value: string; label: string }[] }) {
   const isImage = /صورة|لوغو|logo|image|avatar/i.test(label);
   return (
     <label className="block space-y-1">
       <span className="text-xs text-muted-foreground">{label}</span>
-      {textarea ? (
+      {options ? (
+        <select value={value} onChange={(e) => onChange(e.target.value)} className="w-full bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary">
+          {options.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+      ) : textarea ? (
         <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={4} className="w-full bg-card border border-border rounded-lg px-3 py-2 outline-none focus:border-primary" />
       ) : (
         <div className="flex gap-2 items-stretch">
@@ -233,7 +239,7 @@ function ListEditor<T extends Record<string, string>>({
 }: {
   items: T[];
   setItems: (v: T[]) => void;
-  fields: { k: keyof T & string; l: string; textarea?: boolean }[];
+  fields: { k: keyof T & string; l: string; textarea?: boolean; options?: { value: string; label: string }[] }[];
   blank: T;
 }) {
   return (
@@ -245,7 +251,7 @@ function ListEditor<T extends Record<string, string>>({
             <Trash2 size={16} />
           </button>
           {fields.map((f) => (
-            <Field key={f.k} label={f.l} value={String(it[f.k] ?? "")} textarea={f.textarea}
+            <Field key={f.k} label={f.l} value={String(it[f.k] ?? "")} textarea={f.textarea} options={f.options}
               onChange={(v) => {
                 const next = [...items];
                 next[idx] = { ...next[idx], [f.k]: v };

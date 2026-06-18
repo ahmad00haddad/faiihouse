@@ -5,7 +5,24 @@ import { adminVerify, adminLogout } from "@/lib/admin-auth.functions";
 import { getSiteContent, updateSiteContent } from "@/lib/site-content.functions";
 import { uploadImage } from "@/lib/upload.functions";
 import { defaultContent, type SiteContent } from "@/data/site";
-import { LogOut, Save, Plus, Trash2, Upload } from "lucide-react";
+import { LogOut, Save, Plus, Trash2, Upload, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminPage,
@@ -234,32 +251,95 @@ function ContactEditor({ content, setContent }: { content: SiteContent; setConte
   );
 }
 
+type FieldDef<T> = { k: keyof T & string; l: string; textarea?: boolean; options?: { value: string; label: string }[] };
+
+function SortableRow<T extends Record<string, string>>({
+  id, item, idx, fields, onChange, onRemove,
+}: {
+  id: string;
+  item: T;
+  idx: number;
+  fields: FieldDef<T>[];
+  onChange: (k: keyof T & string, v: string) => void;
+  onRemove: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+  };
+  return (
+    <div ref={setNodeRef} style={style} className="bg-card/40 border border-border rounded-xl p-4 space-y-2 relative">
+      <div className="flex items-center gap-2 mb-1">
+        <button
+          type="button"
+          {...attributes}
+          {...listeners}
+          aria-label="سحب لإعادة الترتيب"
+          className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-primary p-1.5 rounded hover:bg-primary/10 touch-none"
+        >
+          <GripVertical size={16} />
+        </button>
+        <span className="text-xs text-muted-foreground">#{idx + 1}</span>
+        <button onClick={onRemove}
+          className="ms-auto text-destructive/70 hover:text-destructive p-1.5 rounded hover:bg-destructive/10">
+          <Trash2 size={16} />
+        </button>
+      </div>
+      {fields.map((f) => (
+        <Field key={f.k} label={f.l} value={String(item[f.k] ?? "")} textarea={f.textarea} options={f.options}
+          onChange={(v) => onChange(f.k, v)} />
+      ))}
+    </div>
+  );
+}
+
 function ListEditor<T extends Record<string, string>>({
   items, setItems, fields, blank,
 }: {
   items: T[];
   setItems: (v: T[]) => void;
-  fields: { k: keyof T & string; l: string; textarea?: boolean; options?: { value: string; label: string }[] }[];
+  fields: FieldDef<T>[];
   blank: T;
 }) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+  const ids = items.map((_, i) => `row-${i}`);
+
+  const onDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const oldIndex = ids.indexOf(String(active.id));
+    const newIndex = ids.indexOf(String(over.id));
+    if (oldIndex < 0 || newIndex < 0) return;
+    setItems(arrayMove(items, oldIndex, newIndex));
+  };
+
   return (
     <div className="space-y-3">
-      {items.map((it, idx) => (
-        <div key={idx} className="bg-card/40 border border-border rounded-xl p-4 space-y-2 relative">
-          <button onClick={() => setItems(items.filter((_, i) => i !== idx))}
-            className="absolute top-3 left-3 text-destructive/70 hover:text-destructive p-1.5 rounded hover:bg-destructive/10">
-            <Trash2 size={16} />
-          </button>
-          {fields.map((f) => (
-            <Field key={f.k} label={f.l} value={String(it[f.k] ?? "")} textarea={f.textarea} options={f.options}
-              onChange={(v) => {
+      <p className="text-xs text-muted-foreground px-1">اسحب من المقبض <GripVertical size={12} className="inline" /> لإعادة الترتيب، ثم اضغط "حفظ" أعلى الصفحة.</p>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+        <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+          {items.map((it, idx) => (
+            <SortableRow
+              key={ids[idx]}
+              id={ids[idx]}
+              item={it}
+              idx={idx}
+              fields={fields}
+              onChange={(k, v) => {
                 const next = [...items];
-                next[idx] = { ...next[idx], [f.k]: v };
+                next[idx] = { ...next[idx], [k]: v };
                 setItems(next);
-              }} />
+              }}
+              onRemove={() => setItems(items.filter((_, i) => i !== idx))}
+            />
           ))}
-        </div>
-      ))}
+        </SortableContext>
+      </DndContext>
       <button onClick={() => setItems([...items, { ...blank }])}
         className="w-full border border-dashed border-border rounded-xl py-4 text-muted-foreground hover:text-primary hover:border-primary inline-flex items-center justify-center gap-2">
         <Plus size={16} /> إضافة عنصر

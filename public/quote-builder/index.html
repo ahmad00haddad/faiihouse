@@ -859,6 +859,8 @@ function loadState() {
     const saved = JSON.parse(raw);
     if(saved.state) { state = Object.assign(DEFAULT_STATE(), saved.state); }
     if(saved.lang) { currentLang = saved.lang; }
+    // Hide reels temporarily: reset if it was the last selected type
+    if(state.projectType === 'reels') state.projectType = null;
     return true;
   } catch(e){ return false; }
 }

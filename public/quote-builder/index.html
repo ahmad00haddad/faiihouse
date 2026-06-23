@@ -1080,7 +1080,7 @@ function goStep(n) {
 // ══════════════════════════════════════════════════════════════
 function renderTypeGrid() {
   const grid = document.getElementById('typeGrid');
-  grid.innerHTML = PROJECT_TYPES.map(t=>`
+  grid.innerHTML = PROJECT_TYPES.filter(t => t.id !== 'reels').map(t=>`
     <div class="type-card ${state.projectType===t.id?'sel':''}" onclick="selectType('${t.id}')">
       <span class="type-icon">${t.icon}</span>
       <div class="type-name">${L(t.ar, t.name)}</div>

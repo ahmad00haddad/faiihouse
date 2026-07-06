@@ -53,16 +53,19 @@ async function fetchSiteContent(): Promise<SiteContent> {
 
 export function useSiteContent(): SiteContent {
   const qc = useQueryClient();
-  const initial = readCache() ?? defaultContent;
+  // Avoid hydration mismatch: first client render MUST match SSR (defaultContent).
+  // Only read localStorage cache after mount.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => { setHydrated(true); }, []);
+
   const { data } = useQuery({
     queryKey: KEY,
     queryFn: fetchSiteContent,
     staleTime: 10_000,
     refetchOnMount: "always",
     refetchOnWindowFocus: true,
-    placeholderData: initial,
-    initialData: typeof window !== "undefined" ? (readCache() ?? undefined) : undefined,
-    initialDataUpdatedAt: 0,
+    placeholderData: hydrated ? (readCache() ?? defaultContent) : defaultContent,
+    initialData: undefined,
   });
 
 
@@ -80,5 +83,5 @@ export function useSiteContent(): SiteContent {
     };
   }, [qc]);
 
-  return data ?? defaultContent;
+  return (hydrated ? (data ?? defaultContent) : defaultContent);
 }

@@ -6,6 +6,10 @@ export default function SmoothScroll() {
     if (typeof window === "undefined") return;
     // Respect users that prefer reduced motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Skip on touch/mobile — Lenis can feel janky and fights native scroll
+    if (window.matchMedia("(hover: none), (max-width: 768px)").matches) return;
+
+
 
     const lenis = new Lenis({
       duration: 1.15,

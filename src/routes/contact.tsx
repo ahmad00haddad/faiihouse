@@ -74,12 +74,12 @@ function ContactPage() {
             <Reveal delay={240}>
               <div className="flex gap-3 p-6">
                 {[
-                  { Icon: Instagram, href: contact.instagram },
-                  { Icon: Facebook, href: contact.facebook },
-                  { Icon: Linkedin, href: contact.linkedin },
-                ].map(({ Icon, href }, i) => (
-                  <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-full border border-border flex items-center justify-center text-foreground/80 hover:text-primary hover:border-primary transition-all">
-                    <Icon size={16} />
+                  { Icon: Instagram, href: contact.instagram, label: "Instagram" },
+                  { Icon: Facebook, href: contact.facebook, label: "Facebook" },
+                  { Icon: Linkedin, href: contact.linkedin, label: "LinkedIn" },
+                ].map(({ Icon, href, label }, i) => (
+                  <a key={i} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="w-11 h-11 rounded-full border border-border flex items-center justify-center text-foreground/80 hover:text-primary hover:border-primary transition-all">
+                    <Icon size={16} aria-hidden="true" />
                   </a>
                 ))}
               </div>

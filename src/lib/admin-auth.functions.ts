@@ -8,6 +8,19 @@ function randomToken() {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+// Constant-time string comparison to avoid leaking secrets via timing.
+function timingSafeEqualStr(a: string, b: string): boolean {
+  const enc = new TextEncoder();
+  const av = enc.encode(a);
+  const bv = enc.encode(b);
+  const len = Math.max(av.length, bv.length);
+  let diff = av.length ^ bv.length;
+  for (let i = 0; i < len; i++) {
+    diff |= (av[i] ?? 0) ^ (bv[i] ?? 0);
+  }
+  return diff === 0;
+}
+
 const loginSchema = z.object({
   username: z.string().min(1).max(50),
   password: z.string().min(1).max(200),
@@ -16,9 +29,15 @@ const loginSchema = z.object({
 export const adminLogin = createServerFn({ method: "POST" })
   .inputValidator((input) => loginSchema.parse(input))
   .handler(async ({ data }) => {
-    const expectedUser = process.env.ADMIN_USERNAME || "admin";
-    const expectedPass = process.env.ADMIN_PASSWORD || "admin12345";
-    if (data.username !== expectedUser || data.password !== expectedPass) {
+    const expectedUser = process.env.ADMIN_USERNAME;
+    const expectedPass = process.env.ADMIN_PASSWORD;
+    if (!expectedUser || !expectedPass) {
+      // Fail closed — never allow login with a default/empty password.
+      throw new Error("لم يتم إعداد بيانات الادمن على الخادم");
+    }
+    const userOk = timingSafeEqualStr(data.username, expectedUser);
+    const passOk = timingSafeEqualStr(data.password, expectedPass);
+    if (!userOk || !passOk) {
       throw new Error("بيانات الدخول غير صحيحة");
     }
     const token = randomToken();

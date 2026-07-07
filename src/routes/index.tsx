@@ -16,8 +16,12 @@ export const Route = createFileRoute("/")({
       { title: "Faii House — شركة إنتاج سينمائي من الأردن" },
       { name: "description", content: "فَيّ هاوس — شركة إنتاج سينمائي من إربد. أفلام، إعلانات سينمائية، وثائقيات وتلوين سينمائي." },
     ],
+    links: [
+      { rel: "preload", as: "image", href: slide1, fetchpriority: "high" },
+    ],
   }),
 });
+
 
 function HomePage() {
   const content = useSiteContent();
@@ -31,7 +35,7 @@ function HomePage() {
       {/* HERO */}
       <section className="relative min-h-screen flex items-center overflow-hidden grain vignette">
         <div className="absolute inset-0">
-          <img src={slide1} alt="" className="w-full h-full object-cover scale-105" />
+          <img src={slide1} alt="" fetchPriority="high" decoding="async" className="w-full h-full object-cover scale-105" />
           <div className="absolute inset-0 bg-gradient-to-l from-background/40 via-background/70 to-background" />
           <div className="absolute inset-0 bg-fade-bottom" />
         </div>

@@ -15,9 +15,13 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "Faii House — شركة إنتاج سينمائي من الأردن" },
       { name: "description", content: "فَيّ هاوس — شركة إنتاج سينمائي من إربد. أفلام، إعلانات سينمائية، وثائقيات وتلوين سينمائي." },
+      { property: "og:title", content: "Faii House — شركة إنتاج سينمائي من الأردن" },
+      { property: "og:description", content: "فَيّ هاوس — شركة إنتاج سينمائي من إربد. أفلام، إعلانات سينمائية، وثائقيات وتلوين سينمائي." },
+      { property: "og:url", content: "https://faiihouse.lovable.app/" },
     ],
     links: [
       { rel: "preload", as: "image", href: slide1, fetchpriority: "high" },
+      { rel: "canonical", href: "https://faiihouse.lovable.app/" },
     ],
   }),
 });

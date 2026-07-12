@@ -11,6 +11,12 @@ export const Route = createFileRoute("/jobs")({
     meta: [
       { title: "انضم لنا — Faii House" },
       { name: "description", content: "فرص العمل في فَيّ هاوس — انضم لفريق إنتاج سينمائي شغوف." },
+      { property: "og:title", content: "انضم لنا — Faii House" },
+      { property: "og:description", content: "فرص العمل في فَيّ هاوس — انضم لفريق إنتاج سينمائي شغوف." },
+      { property: "og:url", content: "https://faiihouse.lovable.app/jobs" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://faiihouse.lovable.app/jobs" },
     ],
   }),
 });

@@ -12,6 +12,12 @@ export const Route = createFileRoute("/contact")({
     meta: [
       { title: "تواصل معنا — Faii House" },
       { name: "description", content: "تواصل مع فَيّ هاوس — شركة الإنتاج السينمائي في إربد، الأردن." },
+      { property: "og:title", content: "تواصل معنا — Faii House" },
+      { property: "og:description", content: "تواصل مع فَيّ هاوس — شركة الإنتاج السينمائي في إربد، الأردن." },
+      { property: "og:url", content: "https://faiihouse.lovable.app/contact" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://faiihouse.lovable.app/contact" },
     ],
   }),
 });

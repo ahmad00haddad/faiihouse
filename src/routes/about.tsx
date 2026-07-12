@@ -10,6 +10,12 @@ export const Route = createFileRoute("/about")({
     meta: [
       { title: "عن فَيّ — Faii House" },
       { name: "description", content: "فَيّ هاوس — شركة إنتاج سينمائي من إربد. فريق وأصدقاء يعملون معًا لإنجاز مشاريع تستحقّ أن تُروى." },
+      { property: "og:title", content: "عن فَيّ — Faii House" },
+      { property: "og:description", content: "فَيّ هاوس — شركة إنتاج سينمائي من إربد. فريق وأصدقاء يعملون معًا لإنجاز مشاريع تستحقّ أن تُروى." },
+      { property: "og:url", content: "https://faiihouse.lovable.app/about" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://faiihouse.lovable.app/about" },
     ],
   }),
 });

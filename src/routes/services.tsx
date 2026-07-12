@@ -14,6 +14,12 @@ export const Route = createFileRoute("/services")({
     meta: [
       { title: "خدماتنا — Faii House" },
       { name: "description", content: "إنتاج أفلام قصيرة، إعلانات سينمائية، تلوين، تصوير فوتوغرافي، ورش عمل وموسيقى تصويرية." },
+      { property: "og:title", content: "خدماتنا — Faii House" },
+      { property: "og:description", content: "إنتاج أفلام قصيرة، إعلانات سينمائية، تلوين، تصوير فوتوغرافي، ورش عمل وموسيقى تصويرية." },
+      { property: "og:url", content: "https://faiihouse.lovable.app/services" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://faiihouse.lovable.app/services" },
     ],
   }),
 });

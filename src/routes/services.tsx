@@ -62,7 +62,7 @@ function ServicesPage() {
                       <div className="font-display text-xs text-primary tracking-[0.3em]">
                         {String(i + 1).padStart(2, "0")} / 06
                       </div>
-                      <h3 className="mt-2 text-2xl text-foreground">{s.title}</h3>
+                      <h2 className="mt-2 text-2xl text-foreground">{s.title}</h2>
                       <p className="mt-3 text-muted-foreground leading-relaxed">{s.desc}</p>
                     </div>
                   </div>

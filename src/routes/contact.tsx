@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
 import { useSiteContent } from "@/hooks/use-site-content";
+import { submitContactMessage } from "@/lib/leads.functions";
 import { Mail, MapPin, Phone, Instagram, Facebook, Linkedin, Send } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
@@ -24,17 +26,27 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const { contact } = useSiteContent();
+  const submit = useServerFn(submitContactMessage);
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const body = `الاسم: ${form.name}\nالبريد: ${form.email}\n\n${form.message}`;
-    window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(
-      "رسالة جديدة من موقع فَيّ",
-    )}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    setError(null);
+    setSending(true);
+    try {
+      await submit({ data: form });
+      setSent(true);
+      setForm({ name: "", email: "", message: "" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تعذّر الإرسال، حاول مجددًا");
+    } finally {
+      setSending(false);
+    }
   };
+
 
   const info = [
     { Icon: MapPin, title: "العنوان", value: contact.address },

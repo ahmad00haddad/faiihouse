@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { adminVerify, adminLogout } from "@/lib/admin-auth.functions";
+import { listContactMessages, listJobApplications } from "@/lib/leads.functions";
 import { getSiteContent, updateSiteContent } from "@/lib/site-content.functions";
 import { uploadImage } from "@/lib/upload.functions";
 import { defaultContent, type SiteContent } from "@/data/site";
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/admin/")({
   head: () => ({ meta: [{ title: "Faii House — لوحة التحكم" }] }),
 });
 
-type Tab = "hero" | "about" | "stats" | "contact" | "services" | "portfolio" | "clients";
+type Tab = "hero" | "about" | "stats" | "contact" | "services" | "portfolio" | "clients" | "leads";
 
 function AdminPage() {
   const verify = useServerFn(adminVerify);
@@ -106,6 +107,7 @@ function AdminPage() {
     { id: "services", label: "الخدمات" },
     { id: "portfolio", label: "المشاريع" },
     { id: "clients", label: "الشركاء" },
+    { id: "leads", label: "الرسائل والطلبات" },
   ];
 
   return (
@@ -141,6 +143,7 @@ function AdminPage() {
         {tab === "services" && <ListEditor items={content.services} setItems={(services) => setContent({ ...content, services })} fields={[{ k: "title", l: "العنوان" }, { k: "desc", l: "الوصف", textarea: true }]} blank={{ title: "", desc: "" }} />}
         {tab === "portfolio" && <ListEditor items={content.portfolio} setItems={(portfolio) => setContent({ ...content, portfolio: portfolio as SiteContent["portfolio"] })} fields={[{ k: "title", l: "العنوان" }, { k: "image", l: "رابط الصورة" }, { k: "category", l: "التصنيف", options: [{ value: "film", label: "فيلم" }, { value: "documentary", label: "وثائقي" }, { value: "ads", label: "إعلان" }] }, { k: "behance", l: "رابط Behance" }]} blank={{ title: "", image: "", category: "film", behance: "" }} />}
         {tab === "clients" && <ListEditor items={content.clients} setItems={(clients) => setContent({ ...content, clients })} fields={[{ k: "name", l: "الاسم" }, { k: "image", l: "رابط اللوغو" }]} blank={{ name: "", image: "" }} />}
+        {tab === "leads" && <LeadsPanel token={token} />}
       </main>
     </div>
   );

@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
+import { submitJobApplication } from "@/lib/leads.functions";
 import { Briefcase, Send } from "lucide-react";
 
 export const Route = createFileRoute("/jobs")({
@@ -21,12 +23,62 @@ export const Route = createFileRoute("/jobs")({
   }),
 });
 
+type FormState = {
+  name: string;
+  email: string;
+  phone: string;
+  location: string;
+  start_when: string;
+  portfolio_url: string;
+  why: string;
+  skills: string;
+  edge: string;
+};
+
+const blank: FormState = {
+  name: "", email: "", phone: "", location: "", start_when: "",
+  portfolio_url: "", why: "", skills: "", edge: "",
+};
+
 function JobsPage() {
+  const submit = useServerFn(submitJobApplication);
+  const [form, setForm] = useState<FormState>(blank);
   const [sent, setSent] = useState(false);
-  const onSubmit = (e: React.FormEvent) => {
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const set = (k: keyof FormState, v: string) => setForm((f) => ({ ...f, [k]: v }));
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    setError(null);
+    setSending(true);
+    try {
+      await submit({ data: form });
+      setSent(true);
+      setForm(blank);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تعذّر الإرسال، حاول مجددًا");
+    } finally {
+      setSending(false);
+    }
   };
+
+  const inputs: { k: keyof FormState; label: string; type?: string; dir?: "ltr"; required?: boolean }[] = [
+    { k: "name", label: "الاسم", required: true },
+    { k: "email", label: "البريد الإلكتروني", type: "email", dir: "ltr", required: true },
+    { k: "phone", label: "رقم الهاتف", type: "tel", dir: "ltr" },
+    { k: "location", label: "وين ساكن حاليًا؟" },
+    { k: "start_when", label: "متى تقدر تبلش؟" },
+    { k: "portfolio_url", label: "رابط أعمالك أو الإنستاجرام", type: "url", dir: "ltr" },
+  ];
+
+  const textareas: { k: keyof FormState; label: string }[] = [
+    { k: "why", label: "ليش حابب تشتغل مع فَيّ؟" },
+    { k: "skills", label: "احكيلنا المهارات الي بتمتلكها وبتأهلك لهاد العمل؟" },
+    { k: "edge", label: "ما هي إضافتك الخاصة الي رح تميزك؟" },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -65,39 +117,38 @@ function JobsPage() {
               عبّئ النموذج لنتواصل معك
             </h2>
             <form onSubmit={onSubmit} className="p-8 md:p-10 rounded-3xl border border-border bg-surface shadow-elevated">
-              {[
-                { name: "name", label: "الاسم", type: "text" },
-                { name: "email", label: "البريد الإلكتروني", type: "email", dir: "ltr" },
-                { name: "phone", label: "رقم الهاتف", type: "tel", dir: "ltr" },
-                { name: "location", label: "وين ساكن حاليًا؟", type: "text" },
-                { name: "start", label: "متى تقدر تبلش؟", type: "text" },
-                { name: "portfolio", label: "رابط أعمالك أو الإنستاجرام", type: "url", dir: "ltr" },
-              ].map((f) => (
-                <div key={f.name} className="mb-5">
+              {inputs.map((f) => (
+                <div key={f.k} className="mb-5">
                   <label className="block text-sm text-muted-foreground mb-2">{f.label}</label>
-                  <input type={f.type} dir={f.dir as "ltr" | undefined} required
-                    className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none transition-colors" />
+                  <input
+                    type={f.type ?? "text"}
+                    dir={f.dir}
+                    required={f.required}
+                    value={form[f.k]}
+                    onChange={(e) => set(f.k, e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none transition-colors"
+                  />
                 </div>
               ))}
-              {[
-                { name: "why", label: "ليش حابب تشتغل مع فَيّ؟" },
-                { name: "skills", label: "احكيلنا المهارات الي بتمتلكها وبتأهلك لهاد العمل؟" },
-                { name: "edge", label: "ما هي إضافتك الخاصة الي رح تميزك؟" },
-              ].map((f) => (
-                <div key={f.name} className="mb-5">
+              {textareas.map((f) => (
+                <div key={f.k} className="mb-5">
                   <label className="block text-sm text-muted-foreground mb-2">{f.label}</label>
-                  <textarea required rows={4}
-                    className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none transition-colors resize-none" />
+                  <textarea
+                    rows={4}
+                    value={form[f.k]}
+                    onChange={(e) => set(f.k, e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none transition-colors resize-none"
+                  />
                 </div>
               ))}
-              <div className="mb-5">
-                <label className="block text-sm text-muted-foreground mb-2">السيرة الذاتية (PDF/DOC/صورة)</label>
-                <input type="file" accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
-                  className="w-full text-sm text-muted-foreground file:me-4 file:py-2.5 file:px-5 file:rounded-full file:border-0 file:bg-gradient-primary file:text-primary-foreground file:cursor-pointer" />
-              </div>
-              <button type="submit" className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-7 py-3.5 text-primary-foreground font-medium hover:shadow-glow transition-all">
-                إرسال الطلب <Send size={16} />
+              <button
+                type="submit"
+                disabled={sending}
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-7 py-3.5 text-primary-foreground font-medium hover:shadow-glow transition-all disabled:opacity-60"
+              >
+                {sending ? "جارٍ الإرسال..." : "إرسال الطلب"} <Send size={16} />
               </button>
+              {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
               {sent && <p className="mt-4 text-sm text-primary">شكرًا! استلمنا طلبك وسنتواصل معك قريبًا.</p>}
             </form>
           </Reveal>

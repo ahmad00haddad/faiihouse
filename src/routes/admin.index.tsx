@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { adminVerify, adminLogout } from "@/lib/admin-auth.functions";
+import { listContactMessages, listJobApplications } from "@/lib/leads.functions";
 import { getSiteContent, updateSiteContent } from "@/lib/site-content.functions";
 import { uploadImage } from "@/lib/upload.functions";
 import { defaultContent, type SiteContent } from "@/data/site";
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/admin/")({
   head: () => ({ meta: [{ title: "Faii House — لوحة التحكم" }] }),
 });
 
-type Tab = "hero" | "about" | "stats" | "contact" | "services" | "portfolio" | "clients";
+type Tab = "hero" | "about" | "stats" | "contact" | "services" | "portfolio" | "clients" | "leads";
 
 function AdminPage() {
   const verify = useServerFn(adminVerify);
@@ -106,6 +107,7 @@ function AdminPage() {
     { id: "services", label: "الخدمات" },
     { id: "portfolio", label: "المشاريع" },
     { id: "clients", label: "الشركاء" },
+    { id: "leads", label: "الرسائل والطلبات" },
   ];
 
   return (
@@ -141,7 +143,104 @@ function AdminPage() {
         {tab === "services" && <ListEditor items={content.services} setItems={(services) => setContent({ ...content, services })} fields={[{ k: "title", l: "العنوان" }, { k: "desc", l: "الوصف", textarea: true }]} blank={{ title: "", desc: "" }} />}
         {tab === "portfolio" && <ListEditor items={content.portfolio} setItems={(portfolio) => setContent({ ...content, portfolio: portfolio as SiteContent["portfolio"] })} fields={[{ k: "title", l: "العنوان" }, { k: "image", l: "رابط الصورة" }, { k: "category", l: "التصنيف", options: [{ value: "film", label: "فيلم" }, { value: "documentary", label: "وثائقي" }, { value: "ads", label: "إعلان" }] }, { k: "behance", l: "رابط Behance" }]} blank={{ title: "", image: "", category: "film", behance: "" }} />}
         {tab === "clients" && <ListEditor items={content.clients} setItems={(clients) => setContent({ ...content, clients })} fields={[{ k: "name", l: "الاسم" }, { k: "image", l: "رابط اللوغو" }]} blank={{ name: "", image: "" }} />}
+        {tab === "leads" && <LeadsPanel token={token} />}
       </main>
+    </div>
+  );
+}
+
+type ContactRow = { id: string; name: string; email: string; message: string; created_at: string };
+type JobRow = {
+  id: string; name: string; email: string; phone: string | null; location: string | null;
+  start_when: string | null; portfolio_url: string | null; why: string | null;
+  skills: string | null; edge: string | null; created_at: string;
+};
+
+function LeadsPanel({ token }: { token: string | null }) {
+  const listContacts = useServerFn(listContactMessages);
+  const listJobs = useServerFn(listJobApplications);
+  const [sub, setSub] = useState<"contact" | "jobs">("contact");
+  const [contacts, setContacts] = useState<ContactRow[]>([]);
+  const [jobs, setJobs] = useState<JobRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!token) return;
+    (async () => {
+      try {
+        const [c, j] = await Promise.all([
+          listContacts({ data: { token } }),
+          listJobs({ data: { token } }),
+        ]);
+        setContacts(c.rows as ContactRow[]);
+        setJobs(j.rows as JobRow[]);
+      } catch (e) {
+        setErr(e instanceof Error ? e.message : "فشل التحميل");
+      } finally {
+        setLoading(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fmt = (s: string) => new Date(s).toLocaleString("ar");
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2">
+        {(["contact", "jobs"] as const).map((k) => (
+          <button key={k} onClick={() => setSub(k)}
+            className={`px-4 py-2 rounded-lg text-sm border transition-colors ${sub === k ? "border-primary text-primary bg-primary/10" : "border-border text-muted-foreground hover:text-foreground"}`}>
+            {k === "contact" ? `الرسائل (${contacts.length})` : `طلبات التوظيف (${jobs.length})`}
+          </button>
+        ))}
+      </div>
+      {loading && <div className="text-muted-foreground text-sm">جارٍ التحميل...</div>}
+      {err && <div className="text-destructive text-sm">{err}</div>}
+      {!loading && sub === "contact" && (
+        <div className="space-y-3">
+          {contacts.length === 0 && <div className="text-muted-foreground text-sm">لا توجد رسائل بعد.</div>}
+          {contacts.map((r) => (
+            <div key={r.id} className="bg-card/40 border border-border rounded-xl p-4 space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+                <div className="font-medium text-foreground">{r.name}</div>
+                <div className="text-xs text-muted-foreground">{fmt(r.created_at)}</div>
+              </div>
+              <a href={`mailto:${r.email}`} className="text-xs text-primary" dir="ltr">{r.email}</a>
+              <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{r.message}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {!loading && sub === "jobs" && (
+        <div className="space-y-3">
+          {jobs.length === 0 && <div className="text-muted-foreground text-sm">لا توجد طلبات بعد.</div>}
+          {jobs.map((r) => (
+            <div key={r.id} className="bg-card/40 border border-border rounded-xl p-4 space-y-2 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="font-medium text-foreground">{r.name}</div>
+                <div className="text-xs text-muted-foreground">{fmt(r.created_at)}</div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                <div><span className="text-muted-foreground">البريد: </span><span dir="ltr">{r.email}</span></div>
+                {r.phone && <div><span className="text-muted-foreground">الهاتف: </span><span dir="ltr">{r.phone}</span></div>}
+                {r.location && <div><span className="text-muted-foreground">السكن: </span>{r.location}</div>}
+                {r.start_when && <div><span className="text-muted-foreground">البدء: </span>{r.start_when}</div>}
+                {r.portfolio_url && (
+                  <div className="md:col-span-2">
+                    <span className="text-muted-foreground">الأعمال: </span>
+                    <a href={r.portfolio_url} target="_blank" rel="noopener noreferrer" className="text-primary" dir="ltr">{r.portfolio_url}</a>
+                  </div>
+                )}
+              </div>
+              {r.why && <div><div className="text-xs text-muted-foreground mb-1">لماذا فَيّ؟</div><div className="whitespace-pre-wrap">{r.why}</div></div>}
+              {r.skills && <div><div className="text-xs text-muted-foreground mb-1">المهارات</div><div className="whitespace-pre-wrap">{r.skills}</div></div>}
+              {r.edge && <div><div className="text-xs text-muted-foreground mb-1">الإضافة الخاصة</div><div className="whitespace-pre-wrap">{r.edge}</div></div>}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

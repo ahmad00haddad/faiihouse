@@ -32,6 +32,72 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      job_applications: {
+        Row: {
+          created_at: string
+          edge: string | null
+          email: string
+          id: string
+          location: string | null
+          name: string
+          phone: string | null
+          portfolio_url: string | null
+          skills: string | null
+          start_when: string | null
+          why: string | null
+        }
+        Insert: {
+          created_at?: string
+          edge?: string | null
+          email: string
+          id?: string
+          location?: string | null
+          name: string
+          phone?: string | null
+          portfolio_url?: string | null
+          skills?: string | null
+          start_when?: string | null
+          why?: string | null
+        }
+        Update: {
+          created_at?: string
+          edge?: string | null
+          email?: string
+          id?: string
+          location?: string | null
+          name?: string
+          phone?: string | null
+          portfolio_url?: string | null
+          skills?: string | null
+          start_when?: string | null
+          why?: string | null
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           data: Json

@@ -124,11 +124,12 @@ function ContactPage() {
                   <textarea required rows={6} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary outline-none transition-colors resize-none" />
                 </div>
-                <button type="submit" className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary px-7 py-3.5 text-primary-foreground font-medium hover:shadow-glow transition-all">
-                  إرسال <Send size={16} />
+                <button type="submit" disabled={sending} className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary px-7 py-3.5 text-primary-foreground font-medium hover:shadow-glow transition-all disabled:opacity-60">
+                  {sending ? "جارٍ الإرسال..." : "إرسال"} <Send size={16} />
                 </button>
+                {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
                 {sent && (
-                  <p className="mt-4 text-sm text-primary">سيتم فتح بريدك الإلكتروني لإكمال الإرسال.</p>
+                  <p className="mt-4 text-sm text-primary">شكرًا! استلمنا رسالتك وسنعود لك قريبًا.</p>
                 )}
               </form>
             </Reveal>

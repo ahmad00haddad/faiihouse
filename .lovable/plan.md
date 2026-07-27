@@ -1,116 +1,122 @@
+# خطة: تحسينات UI بمستوى Awwwards — Faii House
 
-# خطة التدقيق الشامل — Faii House
-
-هدف الخطة: تنفيذ Audit فعلي (Live + Repo) خلال جولات مُقننة، وتسليم تقرير نهائي واحد يحدد بوضوح: هل الموقع جاهز للنشر؟ وهل جاهز مستقبلاً للتحويل إلى تطبيق موبايل؟ لا يُبدأ بأي تعديل كود قبل موافقتك على التقرير النهائي.
-
----
-
-## 1) نطاق التدقيق
-
-- **الواجهة الحية:** `/`, `/about`, `/services`, `/portfolio`, `/jobs`, `/contact`, `/admin/login`, `/admin`, `/sitemap.xml`, `/quote-builder/index.html`, صفحة 404.
-- **المستودع:** `src/routes/*`, `src/components/*`, `src/data/site.ts`, `src/lib/*.functions.ts` (admin-auth, site-content, upload), `src/integrations/supabase/*`, `src/server.ts`, `public/quote-builder/*`, `wrangler.jsonc`, `vite.config.ts`.
-- **الطبقة الخلفية (Lovable Cloud):** جداول `site_content`, `admin_sessions`, سياسات RLS، الـ Storage buckets، الـ Server Functions.
+**المبدأ:** لا نعيد التصميم. نضيف طبقات بصرية وحركية على الهوية الحالية (برتقالي/أسود سينمائي، Jeddah/LostSignal، grain/vignette). التركيز على **About** + **Contact/Jobs**، مع لمسات على الرئيسية والهيدر تخدم كل الصفحات.
 
 ---
 
-## 2) المنهجية (5 مراحل)
+## 1) طبقات عالمية (تخدم كل الصفحات)
 
-1. **فهم المنتج والسياق** — تحديد المستخدم، المهمة الأساسية، الرحلات الحرجة.
-2. **مسح استكشافي** — Playwright على 3 مقاسات (375 / 768 / 1440) + Console/Network + مراجعة بنية الكود.
-3. **تدقيق محوري تفصيلي** — 6 محاور (§4).
-4. **تصنيف وأولوية** — حرج / عالٍ / متوسط / منخفض.
-5. **تقرير + Roadmap** — Quick Wins → Pre-Launch → Post-Launch → Mobile-Ready.
+**Custom cinematic cursor** — نقطة برتقالية صغيرة + حلقة تتأخر بـ lerp، تتضخّم على الروابط/الأزرار، تتحول لـ "PLAY" على مصغرات الأعمال. مُعطّل على اللمس/`prefers-reduced-motion`. (استبدال أنيق للـ `MagneticCursor` الحالي أو تطويره).
 
-كل عيب يُوثَّق ببطاقة موحّدة:
-```text
-ID | المحور | المكان (ملف:سطر أو URL)
-الوصف | خطوات إعادة الإنتاج | الحالي مقابل المتوقع
-الأثر | السبب المرجّح | الشدة | الحل المقترح | التقدير
-```
+**Section transitions** — بين كل قسمين: شريط رفيع بلون primary يمتد من اليسار لليمين عند دخول القسم (IntersectionObserver + CSS scale-x).
+
+**Scroll-driven counters/typography** — العناوين الضخمة تتحرك أفقيًا ببطء مع السكرول (`translateX` مربوط بـ scroll progress) — إحساس Kinetic بدون مكتبات جديدة.
+
+**Reduced-motion switch** — زر صغير في الفوتر: "تهدئة الحركة" يضبط `data-motion="reduced"` على `<html>`، يوقف الكرسر/السويب/الـ marquee.
 
 ---
 
-## 3) المخرجات النهائية
+## 2) صفحة About — إعادة تنسيق سينمائية
 
-- **A. ملخص تنفيذي** — 5 مخاطر رئيسية + قرار جاهزية النشر + قرار جاهزية الموبايل.
-- **B. بطاقات عيوب** مرتبة حسب المحور والشدة.
-- **C. لوحة تقييم جاهزية** (UX / Perf / A11y / Security / Ops / Mobile) — درجات + مبررات.
-- **D. Phased Roadmap** بخمس مراحل قابلة للتنفيذ.
+الحالة الحالية: عنوانان + فقرتان نص. سنحوّلها إلى **رحلة سينمائية** من 5 مشاهد:
 
----
+**Scene 1 — Overture (Hero)**
+- عنوان ضخم `text-[clamp(4rem,12vw,11rem)]` بأحرف تتحرك واحدًا واحدًا (SplitText الحالي).
+- خلفية: صورة سينمائية شبه شفافة + grain + vignette + **frame-count counter** أعلى اليمين ("FRAME 001 / 005") يتغير مع السكرول.
+- Marquee عمودي جانبي بكلمات: "CINEMA · STORY · GRAIN · LIGHT · ARBID".
 
-## 4) المحاور الستة — ما سيتم فحصه فعلياً
+**Scene 2 — Manifesto (Kinetic Text)**
+- نص المانيفستو (`about.body`) يظهر كلمة-كلمة مع السكرول عبر scroll-linked opacity (خطوة بخطوة، ليس دفعة واحدة). كل جملة تحتها خط رفيع يرسم نفسه.
 
-### المحور 1 — UX/UI
-- وضوح CTA في كل صفحة، سلامة الهرمية والاتساق البصري.
-- microcopy عربي/RTL، حالات (loading/empty/error) في `useSiteContent`, `admin.index`, `contact form`.
-- إمكانية النقر واللمس، ثبات الحركات (SplitText/Reveal/MagneticCursor) على الأجهزة الضعيفة.
-- **خطأ Hydration معروف** في الهيرو (نصنع/نروي) — يُوثَّق ضمن هذا المحور.
+**Scene 3 — Two Pillars (أهدافنا / طموحاتنا)**
+- شبكة أفقية مقسّمة بخط عمودي متحرك (film-strip). كل عمود عليه رقم عملاق شفاف (`01`, `02`) خلف النص.
+- Hover: العمود يميل قليلًا (`transform: perspective + rotateY(2deg)`)، grain يشتد.
 
-### المحور 2 — بنية المعلومات والتدفقات
-- خريطة صفحات + خريطة رحلة "عميل يريد عرض سعر" ورحلة "متقدم لوظيفة" ورحلة "أدمن يحدّث محتوى".
-- كفاءة التنقل موبايل/ديسكتوب، وجود Breadcrumbs، سلامة الروابط الداخلية والخارجية (Behance/Instagram).
+**Scene 4 — Timeline "Reel" (جديد)**
+- شريط أفلام أفقي متمرّر (drag/scroll snap) بمراحل الشركة: التأسيس → أول عمل → 140+ علامة → اليوم.
+- كل بطاقة على شكل frame أفلام (`film-strip` مطبّق حاليًا) مع سنة كبيرة + وصف قصير.
+- يُدار من الأدمن (حقل `timeline` جديد في `site_content`).
 
-### المحور 3 — الأداء + A11y + Responsiveness
-- **الأداء:** حجم الـ bundle، تحميل الصور (`.webp/.png` في `src/assets/faii/*`)، LCP في `/`, CLS بسبب الحركات، تكلفة `SmoothScroll (Lenis) + MagneticCursor` على الموبايل.
-- **A11y:** بنية العناوين، تباين الألوان في الثيم، `alt`, `aria-label`, focus states، دعم لوحة المفاتيح، `prefers-reduced-motion`.
-- **Responsive:** كسور layout عند 375px، حجم الأزرار للمس، طول قوائم `SiteHeader`.
-
-### المحور 4 — المنطق الوظيفي والأمان
-- **admin-auth.functions.ts:** كلمة مرور افتراضية `admin12345` — خطر حرج قبل النشر. آلية تخزين التوكن في المتصفح، صلاحية 7 أيام، غياب rate-limit.
-- **upload.functions.ts + site-content:** التحقق من نوع/حجم الملفات، تعقيم مدخلات JSON، إشعارات الفشل.
-- **Contact form:** هل تُرسل الرسائل فعلياً؟ (mailto/edge fn/webhook) — تحقق من عدم فقد الرسائل.
-- **quote-builder:** تحقق مدخلات، حالات edge، حفظ الحالة، مشاركة النتيجة.
-- **RLS + GRANTs** على `site_content`, `admin_sessions` عبر `supabase--linter` و `security--get_table_schema`.
-- Race conditions في تحديث `site_content` من عدة تبويبات أدمن.
-
-### المحور 5 — جاهزية النشر والإنتاج
-- SEO: `head()` في كل route، og:image لكل leaf، sitemap، robots، canonical، JSON-LD.
-- المراقبة: `error-capture` + `renderErrorPage` كافيان؟ هل يوجد مسار لجمع الأخطاء client-side؟
-- الأسرار: `.env`, `ADMIN_USERNAME/PASSWORD`, مفاتيح Supabase — هل خرجت للـ client bundle؟
-- Build/Deploy: نجاح `build:dev`، سلامة `wrangler.jsonc`، توافق مع Cloudflare Workers.
-- التوثيق التشغيلي: هل يستطيع مطور جديد التشغيل من README؟
-
-### المحور 6 — جاهزية التحويل للموبايل
-- فصل منطق البيانات (`hooks/use-site-content`, `lib/*.functions.ts`) عن الـ presentation.
-- إمكانية إعادة استخدام الـ Server Functions كـ API لتطبيق React Native/Expo لاحقاً.
-- تقييم design tokens في `styles.css` كأساس لنظام تصميم متعدد المنصات.
-- تدفقات hover/scroll-heavy (Lenis, MagneticCursor, marquee) — ما البدائل الملائمة للموبايل؟
-- الحكم: **PWA-first** أم **Native rebuild** أم **Hybrid Capacitor wrapper**.
+**Scene 5 — Signature CTA**
+- سطر عملاق يتحرّك أفقيًا `مشروعك · القادم · مع فَيّ · مشروعك · القادم` (marquee).
+- زر واحد كبير "لنبدأ" مع تأثير swipe عند hover.
 
 ---
 
-## 5) الأدوات والتقنيات المستخدمة أثناء التدقيق
+## 3) صفحة Contact — تجربة أفضل
 
-- Playwright headless (375/768/1440) + لقطات لكل صفحة + قياس Web Vitals.
-- `supabase--linter`, `security--get_table_schema`, `security--run_security_scan`.
-- قراءة `runtime-errors` و `console/network` logs.
-- تحليل حجم الحزم عبر build output.
-- مراجعة يدوية للكود لرصد coupling وتكرار المسؤوليات.
+**Layout جديد:**
+- عمود أيسر (2/5): **بطاقة عنوان تفاعلية** بشكل تذكرة سينما (rounded corners مقطوعة، ثقوب perforation) تحمل الإيميل/الهاتف/العنوان — كل سطر يكشف نفسه على hover مع صوت "click" بصري (خط primary يمر تحته).
+- عمود أيمن (3/5): **نموذج بخطوة واحدة لكن بحقول متتابعة** — كل حقل يظهر بعد ملء السابق (staggered reveal)، مع عداد "1 / 3" أعلى النموذج.
 
----
+**Micro-interactions:**
+- الحقل النشط: `border` primary + توهج خفيف + label يطفو للأعلى (floating label بحركة سلسة).
+- زر الإرسال: يتحول لـ progress bar أثناء الإرسال ثم لـ ✓ عند النجاح، بدل toast بارد.
+- بعد النجاح: **شاشة confirmation سينمائية** — بطاقة تذكرة "MESSAGE RECEIVED" مع رقم مرجعي وهمي، بدل السطر النصي الحالي.
 
-## 6) خارطة الطريق المرحلية (مقترحة — تُحدَّث بعد التدقيق)
-
-| المرحلة | المدة | المحتوى |
-|---|---|---|
-| **P0 — Security Hotfix** | 24 ساعة | تغيير كلمة الأدمن الافتراضية، مراجعة RLS، إخفاء أي سر مسرَّب |
-| **P1 — Quick Wins UX** | 2–3 أيام | إصلاح hydration mismatch، حالات فارغة/خطأ، تباين، A11y أساسي |
-| **P2 — Pre-Launch** | 5–7 أيام | أداء (صور/حزم)، SEO كامل، contact form موثوق، monitoring |
-| **P3 — Post-Launch Hardening** | 1–2 أسبوع | logging منظم، rate-limit للأدمن، اختبارات دخان، توثيق تشغيلي |
-| **P4 — Mobile Readiness** | حسب القرار | فصل طبقات، API عام، design tokens، PWA أو Capacitor |
+**Sidebar روابط اجتماعية:**
+- الأيقونات الحالية تصبح دوائر بحواف film-strip دوّارة عند hover.
 
 ---
 
-## 7) ما سيحدث بعد موافقتك
+## 4) صفحة Jobs — نفس الفلسفة
 
-1. أنفّذ التدقيق الفعلي (جولات Playwright + قراءة عميقة للكود + Supabase linter).
-2. أعود بتقرير واحد مطابق للهيكل أعلاه، مع بطاقات العيوب المرقّمة والقرارَين الحاسمَين (جاهزية النشر / جاهزية الموبايل).
-3. تختار أنت المرحلة/العيوب التي نبدأ بها فعلياً، ونفتح جلسة Build لكل دفعة.
+**Hero:**
+- بدل العنوان الثابت: نص يتبدّل بين وظائف افتراضية `[كاتب إعلانات] / [مصور] / [محرر]` (typewriter)، مع تثبيت "كاتب إعلانات" في النهاية.
+- بطاقة الوصف (REMOTE · FREELANCE) تصبح **بطاقة "CASTING CALL"** بأسلوب بوستر فيلم قديم — إطار مزدوج، طوابع vintage، خلفية ورق مطوي.
+
+**نموذج التقديم:**
+- بدل الكومة الحالية من الحقول → **stepper بثلاث خطوات** (المعلومات / المهارات / لمستك الخاصة) مع مؤشر تقدم سينمائي (film reel spinning).
+- كل خطوة تدخل مع film-cut transition (نفس المكوّن الحالي `PageTransition` معاد استخدامه محليًا).
+
+**Success state:**
+- بطاقة "AUDITION SUBMITTED" مع لقطة film clapperboard.
 
 ---
 
-## هل أبدأ التدقيق بهذا النطاق كما هو، أم تريد:
-- توسيعه ليشمل تدقيق محتوى/نسخة عربية؟
-- تضييقه لاستبعاد محور معيّن (مثلاً الموبايل الآن)؟
-- إعطاء أولوية لمحور محدد يُسلَّم أولاً قبل بقية المحاور؟
+## 5) لمسات على الرئيسية (بسيطة، غير مزعجة)
+
+- **Hero Showreel card:** إضافة video preview فعلي بدل الـ 6 مصغرات — عند hover، أول مصغّرة تتحول لـ auto-play muted 4 ثواني ثم تنتقل للتالية.
+- **Stats:** خط أفقي رفيع يربط الأرقام الأربعة عند دخول القسم (draws left-to-right).
+- **Featured Work cards:** إضافة رقم فيلم `#001, #002...` أعلى اليمين + كود توقيت `00:42:11` أسفل اليسار (تفاصيل editorial).
+- **CTA النهائي:** النص العملاق يتبع الماوس بميلان طفيف (`perspective + mouse parallax`).
+
+---
+
+## 6) Admin — دعم المحتوى الجديد
+
+- إضافة تبويب **"Timeline"** لإدارة مشاهد صفحة About (Scene 4).
+- إضافة حقل `hero.frameCounterLabel` (اختياري).
+- بدون تغيير في auth أو business logic.
+
+---
+
+## أولوية التنفيذ
+
+| # | العنصر | التأثير | الجهد |
+|---|---|---|---|
+| P0 | About كاملة (5 مشاهد) | ⭐⭐⭐⭐⭐ | كبير |
+| P0 | Contact — بطاقة تذكرة + stepped form + success cinematic | ⭐⭐⭐⭐⭐ | متوسط |
+| P0 | Jobs — casting call + stepper | ⭐⭐⭐⭐ | متوسط |
+| P1 | Custom cinematic cursor + section transitions + reduce-motion | ⭐⭐⭐⭐ | متوسط |
+| P1 | Timeline admin + `site_content` migration | ⭐⭐⭐ | صغير |
+| P2 | لمسات الرئيسية (Stats line, film numbers, hero video preview) | ⭐⭐⭐ | متوسط |
+
+## تفاصيل تقنية
+
+- **بدون مكتبات جديدة** — نستخدم CSS transforms + `IntersectionObserver` + hooks موجودة. مسموح `framer-motion` فقط لو ضروري (موجود؟ لا — سنبقى على CSS + rAF).
+- **RTL-safe:** كل حركة أفقية تحترم `dir="rtl"` (marquee يعكس اتجاهه، swipe transitions تنعكس).
+- **Perf:** كل حركة `will-change` فقط أثناء الحركة، `content-visibility: auto` للأقسام السفلية، الصور الجديدة `loading="lazy"` + `LazyImage`.
+- **A11y:** كل الحركات تحترم `prefers-reduced-motion` والزر اليدوي في الفوتر. الحقول تحتفظ بـ semantic labels خلف floating labels.
+- **Migration:** `site_content` تضاف حقول `timeline` (array) و`hero.frameCounterLabel` — GRANT + RLS متكرر من الأنماط الموجودة.
+
+## معايير القبول
+
+- About تعطي إحساس "قصة تُروى" لا "صفحة معلومات".
+- كل زر/حقل في Contact/Jobs يعطي feedback بصري خلال 100ms من التفاعل.
+- Lighthouse Performance ≥ 85 على الموبايل بعد التغييرات.
+- كل الحركات تختفي كاملة مع `prefers-reduced-motion: reduce`.
+
+---
+
+هل أبدأ من **About** كخطوة أولى، أم تريدني أبني الطبقات العالمية (cursor + transitions) أولًا؟

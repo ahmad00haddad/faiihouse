@@ -345,3 +345,212 @@ html.lenis, html.lenis body { height: auto; }
   background: #0a0a0a;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
 }
+
+/* ============ Awwwards-tier additions ============ */
+
+/* Ticket / perforated card */
+.ticket {
+  --notch: 14px;
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  isolation: isolate;
+}
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: var(--notch);
+  height: var(--notch);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+.ticket::before { left: calc(var(--notch) / -2); }
+.ticket::after { right: calc(var(--notch) / -2); }
+.ticket-divider {
+  position: relative;
+  height: 1px;
+  margin: 1.25rem 0;
+  background: repeating-linear-gradient(90deg, var(--border) 0 6px, transparent 6px 12px);
+}
+
+/* Floating label input */
+.field { position: relative; }
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 1.4rem 1rem 0.6rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  color: var(--foreground);
+  outline: none;
+  transition: border-color .25s var(--ease-cinematic), box-shadow .25s var(--ease-cinematic);
+  font: inherit;
+}
+.field textarea { padding-top: 1.6rem; min-height: 140px; resize: vertical; }
+.field label {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 0.9rem;
+  transform: translateY(-50%);
+  color: var(--muted-foreground);
+  pointer-events: none;
+  transition: all .22s var(--ease-cinematic);
+  padding: 0 .3rem;
+  font-size: 0.95rem;
+}
+.field textarea ~ label { top: 1.4rem; transform: none; }
+.field input:focus,
+.field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px oklch(0.74 0.17 55 / 0.12); }
+.field input:focus ~ label,
+.field input:not(:placeholder-shown) ~ label,
+.field textarea:focus ~ label,
+.field textarea:not(:placeholder-shown) ~ label {
+  top: 0;
+  transform: translateY(-50%) scale(0.85);
+  color: var(--primary);
+  background: var(--surface);
+}
+
+/* Kinetic marquee text */
+.kinetic-strip {
+  overflow: hidden;
+  border-block: 1px solid var(--border);
+  padding: 1.25rem 0;
+}
+.kinetic-strip-track {
+  display: inline-flex;
+  gap: 3rem;
+  white-space: nowrap;
+  animation: marquee 32s linear infinite;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--primary);
+}
+.kinetic-strip-track .solid { color: var(--primary); -webkit-text-stroke: 0; }
+
+.frame-counter {
+  font-family: var(--font-display);
+  letter-spacing: 0.25em;
+  color: var(--primary);
+  font-size: 0.72rem;
+}
+
+/* Timeline reel */
+.reel-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(280px, 320px);
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 1rem 0.25rem 2rem;
+  scrollbar-width: thin;
+}
+.reel-card {
+  scroll-snap-align: start;
+  position: relative;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  min-height: 260px;
+  overflow: hidden;
+  transition: transform .5s var(--ease-cinematic), border-color .3s;
+}
+.reel-card:hover { transform: translateY(-4px); border-color: var(--primary); }
+.reel-card .reel-year {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--primary);
+}
+.reel-card::before,
+.reel-card::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 12px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 8px,
+    oklch(0.95 0 0 / 0.5) 8px 14px
+  );
+  opacity: 0.4;
+}
+.reel-card::before { top: 0; }
+.reel-card::after { bottom: 0; }
+
+/* Stepper */
+.stepper { display: flex; align-items: center; gap: 0.5rem; }
+.stepper .dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--border);
+  transition: all .3s var(--ease-cinematic);
+}
+.stepper .dot.active { background: var(--primary); box-shadow: 0 0 0 4px oklch(0.74 0.17 55 / 0.2); }
+.stepper .dot.done { background: var(--primary); }
+.stepper .bar { flex: 1; height: 1px; background: var(--border); }
+.stepper .bar.done { background: var(--primary); }
+
+/* Casting poster */
+.casting-poster {
+  position: relative;
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 22px, oklch(0.74 0.17 55 / 0.04) 22px 24px),
+    var(--surface);
+  border: 2px solid var(--foreground);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  box-shadow: 6px 6px 0 var(--primary);
+}
+.casting-poster::before {
+  content: "★ CASTING CALL ★";
+  position: absolute;
+  top: -14px;
+  inset-inline-start: 1.5rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 4px 12px;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+}
+
+/* Clapperboard success card */
+.clapperboard {
+  position: relative;
+  background: var(--surface);
+  border: 2px solid var(--foreground);
+  border-radius: 0.75rem;
+  padding: 2.5rem 2rem 2rem;
+  overflow: hidden;
+}
+.clapperboard::before {
+  content: "";
+  position: absolute;
+  top: 0; inset-inline: 0;
+  height: 32px;
+  background: repeating-linear-gradient(
+    -60deg,
+    var(--foreground) 0 26px,
+    var(--background) 26px 52px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kinetic-strip-track,
+  .grain::after,
+  .grain-card::after,
+  .film-grain-global { animation: none !important; }
+  .reveal, .reveal-word .rw-word { transition: none !important; opacity: 1 !important; transform: none !important; }
+}

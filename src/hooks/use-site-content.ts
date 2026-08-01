@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { defaultContent, type SiteContent } from "@/data/site";
+import { resolveAsset } from "@/lib/resolve-asset";
 
 const KEY = ["site-content"];
 const LS_KEY = "faii_site_content_cache_v1";
@@ -15,10 +16,15 @@ function mergeContent(remote: Partial<SiteContent> | null | undefined): SiteCont
     showreelUrl: remote.showreelUrl || defaultContent.showreelUrl,
     stats: remote.stats?.length ? remote.stats : defaultContent.stats,
     services: remote.services?.length ? remote.services : defaultContent.services,
-    portfolio: remote.portfolio?.length ? remote.portfolio : defaultContent.portfolio,
-    clients: remote.clients?.length ? remote.clients : defaultContent.clients,
+    portfolio: remote.portfolio?.length
+      ? remote.portfolio.map((p) => ({ ...p, image: resolveAsset(p.image) }))
+      : defaultContent.portfolio,
+    clients: remote.clients?.length
+      ? remote.clients.map((c) => ({ ...c, image: resolveAsset(c.image) }))
+      : defaultContent.clients,
   };
 }
+
 
 function readCache(): SiteContent | null {
   if (typeof window === "undefined") return null;

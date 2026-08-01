@@ -84,7 +84,7 @@ function AboutPage() {
       <SiteHeader />
 
       {/* Scene 1 + 2 — Overture merged with Manifesto */}
-      <section className="relative pt-32 pb-20 px-6 lg:px-10 grain vignette overflow-hidden">
+      <section className="relative pt-28 pb-16 px-6 lg:px-10 grain vignette overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img src={banner} alt="" className="w-full h-full object-cover opacity-15" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background" />
@@ -94,15 +94,15 @@ function AboutPage() {
           <Reveal>
             <div className="text-xs tracking-[0.4em] text-primary mb-5">— SCENE 01 · OVERTURE</div>
           </Reveal>
-          <h1 className="font-display leading-[1.05] text-balance text-3xl md:text-5xl">
+          <h1 className="font-display leading-[1.15] text-balance text-3xl md:text-5xl max-w-3xl">
             <SplitText text="مجموعة أصدقاء" as="span" className="inline" />{" "}
             <SplitText text="ورؤية واحدة." as="span" className="inline text-primary" delay={200} />
           </h1>
 
-          <div className="mt-10 h-px w-full bg-border" />
+          <div className="mt-12 h-px w-full bg-border" />
 
           <Reveal delay={300}>
-            <div className="mt-10 mb-6 text-xs tracking-[0.4em] text-primary">— SCENE 02 · MANIFESTO</div>
+            <div className="mt-12 mb-6 text-xs tracking-[0.4em] text-primary">— SCENE 02 · MANIFESTO</div>
           </Reveal>
           <ManifestoParagraph text={about.body} />
         </div>
@@ -111,7 +111,7 @@ function AboutPage() {
       {/* Kinetic strip */}
       <div className="kinetic-strip">
         <div className="kinetic-strip-track">
-          {Array.from({ length: 3 }).map((_, i) => (
+          {Array.from({ length: 4 }).map((_, i) => (
             <span key={i}>
               CINEMATIC · <span className="solid">FAII</span> · IRBID · STORY · <span className="solid">2026</span> ·{" "}
             </span>
@@ -120,29 +120,28 @@ function AboutPage() {
       </div>
 
       {/* Scene 3 — Two Pillars */}
-      <section className="relative py-24 px-6 lg:px-10">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative py-20 px-6 lg:px-10">
+        <div className="max-w-5xl mx-auto">
           <Reveal>
-            <div className="text-xs tracking-[0.4em] text-primary mb-14 text-center">— SCENE 03 · TWO PILLARS</div>
+            <div className="text-xs tracking-[0.4em] text-primary mb-10">— SCENE 03 · TWO PILLARS</div>
           </Reveal>
-          <div className="grid md:grid-cols-2 relative">
-            <div className="hidden md:block absolute inset-y-6 left-1/2 w-px bg-border" />
+          <div className="grid md:grid-cols-2 gap-6">
             {[
               { num: "01", label: "OUR GOALS", title: "أهدافنا", body: about.goals },
               { num: "02", label: "OUR AMBITION", title: "طموحاتنا", body: about.ambition },
             ].map((p, i) => (
               <Reveal key={p.num} delay={i * 150}>
-                <div className="grain-card relative p-8 md:p-12 h-full transition-transform duration-500 hover:-translate-y-1">
+                <div className="grain-card relative p-7 md:p-9 h-full rounded-2xl border border-border transition-transform duration-500 hover:-translate-y-1">
                   <div
-                    className="font-display leading-none absolute top-8 left-8 select-none pointer-events-none"
-                    style={{ fontSize: "8rem", color: "transparent", WebkitTextStroke: "1px var(--primary)", opacity: 0.35 }}
+                    className="font-display leading-none absolute top-5 left-6 select-none pointer-events-none"
+                    style={{ fontSize: "3.75rem", color: "transparent", WebkitTextStroke: "1px var(--primary)", opacity: 0.3 }}
                   >
                     {p.num}
                   </div>
-                  <div className="relative z-10 pt-24">
+                  <div className="relative z-10">
                     <div className="text-xs tracking-[0.35em] text-primary mb-3">— {p.label}</div>
-                    <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">{p.title}</h2>
-                    <p className="text-muted-foreground leading-relaxed text-lg whitespace-pre-line">{p.body}</p>
+                    <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">{p.title}</h2>
+                    <p className="text-muted-foreground leading-relaxed text-base whitespace-pre-line">{p.body}</p>
                   </div>
                 </div>
               </Reveal>
@@ -152,25 +151,25 @@ function AboutPage() {
       </section>
 
       {/* Scene 4 — Signature CTA */}
-      <section className="relative py-28 px-6 lg:px-10 overflow-hidden">
-        <div className="max-w-6xl mx-auto text-center relative">
+      <section className="relative py-20 px-6 lg:px-10 border-t border-border overflow-hidden">
+        <div className="max-w-5xl mx-auto text-center relative">
           <Reveal>
-            <div className="text-xs tracking-[0.4em] text-primary mb-8">— SCENE 04 · CUT TO YOU</div>
+            <div className="text-xs tracking-[0.4em] text-primary mb-6">— SCENE 04 · CUT TO YOU</div>
           </Reveal>
           <Reveal delay={120}>
-            <h2 className="font-display leading-[0.95] text-foreground text-balance" style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)" }}>
+            <h2 className="font-display leading-[1.1] text-foreground text-balance text-4xl md:text-6xl">
               دورك <span className="text-primary">الآن.</span>
             </h2>
           </Reveal>
           <Reveal delay={280}>
-            <p className="mt-8 text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl mx-auto">
               مشروعك القادم يستحق قصة تُروى كما يجب — لنبدأ.
             </p>
           </Reveal>
           <Reveal delay={420}>
             <Link
               to="/contact"
-              className="mt-12 inline-flex items-center gap-3 rounded-full bg-gradient-primary px-10 py-5 text-primary-foreground font-medium hover:shadow-glow transition-all group"
+              className="mt-9 inline-flex items-center gap-3 rounded-full bg-gradient-primary px-8 py-4 text-primary-foreground font-medium hover:shadow-glow transition-all group"
             >
               <span>لنبدأ محادثة</span>
               <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
@@ -178,6 +177,7 @@ function AboutPage() {
           </Reveal>
         </div>
       </section>
+
 
       <SiteFooter />
     </div>

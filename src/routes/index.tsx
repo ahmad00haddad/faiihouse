@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "https://faiihouse.lovable.app/" },
     ],
     links: [
-      { rel: "preload", as: "image", href: slide1, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: slide1, fetchPriority: "high" },
       { rel: "canonical", href: "https://faiihouse.lovable.app/" },
     ],
   }),

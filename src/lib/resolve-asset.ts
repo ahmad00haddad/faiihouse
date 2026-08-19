@@ -19,6 +19,12 @@ const HASHED = /^\/assets\/(.+)-[A-Za-z0-9_-]{6,}\.(webp|png|jpg|jpeg|svg|avif)$
 export function resolveAsset(src: string): string {
   if (!src) return src;
   const m = HASHED.exec(src);
-  if (!m) return src;
-  return byBaseName.get(`${m[1]}.${m[2]}`) ?? src;
+  if (m) return byBaseName.get(`${m[1]}.${m[2]}`) ?? src;
+  // Dev-only source paths (e.g. "/src/assets/faii/client-fadi.png") break in
+  // production builds; map them back by base file name too.
+  if (/^\/?src\/assets\//.test(src) || /^\/assets\//.test(src)) {
+    const file = src.split("/").pop();
+    if (file) return byBaseName.get(file) ?? src;
+  }
+  return src;
 }

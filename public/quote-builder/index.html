@@ -462,8 +462,8 @@ textarea{resize:vertical;min-height:80px;}
 
   <!-- HEADER -->
   <header class="header">
-    <a href="/" class="logo-wrap" style="text-decoration:none;" aria-label="Faii House Home">
-      <div class="logo-icon" onclick="handleLogoClick()" style="cursor:pointer;" title="">
+    <div class="logo-wrap" onclick="handleLogoClick()" style="cursor:pointer;user-select:none;" title="Faii House">
+      <div class="logo-icon">
         <img src="logo-white.png" alt="Faii House">
       </div>
       <div class="logo-text">
@@ -471,7 +471,7 @@ textarea{resize:vertical;min-height:80px;}
         <div class="sub ar-only">منشئ عروض الأسعار</div>
         <div class="sub en-only">Smart Quote Builder</div>
       </div>
-    </a>
+    </div>
     <div class="owner-mode-indicator" id="ownerBadge">
       <span class="owner-mode-dot"></span>
       <span class="ar-only">وضع الشركة</span>
@@ -482,10 +482,15 @@ textarea{resize:vertical;min-height:80px;}
       </button>
     </div>
     <div class="header-right">
+      <a class="btn-sm btn-ghost" href="/" style="text-decoration:none;" aria-label="Faii House Home">
+        <span class="ar-only">← الرئيسية</span>
+        <span class="en-only">← Home</span>
+      </a>
       <button class="lang-btn" onclick="toggleLang()" id="langToggle">EN</button>
       <button class="btn-sm btn-ghost" onclick="resetAll()" id="btnReset">إعادة تعيين</button>
       <button class="btn-sm btn-gold" onclick="showPreview()" id="btnGenerate">إنشاء العرض ✦</button>
     </div>
+
   </header>
 
   <!-- STEPS -->

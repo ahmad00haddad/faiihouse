@@ -72,10 +72,11 @@ body{background:var(--background);color:var(--foreground);font-family:'Jeddah',s
 /* HEADER */
 .header{background:oklch(0.16 0.012 60 / 0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .logo-wrap{display:flex;align-items:center;gap:12px;}
-.logo-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:50%;overflow:hidden;background:var(--surface-elevated);border:1px solid var(--border);}
-.logo-icon img{width:100%;height:100%;object-fit:contain;display:block;}
-.logo-text .name{font-family:'LostSignal','Jeddah',serif;font-size:18px;font-weight:400;color:var(--foreground);letter-spacing:-0.01em;}
-.logo-text .sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--primary);}
+.logo-icon{height:40px;display:flex;align-items:center;flex-shrink:0;}
+.logo-icon img{height:40px;width:auto;object-fit:contain;display:block;}
+.logo-text .sub{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted-foreground);transition:var(--t);}
+.logo-wrap:hover .logo-text .sub{color:var(--primary);}
+@media(max-width:640px){.logo-text{display:none;}}
 .header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .btn-sm{padding:8px 16px;font-size:12px;font-weight:600;letter-spacing:0.5px;cursor:pointer;transition:var(--t);border:none;min-height:40px;white-space:nowrap;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;gap:6px;}
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted-foreground);}

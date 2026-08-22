@@ -452,6 +452,50 @@ textarea{resize:vertical;min-height:80px;}
   .q-footer-left .contact,.q-footer-right .cliq{color:#555!important;}
   .q-divider{background:linear-gradient(to right,var(--primary),transparent)!important;}
 }
+/* ═══ Micro-interactions ═══ */
+.type-card,.equip-card,.region-card,.post-option,.reel-tier{transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .28s,background .28s,box-shadow .28s;}
+.type-card:hover,.equip-card:hover,.region-card:hover,.post-option:hover{transform:translateY(-3px);}
+.type-card:active,.equip-card:active,.region-card:active,.post-option:active{transform:scale(.975);}
+.btn-sm,.btn-full,.mq-btn,.lang-btn{transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background .25s,color .25s;}
+.btn-sm:active,.btn-full:active,.mq-btn:active,.lang-btn:active{transform:scale(.96);}
+.btn-full:hover,.mq-btn:hover{transform:translateY(-1px);}
+.step-tab{position:relative;}
+.step-tab:hover{color:var(--foreground);}
+.step-tab::after{content:"";position:absolute;inset-inline:12px;bottom:-2px;height:2px;background:var(--primary);transform:scaleX(0);transform-origin:center;transition:transform .3s cubic-bezier(.2,.8,.2,1);}
+.step-tab:hover::after{transform:scaleX(1);}
+.sb-total-bump{animation:totalBump .45s cubic-bezier(.2,.8,.2,1);}
+@keyframes totalBump{0%{transform:scale(1);}40%{transform:scale(1.07);}100%{transform:scale(1);}}
+.btn-negotiate{position:relative;}
+.btn-negotiate .neg-ico{display:inline-block;transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+.btn-negotiate:hover .neg-ico{transform:rotate(-12deg) scale(1.15);}
+
+/* ═══ Contextual hints ═══ */
+.hint{position:relative;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-inline-start:6px;border-radius:50%;border:1px solid var(--border2);color:var(--text3);font-size:10px;font-weight:700;cursor:help;vertical-align:middle;transition:var(--t);}
+.hint:hover{border-color:var(--primary);color:var(--primary);}
+.hint::after{content:attr(data-hint);position:absolute;bottom:130%;inset-inline-end:-4px;width:max-content;max-width:230px;padding:8px 10px;border-radius:10px;background:var(--surface-elevated,var(--surface));border:1px solid var(--border2);color:var(--text2);font-size:11px;font-weight:400;line-height:1.6;text-align:start;opacity:0;transform:translateY(4px);pointer-events:none;transition:opacity .22s,transform .22s;box-shadow:0 12px 30px -12px rgba(0,0,0,.6);z-index:70;}
+.hint:hover::after,.hint:focus-visible::after{opacity:1;transform:none;}
+
+/* ═══ Onboarding walkthrough ═══ */
+.tour-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;opacity:0;transition:opacity .3s;}
+.tour-backdrop.show{opacity:1;}
+.tour-ring{position:fixed;z-index:201;border:2px solid var(--primary);border-radius:14px;box-shadow:0 0 0 9999px rgba(0,0,0,.68),0 0 30px rgba(212,175,55,.35);transition:all .4s cubic-bezier(.2,.8,.2,1);pointer-events:none;}
+.tour-card{position:fixed;z-index:202;width:min(320px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:18px;box-shadow:0 30px 80px -30px rgba(0,0,0,.8);transition:all .4s cubic-bezier(.2,.8,.2,1);}
+.tour-step{font-size:10px;letter-spacing:.28em;color:var(--primary);margin-bottom:8px;}
+.tour-title{font-family:'LostSignal','Jeddah',serif;font-size:18px;color:var(--foreground);margin-bottom:6px;}
+.tour-text{font-size:12.5px;line-height:1.8;color:var(--text2);}
+.tour-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;}
+.tour-skip{background:none;border:none;color:var(--text3);font-size:11.5px;cursor:pointer;font-family:inherit;}
+.tour-skip:hover{color:var(--text2);}
+.tour-next{padding:9px 18px;border:none;border-radius:9999px;background:linear-gradient(135deg,var(--primary),var(--primary-glow,var(--primary)));color:var(--primary-foreground);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+.tour-dots{display:flex;gap:5px;}
+.tour-dots i{width:6px;height:6px;border-radius:50%;background:var(--border2);display:block;}
+.tour-dots i.on{background:var(--primary);}
+.tour-help{background:none;border:1px solid var(--border2);color:var(--text3);border-radius:9999px;padding:6px 12px;font-size:11.5px;cursor:pointer;font-family:inherit;transition:var(--t);}
+.tour-help:hover{border-color:var(--primary);color:var(--primary);}
+@media (prefers-reduced-motion: reduce){
+  .tour-ring,.tour-card{transition:none;}
+  .type-card:hover,.equip-card:hover,.region-card:hover,.post-option:hover,.btn-full:hover,.mq-btn:hover{transform:none;}
+}
 </style>
 </head>
 <body>
@@ -486,6 +530,10 @@ textarea{resize:vertical;min-height:80px;}
         <span class="ar-only">← الرئيسية</span>
         <span class="en-only">← Home</span>
       </a>
+      <button class="tour-help" onclick="startTour(true)" id="btnTourHelp" type="button">
+        <span class="ar-only">؟ كيف تعمل</span>
+        <span class="en-only">? How it works</span>
+      </button>
       <button class="lang-btn" onclick="toggleLang()" id="langToggle">EN</button>
       <button class="btn-sm btn-ghost" onclick="resetAll()" id="btnReset">إعادة تعيين</button>
       <button class="btn-sm btn-gold" onclick="showPreview()" id="btnGenerate">إنشاء العرض ✦</button>
@@ -522,7 +570,7 @@ textarea{resize:vertical;min-height:80px;}
       <h1 class="en-only">Faii House Quote Builder</h1>
       <h2 class="ar-only">ما نوع مشروعك؟</h2>
       <h2 class="en-only">What type of project?</h2>
-      <p class="ar-only">اختر فئة المشروع لتحميل الطاقم والأسعار المقترحة</p>
+      <p class="ar-only">اختر فئة المشروع لتحميل الطاقم والأسعار المقترحة<span class="hint" tabindex="0" data-hint="يمكنك تعديل الطاقم والأيام والمعدات في الخطوات التالية — هذا مجرد نقطة بداية.">؟</span></p>
       <p class="en-only">Select the project category to load suggested crew and rates</p>
     </div>
     <div class="type-grid" id="typeGrid"></div>
@@ -751,8 +799,8 @@ textarea{resize:vertical;min-height:80px;}
   <div class="sb-header">
     <div class="sb-title ar-only">العرض المباشر</div>
     <div class="sb-title en-only">Live Quote</div>
-    <div class="sb-subtitle ar-only">يتحدث في الوقت الحقيقي</div>
-    <div class="sb-subtitle en-only">Updates in real-time</div>
+    <div class="sb-subtitle ar-only">يتحدّث في الوقت الحقيقي<span class="hint" tabindex="0" data-hint="كل اختيار تقوم به يظهر هنا فورًا مع سعره — لا حاجة للحفظ.">؟</span></div>
+    <div class="sb-subtitle en-only">Updates in real-time<span class="hint" tabindex="0" data-hint="Every choice you make appears here instantly with its price — no need to save.">?</span></div>
   </div>
   <div class="sb-body" id="sbBody">
     <div class="sb-empty">
@@ -767,7 +815,11 @@ textarea{resize:vertical;min-height:80px;}
       <span class="en-only">Generate Price Offer</span>
     </button>
     <button class="btn-full btn-wa" onclick="sendWhatsApp()">💬 <span class="ar-only">إرسال عبر واتساب</span><span class="en-only">Send via WhatsApp</span></button>
-    <button class="btn-full btn-negotiate" onclick="openNegotiate()">🤝 <span class="ar-only">تفاوض على السعر</span><span class="en-only">Negotiate Price</span></button>
+    <button class="btn-full btn-negotiate" onclick="openNegotiate()"><span class="neg-ico">🤝</span> <span class="ar-only">تفاوض على السعر</span><span class="en-only">Negotiate Price</span></button>
+    <div style="margin-top:8px;font-size:10.5px;color:var(--text3);line-height:1.7;text-align:center;">
+      <span class="ar-only">كل عروضنا قابلة للتفاوض — أخبرنا بميزانيتك.</span>
+      <span class="en-only">All our offers are negotiable — tell us your budget.</span>
+    </div>
   </div>
 </div>
 
@@ -1741,7 +1793,13 @@ function updateQuote() {
   } else { db.classList.remove('show'); }
 
   // Mobile total
-  document.getElementById('mobileTotal').textContent = q.total+' JD';
+  const mt = document.getElementById('mobileTotal');
+  if(mt.textContent !== q.total+' JD'){
+    mt.textContent = q.total+' JD';
+    mt.classList.remove('sb-total-bump');
+    void mt.offsetWidth;
+    mt.classList.add('sb-total-bump');
+  }
 
   // Build sidebar HTML
   const type = PROJECT_TYPES.find(t=>t.id===state.projectType);
@@ -2203,6 +2261,112 @@ function doReset() {
   el('sbBody').innerHTML=`<div class="sb-empty"><span class="sb-empty-icon">🎬</span><p class="ar-only">اختر نوع المشروع لبدء بناء عرض السعر</p><p class="en-only">Select a project type to start</p></div>`;
   el('mobileTotal').textContent='0 JD';
 }
+</script>
+
+<!-- ══ ONBOARDING WALKTHROUGH (client-facing only) ══ -->
+<script>
+(function(){
+  const TOUR_LS = 'faii_qb_tour_v1';
+  let tourIdx = 0, tourEls = null;
+
+  const STEPS = [
+    { sel:'.step-nav',
+      ar:{t:'٦ خطوات فقط', d:'تنقّل بين الخطوات من هنا. كل خطوة تسألك سؤالًا واحدًا بسيطًا، ويمكنك الرجوع في أي وقت.'},
+      en:{t:'Just 6 steps', d:'Navigate the steps from here. Each step asks one simple question, and you can go back anytime.'} },
+    { sel:'#typeGrid',
+      ar:{t:'ابدأ بنوع المشروع', d:'اختر نوع مشروعك، وسنحمّل لك الطاقم والأسعار المقترحة تلقائيًا — يمكنك تعديلها لاحقًا.'},
+      en:{t:'Start with project type', d:'Pick your project type and we auto-load a suggested crew and rates — editable later.'} },
+    { sel:'.sidebar .sb-header, .mobile-quote-bar',
+      ar:{t:'العرض يتكوّن أمامك', d:'السعر يتحدّث لحظيًا مع كل اختيار، فتعرف تكلفة كل عنصر قبل أن تكمل.'},
+      en:{t:'Your quote builds live', d:'The price updates instantly with every choice, so you see the cost of each item as you go.'} },
+    { sel:'.btn-negotiate',
+      ar:{t:'السعر قابل للتفاوض', d:'لو كانت ميزانيتك مختلفة، اضغط هنا واقترح السعر الذي يناسبك وسنحاول الوصول لحل مشترك.'},
+      en:{t:'The price is negotiable', d:'If your budget differs, tap here and propose your price — we will try to meet in the middle.'} },
+    { sel:'#btnGenerate',
+      ar:{t:'وأخيرًا: أنشئ العرض', d:'اضغط هنا للحصول على عرض سعر جاهز للطباعة أو الإرسال عبر واتساب. عملك محفوظ تلقائيًا.'},
+      en:{t:'Finally: generate the offer', d:'Tap here for a printable offer or send it via WhatsApp. Your work is saved automatically.'} }
+  ];
+
+  function isAr(){ return document.documentElement.getAttribute('dir') !== 'ltr' && (window.currentLang ? window.currentLang === 'ar' : true); }
+
+  function build(){
+    const bd = document.createElement('div'); bd.className='tour-backdrop'; bd.id='tourBackdrop';
+    const ring = document.createElement('div'); ring.className='tour-ring'; ring.id='tourRing';
+    const card = document.createElement('div'); card.className='tour-card'; card.id='tourCard';
+    document.body.append(bd, ring, card);
+    bd.addEventListener('click', endTour);
+    requestAnimationFrame(()=>bd.classList.add('show'));
+    return {bd, ring, card};
+  }
+
+  function target(step){
+    for(const sel of step.sel.split(',')){
+      const el = document.querySelector(sel.trim());
+      if(el && el.getBoundingClientRect().width > 0) return el;
+    }
+    return null;
+  }
+
+  function render(){
+    const step = STEPS[tourIdx];
+    const el = target(step);
+    if(!el){ tourIdx++; return tourIdx < STEPS.length ? render() : endTour(); }
+    el.scrollIntoView({block:'nearest', behavior:'smooth'});
+    const r = el.getBoundingClientRect();
+    const pad = 8;
+    const {ring, card} = tourEls;
+    ring.style.top = (r.top-pad)+'px';
+    ring.style.left = (r.left-pad)+'px';
+    ring.style.width = (r.width+pad*2)+'px';
+    ring.style.height = (r.height+pad*2)+'px';
+
+    const ar = isAr();
+    const c = ar ? step.ar : step.en;
+    card.innerHTML =
+      '<div class="tour-step">'+(ar?'خطوة ':'STEP ')+(tourIdx+1)+' / '+STEPS.length+'</div>'+
+      '<div class="tour-title">'+c.t+'</div>'+
+      '<div class="tour-text">'+c.d+'</div>'+
+      '<div class="tour-actions">'+
+        '<button class="tour-skip" type="button" data-tour="skip">'+(ar?'تخطّي':'Skip')+'</button>'+
+        '<div class="tour-dots">'+STEPS.map((_,i)=>'<i class="'+(i===tourIdx?'on':'')+'"></i>').join('')+'</div>'+
+        '<button class="tour-next" type="button" data-tour="next">'+(tourIdx===STEPS.length-1?(ar?'يلا نبدأ':'Let\u2019s start'):(ar?'التالي':'Next'))+'</button>'+
+      '</div>';
+    card.querySelector('[data-tour=skip]').onclick = endTour;
+    card.querySelector('[data-tour=next]').onclick = next;
+
+    const cw = card.offsetWidth || 320, ch = card.offsetHeight || 190;
+    let top = r.bottom + 14;
+    if(top + ch > window.innerHeight - 12) top = Math.max(12, r.top - ch - 14);
+    let left = r.left + r.width/2 - cw/2;
+    left = Math.min(Math.max(12, left), window.innerWidth - cw - 12);
+    card.style.top = top+'px';
+    card.style.left = left+'px';
+  }
+
+  function next(){ tourIdx++; tourIdx >= STEPS.length ? endTour() : render(); }
+
+  function endTour(){
+    if(!tourEls) return;
+    try{ localStorage.setItem(TOUR_LS,'1'); }catch(e){}
+    tourEls.bd.remove(); tourEls.ring.remove(); tourEls.card.remove();
+    tourEls = null;
+    window.removeEventListener('resize', render);
+  }
+
+  window.startTour = function(force){
+    if(tourEls) return;
+    if(!force){
+      try{ if(localStorage.getItem(TOUR_LS)==='1') return; }catch(e){ return; }
+    }
+    tourIdx = 0;
+    tourEls = build();
+    window.addEventListener('resize', render);
+    render();
+  };
+
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') endTour(); });
+  window.addEventListener('load', ()=>{ setTimeout(()=>window.startTour(false), 900); });
+})();
 </script>
 </body>
 </html>

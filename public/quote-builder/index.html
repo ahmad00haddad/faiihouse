@@ -1848,6 +1848,7 @@ function calcQuote() {
   let postTotal = 0;
   const postLines = [];
   const isRush = state.deliveryDays==='rush';
+  const isSeven = state.deliveryDays==='7';
   POST_OPTIONS.forEach(p=>{
     let sel = state.post[p.id];
     if(!sel) return;
@@ -1869,14 +1870,26 @@ function calcQuote() {
     }
 
     let price = sel.rate * sel.qty;
+    let extraStrEn = '';
+    let extraStrAr = '';
     
-    // Rush multiplier
-    if(isRush && (p.id==='editing'||p.id==='colorgrade')) price = Math.round(price*1.5);
+    // Delivery multiplier
+    if (p.id==='editing' || p.id==='colorgrade') {
+      if (isRush) {
+        price = Math.round(price * 1.5);
+        extraStrEn = ' (Rush +50%)';
+        extraStrAr = ' (سريع +50%)';
+      } else if (isSeven) {
+        price = Math.round(price * 1.25);
+        extraStrEn = ' (7 Days +25%)';
+        extraStrAr = ' (7 أيام +25%)';
+      }
+    }
     
     postTotal += price;
     postLines.push({
-      name: p.name + (sel.qty>1?' ×'+sel.qty:'') + (isRush&&(p.id==='editing'||p.id==='colorgrade')?' (Rush +50%)':''),
-      nameAr: p.ar + (sel.qty>1?' ×'+sel.qty:'') + (isRush&&(p.id==='editing'||p.id==='colorgrade')?' (سريع +50%)':''),
+      name: p.name + (sel.qty>1?' ×'+sel.qty:'') + extraStrEn,
+      nameAr: p.ar + (sel.qty>1?' ×'+sel.qty:'') + extraStrAr,
       price
     });
   });

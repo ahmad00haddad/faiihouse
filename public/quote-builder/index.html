@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Faii House — منشئ عروض الأسعار</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
 @font-face {
   font-family:"Jeddah";
@@ -2139,6 +2140,14 @@ function showPreview() {
     </div>
   </div>`;
   document.getElementById('quoteModal').classList.add('show');
+  if(typeof confetti === 'function') {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#D4AF37', '#ffffff', '#2ecc71']
+    });
+  }
   }, 800);
 }
 

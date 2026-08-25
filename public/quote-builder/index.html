@@ -460,6 +460,11 @@ textarea{resize:vertical;min-height:80px;}
 .type-card:active,.equip-card:active,.region-card:active,.post-option:active{transform:scale(.975);}
 .btn-sm,.btn-full,.mq-btn,.lang-btn{transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .25s,background .25s,color .25s;}
 .btn-sm:active,.btn-full:active,.mq-btn:active,.lang-btn:active{transform:scale(.96);}
+.seg-ctrl{display:flex;background:var(--surface-elevated);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;padding:4px;gap:4px;}
+.seg-btn{flex:1;background:transparent;border:none;border-radius:6px;padding:8px 0;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;transition:var(--t);}
+.seg-btn.active{background:var(--primary);color:var(--primary-foreground);box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+@keyframes shake-error{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-5px);}40%,80%{transform:translateX(5px);}}
+.shake-error{animation:shake-error 0.4s ease;border-color:var(--red)!important;}
 .btn-full:hover,.mq-btn:hover{transform:translateY(-1px);}
 .step-tab{position:relative;}
 .step-tab:hover{color:var(--foreground);}
@@ -502,6 +507,9 @@ textarea{resize:vertical;min-height:80px;}
 </head>
 <body>
 <div class="app">
+<div class="progress-bar-container" style="position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;">
+  <div id="topProgressBar" style="height:100%;width:16.66%;background:var(--primary);transition:width 0.4s ease;"></div>
+</div>
 
 <!-- MAIN -->
 <div class="main">
@@ -652,12 +660,23 @@ textarea{resize:vertical;min-height:80px;}
       <div class="form-group">
         <label class="ar-only">موعد التسليم</label>
         <label class="en-only">Delivery Timeline</label>
-        <select id="deliveryDays" onchange="updateQuote()">
-          <option value="7">7 أيام — قياسي / 7 days (standard)</option>
-          <option value="14" selected>14 يوم — قياسي / 14 days (standard)</option>
-          <option value="rush">3 أيام أو أقل — سريع (+50%) / Rush</option>
-        </select>
+        <div class="seg-ctrl" id="deliveryDaysWrapper">
+           <button type="button" class="seg-btn active" data-val="14" onclick="setDelivery('14')">14 يوم / 14d</button>
+           <button type="button" class="seg-btn" data-val="7" onclick="setDelivery('7')">7 أيام / 7d</button>
+           <button type="button" class="seg-btn" data-val="rush" onclick="setDelivery('rush')">سريع / Rush</button>
+        </div>
+        <input type="hidden" id="deliveryDays" value="14">
       </div>
+      <script>
+        function setDelivery(val) {
+          document.querySelectorAll('#deliveryDaysWrapper .seg-btn').forEach(b => {
+            b.classList.remove('active');
+            if(b.getAttribute('data-val') === val) b.classList.add('active');
+          });
+          document.getElementById('deliveryDays').value = val;
+          updateQuote();
+        }
+      </script>
       <div class="form-group full">
         <label class="ar-only">ملاحظات إضافية (اختياري)</label>
         <label class="en-only">Project Notes (optional)</label>
@@ -1211,8 +1230,22 @@ function goStep(n) {
   });
   document.getElementById('sec-'+n).classList.add('active');
   state.step = n;
+
+  const pb = document.getElementById('topProgressBar');
+  if(pb) pb.style.width = ((n/6)*100) + '%';
+  
+  const mobBtn = document.querySelector('.mobile-quote-bar .mq-btn');
+  if(mobBtn) {
+    if(n < 6) {
+      mobBtn.innerHTML = '<span class="ar-only">التالي ←</span><span class="en-only">Next →</span>';
+      mobBtn.onclick = () => goStep(n + 1);
+    } else {
+      mobBtn.innerHTML = '<span class="ar-only">إنشاء العرض ✦</span><span class="en-only">Generate ✦</span>';
+      mobBtn.onclick = showPreview;
+    }
+  }
+
   document.getElementById('rushNote').style.display = state.deliveryDays==='rush'?'block':'none';
-  // Scroll only the main content area, not the whole page
   const mainEl = document.querySelector('.main');
   if(mainEl) mainEl.scrollTop = 0;
   window.scrollTo({top:0, behavior:'smooth'});
@@ -1909,6 +1942,15 @@ function showInlineAlert(msgAr, msgEn) {
 function showPreview() {
   if(!state.projectType){ showInlineAlert('يرجى اختيار نوع المشروع أولاً','Please select a project type first.'); return; }
   
+  const cName = document.getElementById('clientName');
+  if(!cName.value.trim()){
+    goStep(2);
+    cName.classList.add('shake-error');
+    setTimeout(()=>cName.classList.remove('shake-error'), 500);
+    cName.focus();
+    return;
+  }
+
   const btns = document.querySelectorAll('#btnGenerate, .mq-btn');
   const oldTexts = [];
   btns.forEach((btn, i) => { 

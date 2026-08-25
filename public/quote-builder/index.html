@@ -97,8 +97,9 @@ body{background:var(--background);color:var(--foreground);font-family:'Jeddah',s
 .step-tab.active .step-num{background:var(--gold-dim);border-color:var(--primary);}
 
 /* SECTION */
-.section{padding:28px 32px;display:none;}
-.section.active{display:block;}
+.section{padding:28px 32px;display:none;opacity:0;transform:translateY(15px);}
+.section.active{display:block;animation:slideFade 0.5s cubic-bezier(0.2,0.8,0.2,1) forwards;}
+@keyframes slideFade{to{opacity:1;transform:translateY(0);}}
 .section-head{margin-bottom:24px;}
 .section-head h1,.section-head h2{font-family:'LostSignal','Jeddah',serif;font-size:26px;font-weight:400;color:var(--foreground);line-height:1.15;}
 .section-head p{font-size:14px;color:var(--muted-foreground);margin-top:6px;}
@@ -474,7 +475,7 @@ textarea{resize:vertical;min-height:80px;}
 .hint{position:relative;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-inline-start:6px;border-radius:50%;border:1px solid var(--border2);color:var(--text3);font-size:10px;font-weight:700;cursor:help;vertical-align:middle;transition:var(--t);}
 .hint:hover{border-color:var(--primary);color:var(--primary);}
 .hint::after{content:attr(data-hint);position:absolute;bottom:130%;inset-inline-end:-4px;width:max-content;max-width:230px;padding:8px 10px;border-radius:10px;background:var(--surface-elevated,var(--surface));border:1px solid var(--border2);color:var(--text2);font-size:11px;font-weight:400;line-height:1.6;text-align:start;opacity:0;transform:translateY(4px);pointer-events:none;transition:opacity .22s,transform .22s;box-shadow:0 12px 30px -12px rgba(0,0,0,.6);z-index:70;}
-.hint:hover::after,.hint:focus-visible::after{opacity:1;transform:none;}
+.hint:hover::after,.hint:focus-visible::after,.hint.active::after{opacity:1;transform:none;}
 
 /* ═══ Onboarding walkthrough ═══ */
 .tour-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;opacity:0;transition:opacity .3s;}
@@ -1203,7 +1204,10 @@ function goStep(n) {
   document.querySelectorAll('.step-tab').forEach((t,i)=>{
     t.classList.remove('active','done');
     if(i+1<n) t.classList.add('done');
-    if(i+1===n) t.classList.add('active');
+    if(i+1===n) {
+      t.classList.add('active');
+      t.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
   });
   document.getElementById('sec-'+n).classList.add('active');
   state.step = n;
@@ -1211,7 +1215,7 @@ function goStep(n) {
   // Scroll only the main content area, not the whole page
   const mainEl = document.querySelector('.main');
   if(mainEl) mainEl.scrollTop = 0;
-  window.scrollTo({top:0, behavior:'instant'});
+  window.scrollTo({top:0, behavior:'smooth'});
   saveState();
 }
 
@@ -1904,10 +1908,27 @@ function showInlineAlert(msgAr, msgEn) {
 
 function showPreview() {
   if(!state.projectType){ showInlineAlert('يرجى اختيار نوع المشروع أولاً','Please select a project type first.'); return; }
-  const q = calcQuote();
-  const type = PROJECT_TYPES.find(t=>t.id===state.projectType);
-  const today = state.quoteDate || new Date().toISOString().split('T')[0];
-  const region = REGIONS.find(r=>r.id===state.region);
+  
+  const btns = document.querySelectorAll('#btnGenerate, .mq-btn');
+  const oldTexts = [];
+  btns.forEach((btn, i) => { 
+    oldTexts[i] = btn.innerHTML; 
+    btn.innerHTML = '<span class="ar-only">جاري الحساب...</span><span class="en-only">Calculating...</span>'; 
+    btn.style.opacity = '0.7'; 
+    btn.style.pointerEvents = 'none'; 
+  });
+  
+  setTimeout(() => {
+    btns.forEach((btn, i) => { 
+      btn.innerHTML = oldTexts[i]; 
+      btn.style.opacity = '1'; 
+      btn.style.pointerEvents = 'auto'; 
+    });
+    
+    const q = calcQuote();
+    const type = PROJECT_TYPES.find(t=>t.id===state.projectType);
+    const today = state.quoteDate || new Date().toISOString().split('T')[0];
+    const region = REGIONS.find(r=>r.id===state.region);
 
   // Calculate expiry date (30 days from quote date)
   const quoteD = new Date(today);
@@ -2077,8 +2098,8 @@ function showPreview() {
       </div>
     </div>
   </div>`;
-
   document.getElementById('quoteModal').classList.add('show');
+  }, 800);
 }
 
 function closeModal() {
@@ -2368,6 +2389,22 @@ function doReset() {
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') endTour(); });
   window.addEventListener('load', ()=>{ setTimeout(()=>window.startTour(false), 900); });
 })();
+
+// Mobile Hint Touch Support
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.hint').forEach(h => {
+    h.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.hint.active').forEach(other => {
+        if(other !== h) other.classList.remove('active');
+      });
+      h.classList.toggle('active');
+    });
+  });
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.hint.active').forEach(h => h.classList.remove('active'));
+  });
+});
 </script>
 </body>
 </html>

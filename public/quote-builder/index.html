@@ -371,8 +371,13 @@ textarea{resize:vertical;min-height:80px;}
   
   /* Hide unnecessary buttons in the header on mobile to keep it elegant and clean */
   .header-right #btnGenerate, 
-  .header-right #btnReset, 
   .header-right #btnTourHelp { display: none !important; }
+  
+  /* Convert Reset button to an elegant icon */
+  .header-right #btnReset { font-size: 0 !important; letter-spacing: 0; }
+  .header-right #btnReset::after { content: "🔄"; font-size: 16px; display:block; line-height:1; }
+  .header-right #btnReset { padding: 8px 12px; min-height: 0; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: 9999px; }
+
   
   /* Convert Home button to an elegant icon */
   .header-right a[href="/"] .ar-only, 

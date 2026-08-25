@@ -2887,33 +2887,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 100);
   };
 
-  // 5. Zero-State Helper for Equipment via goStep Intercept
-  const originalGoStep3 = window.goStep;
-  window.goStep = function(n) {
-    if (n === 5 && typeof state !== 'undefined' && state.step === 4) {
-      // Trying to leave Equipment step without any equipment selected
-      if(state.projectType !== 'reels' && (!state.equipment || state.equipment === 'none') && (!state.customEquip || state.customEquip == 0)) {
-        const btn = document.querySelector('#sec-4 .step-nav-btns button:last-child');
-        const mobBtn = document.querySelector('.mobile-quote-bar .mq-btn');
-        if(btn && !btn.dataset.warned) {
-          btn.dataset.warned = "true";
-          const oldHtml = btn.innerHTML;
-          btn.innerHTML = 'متأكد بدون معدات؟ ←';
-          btn.style.background = 'var(--gold)'; btn.style.color = '#000';
-          if(mobBtn) { mobBtn.innerHTML = 'متأكد بدون معدات؟ ←'; mobBtn.style.background = 'var(--gold)'; mobBtn.style.color = '#000'; }
-          if(navigator.vibrate) navigator.vibrate([50, 50, 50]);
-          setTimeout(() => {
-            btn.innerHTML = oldHtml;
-            btn.style.background = ''; btn.style.color = '';
-            btn.dataset.warned = "";
-            if(mobBtn) { mobBtn.innerHTML = '<span class="ar-only">التالي ←</span><span class="en-only">Next →</span>'; mobBtn.style.background = ''; mobBtn.style.color = ''; }
-          }, 3000);
-          return; // Block navigation the first time
-        }
-      }
-    }
-    if(originalGoStep3) originalGoStep3(n);
-  };
 });
 </script>
 

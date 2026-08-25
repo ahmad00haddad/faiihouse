@@ -2069,8 +2069,8 @@ function showInlineAlert(msgAr, msgEn) {
 }
 
 
-window.resetTerms = function() {
-  state.customTerms = null;
+window.resetCustom = function(key) {
+  state[key] = null;
   saveState();
   showPreview();
 }
@@ -2261,7 +2261,7 @@ function showPreview() {
       <div class="q-details-wrap" style="position:relative; margin-bottom:20px;">
         <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
           <span>DETAILS & TERMS</span>
-          ${isOwnerMode ? `<button class="btn-sm btn-ghost" onclick="resetTerms()" style="font-size:9px; padding:2px 8px; min-height:0; display:${state.customTerms?'inline-flex':'none'};">Reset Default</button>` : ''}
+          ${isOwnerMode ? `<button class="btn-sm btn-ghost" onclick="resetCustom(\'customTerms\')" style="font-size:9px; padding:2px 8px; min-height:0; display:${state.customTerms?'inline-flex':'none'};">Reset Default</button>` : ''}
         </div>
         <div class="q-details" 
              ${isOwnerMode ? 'contenteditable="true" spellcheck="false" onblur="state.customTerms=this.innerHTML;saveState();"' : ''} 
@@ -2277,20 +2277,23 @@ ${state.projectNotes?'— '+state.projectNotes+'<br>':''}
         ${isOwnerMode ? '<div style="font-size:9px; color:var(--primary); margin-top:6px; text-align:right;">✦ You can click and edit the text above. It will be saved automatically.</div>' : ''}
       </div>
     </div>
-    <div class="q-footer">
+    <div class="q-footer" style="${isOwnerMode ? 'align-items:flex-start;' : ''}">
       <div class="q-footer-left">
-        <div class="ty">Thank<br>You<span>.</span></div>
-        <div class="contact">
-          Faii.House.jo@gmail.com<br>
-          +962799256345<br>
-          +962796016640
+        <div class="ty" style="margin-bottom:10px;">Thank<br>You<span>.</span></div>
+        ${isOwnerMode ? `<button class="btn-sm btn-ghost" onclick="resetCustom('customContact')" style="font-size:9px; padding:2px 8px; min-height:0; display:${state.customContact?'inline-flex':'none'}; margin-bottom:4px;">Reset Default</button>` : ''}
+        <div class="contact" 
+             ${isOwnerMode ? 'contenteditable="true" spellcheck="false" onblur="state.customContact=this.innerHTML;saveState();"' : ''} 
+             style="${isOwnerMode ? 'outline:none; padding:8px; border:1px dashed var(--border); border-radius:6px; cursor:text;' : ''}">
+          ${state.customContact ? state.customContact : `Faii.House.jo@gmail.com<br>+962799256345<br>+962796016640`}
         </div>
       </div>
-      <div class="q-footer-right">
-        <div class="send">SEND<br>PAYMENT</div>
-        <div class="cliq">
-          CliQ: AHMAD00HAD<br>
-          IBAN: JO47ARAB181000000018121212308500
+      <div class="q-footer-right" style="${isOwnerMode ? 'display:flex; flex-direction:column; align-items:flex-end;' : ''}">
+        <div class="send" style="margin-bottom:10px;">SEND<br>PAYMENT</div>
+        ${isOwnerMode ? `<button class="btn-sm btn-ghost" onclick="resetCustom('customBank')" style="font-size:9px; padding:2px 8px; min-height:0; display:${state.customBank?'inline-flex':'none'}; margin-bottom:4px;">Reset Default</button>` : ''}
+        <div class="cliq" 
+             ${isOwnerMode ? 'contenteditable="true" spellcheck="false" onblur="state.customBank=this.innerHTML;saveState();"' : ''} 
+             style="${isOwnerMode ? 'outline:none; padding:8px; border:1px dashed var(--border); border-radius:6px; cursor:text; text-align:right;' : ''}">
+          ${state.customBank ? state.customBank : `CliQ: AHMAD00HAD<br>IBAN: JO47ARAB181000000018121212308500`}
         </div>
       </div>
     </div>

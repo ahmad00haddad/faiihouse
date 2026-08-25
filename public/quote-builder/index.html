@@ -1698,6 +1698,7 @@ function setPostRate(id, val) {
   }
   sel.rate = parseInt(val) || 0;
   state.post[id] = sel;
+  renderPostOptions();
   updateQuote();
   saveState();
 }
@@ -1709,6 +1710,7 @@ function setPostQty(id, val) {
   }
   sel.qty = Math.max(1, parseInt(val) || 1);
   state.post[id] = sel;
+  renderPostOptions();
   updateQuote();
   saveState();
 }

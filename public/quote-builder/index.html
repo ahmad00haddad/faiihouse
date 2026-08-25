@@ -890,7 +890,7 @@ a, button, input, select, textarea, .type-card, .equip-card, .region-card, .step
   <div class="mq-total">
     <span class="mq-label ar-only">إجمالي العرض</span>
     <span class="mq-label en-only">Total Quote</span>
-        <span class="mq-amount" id="mobileTotal">0 ${state.currency||'JOD'}</span>
+        <span class="mq-amount" id="mobileTotal">0 ${state.currency||"JOD"}</span>
     <div id="mobileSavings" style="font-size:11px; color:var(--gold); font-weight:bold; opacity:0; transition:0.3s; margin-top:2px;"></div>
   </div>
   <button class="mq-btn" onclick="showPreview()">
@@ -919,16 +919,16 @@ a, button, input, select, textarea, .type-card, .equip-card, .region-card, .step
 // DATA
 // ══════════════════════════════════════════════════════════════
 const PROJECT_TYPES = [
-  {id:'reels',   icon:'📱',name:'Instagram Reels',   ar:'ريلز انستغرام',    range:'100–250 ${state.currency||'JOD'}', crew:['cinematographer'],  pack:true,  reelBased:true,
+  {id:'reels',   icon:'📱',name:'Instagram Reels',   ar:'ريلز انستغرام',    range:`100–250 ${state.currency||"JOD"}`, crew:['cinematographer'],  pack:true,  reelBased:true,
    defaultEquip:'basic', defaultPost:['editing']},
-  {id:'interview',icon:'🎙',name:'Interview / Podcast',ar:'مقابلة / بودكاست',range:'300–800 ${state.currency||'JOD'}',   crew:['cinematographer','cinematographer2','sound'],
+  {id:'interview',icon:'🎙',name:'Interview / Podcast',ar:'مقابلة / بودكاست',range:`300–800 ${state.currency||"JOD"}`,   crew:['cinematographer','cinematographer2','sound'],
    defaultEquip:'standard', defaultPost:['editing','graphics']},
-  {id:'corporate',icon:'🏢',name:'Corporate Video',   ar:'فيديو مؤسسي',      range:'600–2,000 ${state.currency||'JOD'}', crew:['director','cinematographer','sound','cam_assistant','driver']},
-  {id:'commercial',icon:'📺',name:'Commercial / TVC', ar:'إعلان تجاري',      range:'800–4,000 ${state.currency||'JOD'}', crew:['director','cinematographer','producer','gaffer','sound','cam_assistant','driver']},
-  {id:'documentary',icon:'🎥',name:'Documentary',     ar:'فيلم وثائقي',       range:'600–3,000 ${state.currency||'JOD'}', crew:['director','cinematographer','sound','driver']},
-  {id:'shortfilm',icon:'🎞',name:'Short Film',        ar:'فيلم قصير',          range:'800–3,800 ${state.currency||'JOD'}', crew:['director','cinematographer','producer','cam_assistant','gaffer','sound','driver']},
-  {id:'event',   icon:'🎤',name:'Event Coverage',     ar:'تغطية فعالية',       range:'300–1,500 ${state.currency||'JOD'}', crew:['cinematographer','sound']},
-  {id:'photovideo',icon:'📷',name:'Photo + Video',    ar:'صور + فيديو',        range:'500–2,500 ${state.currency||'JOD'}', crew:['cinematographer','photographer','sound','driver']},
+  {id:'corporate',icon:'🏢',name:'Corporate Video',   ar:'فيديو مؤسسي',      range:`600–2,000 ${state.currency||"JOD"}`, crew:['director','cinematographer','sound','cam_assistant','driver']},
+  {id:'commercial',icon:'📺',name:'Commercial / TVC', ar:'إعلان تجاري',      range:`800–4,000 ${state.currency||"JOD"}`, crew:['director','cinematographer','producer','gaffer','sound','cam_assistant','driver']},
+  {id:'documentary',icon:'🎥',name:'Documentary',     ar:'فيلم وثائقي',       range:`600–3,000 ${state.currency||"JOD"}`, crew:['director','cinematographer','sound','driver']},
+  {id:'shortfilm',icon:'🎞',name:'Short Film',        ar:'فيلم قصير',          range:`800–3,800 ${state.currency||"JOD"}`, crew:['director','cinematographer','producer','cam_assistant','gaffer','sound','driver']},
+  {id:'event',   icon:'🎤',name:'Event Coverage',     ar:'تغطية فعالية',       range:`300–1,500 ${state.currency||"JOD"}`, crew:['cinematographer','sound']},
+  {id:'photovideo',icon:'📷',name:'Photo + Video',    ar:'صور + فيديو',        range:`500–2,500 ${state.currency||"JOD"}`, crew:['cinematographer','photographer','sound','driver']},
 ];
 
 const ROLES = [
@@ -1005,7 +1005,7 @@ const POST_OPTIONS = [
   {id:'voiceover',   name:'Voice Over',                ar:'تعليق صوتي',                    desc:'Arabic/English VO recording',         descAr:'تسجيل تعليق صوتي عربي/إنجليزي',   basePrice:75,  fixed:true},
   {id:'graphics',    name:'Motion Graphics / Titles',  ar:'موشن جرافيك',                   desc:'Animated titles, lower thirds, end cards', descAr:'عناوين متحركة وتأثيرات', basePrice:80,  fixed:true},
   {id:'sound_design',name:'Sound Design & Mix',        ar:'تصميم صوتي ومكس',               desc:'Full audio mix, SFX, music licensing', descAr:'مكس صوتي كامل ومؤثرات',          basePrice:150, fixed:true},
-  {id:'screenplay',  name:'Screenplay / Script',       ar:'كتابة سيناريو',                  desc:'External scriptwriter — 50–100 ${state.currency||'JOD'} depending on project', descAr:'كاتب خارجي متعاون — 50 إلى 100 ${state.currency||'JOD'} حسب المشروع', basePrice:75, fixed:true, scriptNote:true},
+  {id:'screenplay',  name:'Screenplay / Script',       ar:'كتابة سيناريو',                  desc:`External scriptwriter — 50–100 ${state.currency||"JOD"} depending on project`, descAr:`كاتب خارجي متعاون — 50 إلى 100 ${state.currency||"JOD"} حسب المشروع`, basePrice:75, fixed:true, scriptNote:true},
 ];
 
 const REGIONS = [
@@ -1386,11 +1386,11 @@ function getReelPackInfo() {
   let ratePerReel, packLabel, isSaving=false;
   if(count>=5) {
     ratePerReel = isAmman ? 135 : 100;
-    packLabel = L(`باقة 5 ريلز (${ratePerReel} ${state.currency||'JOD'}/ريل)`, `5-Reel Pack (${ratePerReel} ${state.currency||'JOD'}/reel)`);
+    packLabel = L(`باقة 5 ريلز (${ratePerReel} ${state.currency||"JOD"}/ريل)`, `5-Reel Pack (${ratePerReel} ${state.currency||"JOD"}/reel)`);
     isSaving = true;
   } else if(count>=3) {
     ratePerReel = isAmman ? 150 : 135;
-    packLabel = L(`باقة 3 ريلز (${ratePerReel} ${state.currency||'JOD'}/ريل)`, `3-Reel Pack (${ratePerReel} ${state.currency||'JOD'}/reel)`);
+    packLabel = L(`باقة 3 ريلز (${ratePerReel} ${state.currency||"JOD"}/ريل)`, `3-Reel Pack (${ratePerReel} ${state.currency||"JOD"}/reel)`);
     isSaving = true;
   } else {
     ratePerReel = isAmman ? 200 : 150; // single reel
@@ -1421,22 +1421,22 @@ function updateReelBreakdown() {
     breakdown.innerHTML = `
       <div class="reel-tier grain-card ${count===1?'active-tier':''}">
         <div class="rt-label">${L('ريل واحد','1 Reel')}</div>
-        <div class="rt-price">${single1} ${state.currency||'JOD'}</div>
+        <div class="rt-price">${single1} ${state.currency||"JOD"}</div>
         <div class="rt-save">${L('السعر الأساسي','Base Price')}</div>
       </div>
       <div class="reel-tier grain-card ${count>=3&&count<5?'active-tier':''}">
         <div class="rt-label">${L('باقة 3 ريلز','3-Reel Pack')}</div>
-        <div class="rt-price">${pack3} ${state.currency||'JOD'}</div>
-        <div class="rt-save" style="color:var(--gold)">${L('توفير','Save')} ${single1-pack3} ${state.currency||'JOD'}/${L('ريل','reel')}</div>
+        <div class="rt-price">${pack3} ${state.currency||"JOD"}</div>
+        <div class="rt-save" style="color:var(--gold)">${L('توفير','Save`)} ${single1-pack3} ${state.currency||"JOD"}/${L(`ريل','reel')}</div>
       </div>
       <div class="reel-tier grain-card ${count>=5?'active-tier':''}">
         <div class="rt-label">${L('باقة 5 ريلز','5-Reel Pack')}</div>
-        <div class="rt-price">${pack5} ${state.currency||'JOD'}</div>
-        <div class="rt-save" style="color:var(--gold)">${L('أفضل قيمة!','Best Value!')} −${single1-pack5} ${state.currency||'JOD'}/${L('ريل','reel')}</div>
+        <div class="rt-price">${pack5} ${state.currency||"JOD"}</div>
+        <div class="rt-save" style="color:var(--gold)">${L('أفضل قيمة!','Best Value!`)} −${single1-pack5} ${state.currency||"JOD"}/${L(`ريل','reel')}</div>
       </div>
       <div class="reel-tier" style="border:1px solid var(--gold);background:var(--gold-dim)">
-        <div class="rt-label">${count} ${L('ريل × ','reels × ')}${info.ratePerReel} ${state.currency||'JOD'}</div>
-        <div class="rt-price">${total} ${state.currency||'JOD'}</div>
+        <div class="rt-label">${count} ${L('ريل × ','reels × ')}${info.ratePerReel} ${state.currency||"JOD"}</div>
+        <div class="rt-price">${total} ${state.currency||"JOD"}</div>
         <div class="rt-save" style="color:var(--text3)">${L('المجموع الحالي','Current Total')}</div>
       </div>`;
   }
@@ -1444,8 +1444,8 @@ function updateReelBreakdown() {
     packNotice.classList.add('show');
     const saving = (single1 - info.ratePerReel) * count;
     packText.textContent = L(
-      `باقة محتوى! توفير ${saving} ${state.currency||'JOD'} على ${count} ريلز في جلسة واحدة`,
-      `Content Pack! Saving ${saving} ${state.currency||'JOD'} on ${count} reels in one session`
+      `باقة محتوى! توفير ${saving} ${state.currency||"JOD"} على ${count} ريلز في جلسة واحدة`,
+      `Content Pack! Saving ${saving} ${state.currency||"JOD"} on ${count} reels in one session`
     );
   } else if(packNotice) {
     packNotice.classList.remove('show');
@@ -1634,7 +1634,7 @@ function renderEquipGrid() {
       <div class="equip-tier">${L(e.tierAr, e.tier)}</div>
       <div class="equip-name">${L(e.nameAr, e.name)}</div>
       <div class="equip-list">${L(e.itemsAr, e.items)}</div>
-      <div class="equip-price">${e.price} ${state.currency||'JOD'}/${L('يوم','day')}</div>
+      <div class="equip-price">${e.price} ${state.currency||"JOD"}/${L('يوم','day')}</div>
     </div>`).join('');
 }
 
@@ -1673,10 +1673,10 @@ function renderPostOptions() {
     let displayPrice = p.basePrice;
     if(isReels && p.id==='colorgrade') displayPrice = 50;
     let priceLabel = displayPrice + (p.fixed ? ' ' + (state.currency||'JOD') : ' JD+');
-    if(isReels && p.id==='colorgrade') priceLabel = `50 ${state.currency||'JOD'}/${L('ريل','reel')}`;
+    if(isReels && p.id==='colorgrade`) priceLabel = `50 ${state.currency||"JOD"}/${L(`ريل','reel')}`;
 
     // Script note
-    const extraNote = p.scriptNote ? `<div class="post-option-desc" style="color:var(--text3);margin-top:3px;">50–100 ${state.currency||'JOD'} ${L('حسب المشروع','depending on project')}</div>` : '';
+    const extraNote = p.scriptNote ? `<div class="post-option-desc" style="color:var(--text3);margin-top:3px;">50–100 ${state.currency||"JOD"} ${L('حسب المشروع','depending on project')}</div>` : '';
 
     return `<div class="post-option grain-card ${sel?'sel':''}" onclick="togglePost('${p.id}')">
       <div class="post-option-left">
@@ -1896,7 +1896,7 @@ function updateQuote() {
     html+=`<div class="sb-section"><div class="sb-section-title">${L('إنتاج الريلز','Reel Production')}</div>`;
     q.reelLines.forEach(l=>{
       const packInfo = l.packLabel ? `<div style="font-size:10px;color:var(--green);margin-top:2px;">🎯 ${l.packLabel}</div>` : '';
-      html+=`<div class="sb-line"><span class="sb-line-label">${state.reelCount} ${L('ريل','reels')} × ${l.rate} ${state.currency||'JOD'}${packInfo?'<br>'+packInfo:''}</span><span class="sb-line-val">${l.total} ${state.currency||'JOD'}</span></div>`;
+      html+=`<div class="sb-line"><span class="sb-line-label">${state.reelCount} ${L('ريل','reels`)} × ${l.rate} ${state.currency||"JOD"}${packInfo?`<br>'+packInfo:''}</span><span class="sb-line-val">${l.total} ${state.currency||"JOD"}</span></div>`;
     });
     html+=`</div>`;
   }
@@ -1907,7 +1907,7 @@ function updateQuote() {
       if(l.isFree) {
         html+=`<div class="sb-line"><span class="sb-line-label">${L(l.nameAr,l.name)}${l.qty>1?' ×'+l.qty:''}</span><span class="sb-line-val" style="color:var(--green);font-family:'Inter',sans-serif;font-size:11px;">✓ ${L('مشمول','Incl.')}</span></div>`;
       } else {
-        html+=`<div class="sb-line"><span class="sb-line-label">${L(l.nameAr,l.name)}${l.qty>1?' ×'+l.qty:''}</span><span class="sb-line-val">${l.total} ${state.currency||'JOD'}</span></div>`;
+        html+=`<div class="sb-line"><span class="sb-line-label">${L(l.nameAr,l.name)}${l.qty>1?' ×'+l.qty:''}</span><span class="sb-line-val">${l.total} ${state.currency||"JOD"}</span></div>`;
       }
     });
     html+=`</div>`;
@@ -1918,7 +1918,7 @@ function updateQuote() {
     <div class="sb-line"><span class="sb-line-label">📦 ${L('المعدات الأساسية','Basic Equipment')}</span><span class="sb-line-val" style="color:var(--green)">✓ ${L('مشمولة','Included')}</span></div></div>`;
   } else if(q.equipTotal>0) {
     html+=`<div class="sb-section"><div class="sb-section-title">${L('المعدات','Equipment')}</div>`;
-    html+=`<div class="sb-line"><span class="sb-line-label">${L('إيجار معدات','Equipment Rental')}</span><span class="sb-line-val">${q.equipTotal} ${state.currency||'JOD'}</span></div>`;
+    html+=`<div class="sb-line"><span class="sb-line-label">${L('إيجار معدات','Equipment Rental')}</span><span class="sb-line-val">${q.equipTotal} ${state.currency||"JOD"}</span></div>`;
     html+=`</div>`;
   }
 
@@ -1928,7 +1928,7 @@ function updateQuote() {
       if(l.isFree) {
         html+=`<div class="sb-line"><span class="sb-line-label">${L(l.nameAr,l.name)}</span><span class="sb-line-val" style="color:var(--green);font-family:'Inter',sans-serif;font-size:11px;">✓ ${L('مشمول','Incl.')}</span></div>`;
       } else {
-        html+=`<div class="sb-line"><span class="sb-line-label">${L(l.nameAr,l.name)}</span><span class="sb-line-val">${l.price} ${state.currency||'JOD'}</span></div>`;
+        html+=`<div class="sb-line"><span class="sb-line-label">${L(l.nameAr,l.name)}</span><span class="sb-line-val">${l.price} ${state.currency||"JOD"}</span></div>`;
       }
     });
     html+=`</div>`;
@@ -1937,18 +1937,18 @@ function updateQuote() {
   if(q.travelFee>0) {
     const reg = REGIONS.find(r=>r.id===state.region);
     html+=`<div class="sb-section"><div class="sb-section-title">${L('السفر','Travel')}</div>
-    <div class="sb-line"><span class="sb-line-label">${L(reg?.ar||'سفر',reg?.name||'Travel')}</span><span class="sb-line-val">${q.travelFee} ${state.currency||'JOD'}</span></div></div>`;
+    <div class="sb-line"><span class="sb-line-label">${L(reg?.ar||'سفر',reg?.name||'Travel')}</span><span class="sb-line-val">${q.travelFee} ${state.currency||"JOD"}</span></div></div>`;
   }
 
   html+=`<hr class="sb-divider" style="margin-top:18px;border-top:2px solid var(--gold-b);">
   <div class="sb-total">
     <div>
       <div class="sb-total-label">${L('المجموع الكلي','Total Quote')}</div>
-      ${q.discountPct>0?`<div class="sb-total-old">${q.rawTotal} ${state.currency||'JOD'}</div>`:''}
+      ${q.discountPct>0?`<div class="sb-total-old">${q.rawTotal} ${state.currency||"JOD"}</div>`:''}
     </div>
     <div style="text-align:end">
-      <div class="sb-total-new">${q.total} ${state.currency||'JOD'}</div>
-      ${q.discountPct>0?`<div class="sb-discount-badge">${L('توفير','SAVE')} ${q.discountAmt} ${state.currency||'JOD'}</div>`:''}
+      <div class="sb-total-new">${q.total} ${state.currency||"JOD"}</div>
+      ${q.discountPct>0?`<div class="sb-discount-badge">${L('توفير','SAVE`)} ${q.discountAmt} ${state.currency||"JOD"}</div>`:`'}
     </div>
   </div>`;
 
@@ -2026,9 +2026,9 @@ function showPreview() {
     const packInfo = l.packLabel ? `<br><span style="font-size:11px;color:var(--green)">🎯 Content Pack — ${l.packLabel}</span>` : '';
     rows+=`<tr>
       <td>${l.name}${packInfo}</td>
-      <td>${l.rate} ${state.currency||'JOD'}/reel</td>
+      <td>${l.rate} ${state.currency||"JOD"}/reel</td>
       <td>${l.qty} reel${l.qty>1?'s':''}</td>
-      <td>${l.total} ${state.currency||'JOD'}</td>
+      <td>${l.total} ${state.currency||"JOD"}</td>
     </tr>`;
   });
 
@@ -2044,9 +2044,9 @@ function showPreview() {
     } else {
       rows+=`<tr>
         <td>${l.name}</td>
-        <td>${l.rate} ${state.currency||'JOD'}/day</td>
+        <td>${l.rate} ${state.currency||"JOD"}/day</td>
         <td>${l.qty>1?l.qty+'× ':''}${l.days} day${l.days>1?'s':''}</td>
-        <td>${l.total} ${state.currency||'JOD'}</td>
+        <td>${l.total} ${state.currency||"JOD"}</td>
       </tr>`;
     }
   });
@@ -2063,9 +2063,9 @@ function showPreview() {
     const tier = EQUIPMENT_TIERS.find(e=>e.id===state.equipment);
     rows+=`<tr>
       <td>Equipment Rental${tier?'<br><span style="font-size:11px;color:var(--text3)">'+tier.name+'</span>':''}</td>
-      <td>${Math.round(q.equipTotal/state.days)} ${state.currency||'JOD'}/day</td>
+      <td>${Math.round(q.equipTotal/state.days)} ${state.currency||"JOD"}/day</td>
       <td>${state.days} day${state.days>1?'s':''}</td>
-      <td>${q.equipTotal} ${state.currency||'JOD'}</td>
+      <td>${q.equipTotal} ${state.currency||"JOD"}</td>
     </tr>`;
   }
 
@@ -2081,9 +2081,9 @@ function showPreview() {
     } else {
       rows+=`<tr>
         <td>${l.name}</td>
-        <td>${l.price} ${state.currency||'JOD'}</td>
+        <td>${l.price} ${state.currency||"JOD"}</td>
         <td>1</td>
-        <td>${l.price} ${state.currency||'JOD'}</td>
+        <td>${l.price} ${state.currency||"JOD"}</td>
       </tr>`;
     }
   });
@@ -2092,9 +2092,9 @@ function showPreview() {
   if(q.travelFee>0) {
     rows+=`<tr>
       <td>Travel / Transportation${region?'<br><span style="font-size:11px;color:var(--text3)">'+region.name+'</span>':''}</td>
-      <td>${Math.round(q.travelFee/state.days)} ${state.currency||'JOD'}/day</td>
+      <td>${Math.round(q.travelFee/state.days)} ${state.currency||"JOD"}/day</td>
       <td>${state.days} day${state.days>1?'s':''}</td>
-      <td>${q.travelFee} ${state.currency||'JOD'}</td>
+      <td>${q.travelFee} ${state.currency||"JOD"}</td>
     </tr>`;
   }
 
@@ -2155,12 +2155,12 @@ function showPreview() {
           <div style="font-size:11px;color:var(--text3)">All services included · Tax-exempt</div>
         </div>
         <div style="display:flex;align-items:baseline;gap:12px">
-          ${q.discountPct>0?`<span class="q-sub-old">${q.rawTotal} ${state.currency||'JOD'}</span>`:''}
-          <span class="q-sub-new">${q.total} ${state.currency||'JOD'}</span>
+          ${q.discountPct>0?`<span class="q-sub-old">${q.rawTotal} ${state.currency||"JOD"}</span>`:''}
+          <span class="q-sub-new">${q.total} ${state.currency||"JOD"}</span>
         </div>
       </div>
       ${q.discountPct>0?`<div style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.2);padding:10px 14px;font-size:12px;color:var(--gold);margin-bottom:18px;">
-        🎯 ${q.discountLabel} applied — You save ${q.discountAmt} ${state.currency||'JOD'}
+        🎯 ${q.discountLabel} applied — You save ${q.discountAmt} ${state.currency||"JOD"}
       </div>`:''}
       <div class="q-details">
         <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;margin-bottom:10px;">DETAILS & TERMS</div>
@@ -2233,14 +2233,14 @@ function sendWhatsApp() {
   msg += `*Shooting Days:* ${state.days}\n`;
   if(state.projectType==='reels') msg += `*Reels:* ${state.reelCount}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-  if(q.crewTotal>0) msg += `🎬 *Crew:* ${q.crewTotal} ${state.currency||'JOD'}\n`;
-  if(q.reelTotal>0) msg += `📱 *Reel Production:* ${q.reelTotal} ${state.currency||'JOD'}\n`;
-  if(q.equipTotal>0) msg += `📷 *Equipment:* ${q.equipTotal} ${state.currency||'JOD'}\n`;
-  if(q.postTotal>0) msg += `🎞 *Post-Production:* ${q.postTotal} ${state.currency||'JOD'}\n`;
-  if(q.travelFee>0) msg += `🚗 *Travel:* ${q.travelFee} ${state.currency||'JOD'}\n`;
+  if(q.crewTotal>0) msg += `🎬 *Crew:* ${q.crewTotal} ${state.currency||"JOD"}\n`;
+  if(q.reelTotal>0) msg += `📱 *Reel Production:* ${q.reelTotal} ${state.currency||"JOD"}\n`;
+  if(q.equipTotal>0) msg += `📷 *Equipment:* ${q.equipTotal} ${state.currency||"JOD"}\n`;
+  if(q.postTotal>0) msg += `🎞 *Post-Production:* ${q.postTotal} ${state.currency||"JOD"}\n`;
+  if(q.travelFee>0) msg += `🚗 *Travel:* ${q.travelFee} ${state.currency||"JOD"}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-  if(q.discountPct>0) msg += `💚 *${q.discountLabel}* — Save ${q.discountAmt} ${state.currency||'JOD'}\n`;
-  msg += `💰 *TOTAL: ${q.total} ${state.currency||'JOD'}*\n`;
+  if(q.discountPct>0) msg += `💚 *${q.discountLabel}* — Save ${q.discountAmt} ${state.currency||"JOD"}\n`;
+  msg += `💰 *TOTAL: ${q.total} ${state.currency||"JOD"}*\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━\n`;
   msg += `Down payment 50% upon contract signing.\nFaii.House.jo@gmail.com`;
 
@@ -2273,7 +2273,7 @@ function openNegotiate(){
       <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
         <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);background:var(--dark);padding:10px 12px;border:1px solid var(--border);">
           <span>${ar?'العرض الحالي':'Current Offer'}</span>
-          <span style="color:var(--gold);font-weight:700;font-family:'Playfair Display',serif;">${q.total} ${state.currency||'JOD'}</span>
+          <span style="color:var(--gold);font-weight:700;font-family:'Playfair Display',serif;">${q.total} ${state.currency||"JOD"}</span>
         </div>
         <div>
           <label style="display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">${ar?'السعر / الميزانية المقترحة (دينار)':'Your Proposed Price / Budget (JD)'}</label>
@@ -2314,9 +2314,9 @@ function sendNegotiation(){
   msg += `*Project:* ${state.projectTitle || type.name}\n`;
   msg += `*Shooting Days:* ${state.days}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `💰 *Our Offer:* ${q.total} ${state.currency||'JOD'}\n`;
-  msg += `🤝 *Client Proposal:* ${proposed} ${state.currency||'JOD'}\n`;
-  if(diff !== 0) msg += `📊 *Difference:* ${diff} ${state.currency||'JOD'} (${pct}%)\n`;
+  msg += `💰 *Our Offer:* ${q.total} ${state.currency||"JOD"}\n`;
+  msg += `🤝 *Client Proposal:* ${proposed} ${state.currency||"JOD"}\n`;
+  if(diff !== 0) msg += `📊 *Difference:* ${diff} ${state.currency||"JOD"} (${pct}%)\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━\n`;
   if(note) msg += `📝 *Note:*\n${note}\n━━━━━━━━━━━━━━━━━━━━\n`;
   msg += `Looking forward to reaching a deal that works for both of us.`;

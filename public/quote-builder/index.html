@@ -915,6 +915,56 @@ a, button, input, select, textarea, .type-card, .equip-card, .region-card, .step
 </div>
 
 <script>
+// STATE
+// ══════════════════════════════════════════════════════════════
+const LS_KEY = 'faii_house_state';
+const LS_LANG = 'faii_house_lang';
+
+const DEFAULT_STATE = () => ({
+  step:1,
+  projectType:null,
+  reelCount:1,
+  reelRate:150,
+  days:1,
+  crew:{},
+  equipMode:'tier',
+  equipment:null,
+  equipItems:{},
+  post:{},
+  region:null,
+  customTravel:0,
+  customEquip:0,
+  clientName:'', clientCompany:'', projectTitle:'',
+  quoteDate:new Date().toISOString().split('T')[0],
+  preparedBy:'Ahmad Haddad',
+  deliveryDays:'14',
+  projectNotes:'',
+  currency:'JOD',
+  paymentTerms:'50_50',
+});
+
+function saveState() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({state, lang:currentLang})); } catch(e){}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return false;
+    const saved = JSON.parse(raw);
+    if(saved.state) { state = Object.assign(DEFAULT_STATE(), saved.state); }
+    if(saved.lang) { currentLang = saved.lang; }
+    // Hide reels temporarily: reset if it was the last selected type
+    if(state.projectType === 'reels') state.projectType = null;
+    return true;
+  } catch(e){ return false; }
+}
+
+let currentLang = 'ar';
+let state = DEFAULT_STATE();
+loadState();
+
+
 // ══════════════════════════════════════════════════════════════
 // DATA
 // ══════════════════════════════════════════════════════════════
@@ -1020,51 +1070,6 @@ const REGIONS = [
 const EQUIP_CATS = ['cameras','lenses','audio','lighting','stabilization','monitors','storage','drones','accessories'];
 
 // ══════════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════════
-const LS_KEY = 'faii_house_state';
-const LS_LANG = 'faii_house_lang';
-
-const DEFAULT_STATE = () => ({
-  step:1,
-  projectType:null,
-  reelCount:1,
-  reelRate:150,
-  days:1,
-  crew:{},
-  equipMode:'tier',
-  equipment:null,
-  equipItems:{},
-  post:{},
-  region:null,
-  customTravel:0,
-  customEquip:0,
-  clientName:'', clientCompany:'', projectTitle:'',
-  quoteDate:new Date().toISOString().split('T')[0],
-  preparedBy:'Ahmad Haddad',
-  deliveryDays:'14',
-  projectNotes:'',
-});
-
-function saveState() {
-  try { localStorage.setItem(LS_KEY, JSON.stringify({state, lang:currentLang})); } catch(e){}
-}
-
-function loadState() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return false;
-    const saved = JSON.parse(raw);
-    if(saved.state) { state = Object.assign(DEFAULT_STATE(), saved.state); }
-    if(saved.lang) { currentLang = saved.lang; }
-    // Hide reels temporarily: reset if it was the last selected type
-    if(state.projectType === 'reels') state.projectType = null;
-    return true;
-  } catch(e){ return false; }
-}
-
-let currentLang = 'ar';
-let state = DEFAULT_STATE();
 
 // ══════════════════════════════════════════════════════════════
 // OWNER MODE — hidden feature, triggered by 5× logo clicks

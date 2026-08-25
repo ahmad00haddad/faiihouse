@@ -371,8 +371,8 @@ textarea{resize:vertical;min-height:80px;}
   .step-tab span{display:none;}
   .step-tab{padding:12px 10px;}
   .crew-table{font-size:12px;}
-  .crew-table th:nth-child(3){display:none;}
-  .crew-table td:nth-child(3){display:none;}
+  .section:not(.owner-mode) .crew-table th:nth-child(3){display:none;}
+  .section:not(.owner-mode) .crew-table td:nth-child(3){display:none;}
   .reel-breakdown{gap:10px;}
   /* Better touch targets on small screens */
   .type-card{padding:14px 10px;}
@@ -718,25 +718,27 @@ textarea{resize:vertical;min-height:80px;}
     </div>
 
 
-    <table class="crew-table" id="crewTable">
-        <colgroup>
-  <col style="width:40px">
-  <col style="width:35%">
-  <col style="width:20%">
-  <col style="width:20%">
-  <col style="width:15%">
-</colgroup>
-     <thead>
-  <tr>
-    <th style="width:44px;text-align:center"></th>
-    <th><span class="ar-only">الدور</span><span class="en-only">Role</span></th>
-    <th style="width:130px"><span class="ar-only">السعر/يوم (JD)</span><span class="en-only">Rate/Day (JD)</span></th>
-    <th style="width:110px"><span class="ar-only">الكمية</span><span class="en-only">Qty</span></th>
-    <th style="width:100px"><span class="ar-only">المجموع</span><span class="en-only">Total</span></th>
-  </tr>
-</thead>
-      <tbody id="crewBody"></tbody>
-    </table>
+    <div style="width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:14px; padding-bottom:4px;">
+      <table class="crew-table" id="crewTable" style="margin-bottom:0;">
+          <colgroup>
+    <col style="width:40px">
+    <col style="width:35%">
+    <col style="width:20%">
+    <col style="width:20%">
+    <col style="width:15%">
+  </colgroup>
+       <thead>
+    <tr>
+      <th style="width:44px;text-align:center"></th>
+      <th><span class="ar-only">الدور</span><span class="en-only">Role</span></th>
+      <th style="width:130px"><span class="ar-only">السعر/يوم (JD)</span><span class="en-only">Rate/Day (JD)</span></th>
+      <th style="width:110px"><span class="ar-only">الكمية</span><span class="en-only">Qty</span></th>
+      <th style="width:100px"><span class="ar-only">المجموع</span><span class="en-only">Total</span></th>
+    </tr>
+  </thead>
+        <tbody id="crewBody"></tbody>
+      </table>
+    </div>
     <div class="add-role-btn-wrap">
       <button class="add-role-btn" onclick="addCustomRole()">+ <span class="ar-only">إضافة دور مخصص</span><span class="en-only">Add Custom Role</span></button>
     </div>

@@ -1673,7 +1673,7 @@ function renderPostOptions() {
     let displayPrice = p.basePrice;
     if(isReels && p.id==='colorgrade') displayPrice = 50;
     let priceLabel = displayPrice + (p.fixed ? ' ' + (state.currency||'JOD') : ' JD+');
-    if(isReels && p.id==='colorgrade`) priceLabel = `50 ${state.currency||"JOD"}/${L(`ريل','reel')}`;
+    if(isReels && p.id==='colorgrade') priceLabel = `50 ${state.currency||"JOD"}/${L('ريل','reel')}`;
 
     // Script note
     const extraNote = p.scriptNote ? `<div class="post-option-desc" style="color:var(--text3);margin-top:3px;">50–100 ${state.currency||"JOD"} ${L('حسب المشروع','depending on project')}</div>` : '';
@@ -1896,7 +1896,7 @@ function updateQuote() {
     html+=`<div class="sb-section"><div class="sb-section-title">${L('إنتاج الريلز','Reel Production')}</div>`;
     q.reelLines.forEach(l=>{
       const packInfo = l.packLabel ? `<div style="font-size:10px;color:var(--green);margin-top:2px;">🎯 ${l.packLabel}</div>` : '';
-      html+=`<div class="sb-line"><span class="sb-line-label">${state.reelCount} ${L('ريل','reels`)} × ${l.rate} ${state.currency||"JOD"}${packInfo?`<br>'+packInfo:''}</span><span class="sb-line-val">${l.total} ${state.currency||"JOD"}</span></div>`;
+      html+=`<div class="sb-line"><span class="sb-line-label">${state.reelCount} ${L('ريل','reels')} × ${l.rate} ${state.currency||"JOD"}${packInfo?'<br>'+packInfo:''}</span><span class="sb-line-val">${l.total} ${state.currency||"JOD"}</span></div>`;
     });
     html+=`</div>`;
   }
@@ -1948,7 +1948,7 @@ function updateQuote() {
     </div>
     <div style="text-align:end">
       <div class="sb-total-new">${q.total} ${state.currency||"JOD"}</div>
-      ${q.discountPct>0?`<div class="sb-discount-badge">${L('توفير','SAVE`)} ${q.discountAmt} ${state.currency||"JOD"}</div>`:`'}
+      ${q.discountPct>0?`<div class="sb-discount-badge">${L('توفير','SAVE')} ${q.discountAmt} ${state.currency||"JOD"}</div>`:''}
     </div>
   </div>`;
 
@@ -2098,10 +2098,10 @@ function showPreview() {
     </tr>`;
   }
 
-  const delivLabel = state.deliveryDays==='rush'?'3 days or less (Rush Delivery)':\`${state.deliveryDays} working days after shooting\`;
+  const delivLabel = state.deliveryDays==='rush'?'3 days or less (Rush Delivery)':`${state.deliveryDays} working days after shooting`;
   const randCode = Math.random().toString(36).substring(2, 6).toUpperCase();
   const dateStr = today.replace(/-/g, '').substring(2);
-  const refNumber = \`FH-${dateStr}-${randCode}\`;
+  const refNumber = `FH-${dateStr}-${randCode}`;
   
   let paymentText = '— Down payment of 50% upon signing the contract.<br>— Final payment of 50% upon delivery of the final version.<br>';
   if(state.paymentTerms === '30_40_30') {

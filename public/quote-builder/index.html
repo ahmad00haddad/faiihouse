@@ -646,6 +646,45 @@ textarea{resize:vertical;min-height:80px;}
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+
+/* Masterclass UX CSS */
+.ripple {
+  position: absolute; border-radius: 50%; transform: scale(0);
+  animation: ripple-anim 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(212,175,55,0.4); pointer-events: none; z-index: 10;
+}
+@keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+@keyframes floatGhost {
+  0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -40px) scale(1.1); }
+}
+.cost-ghost {
+  position: fixed; color: var(--green); font-weight: 700;
+  pointer-events: none; z-index: 999999;
+  animation: floatGhost 0.8s ease-out forwards;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.8); font-size: 15px;
+}
+.cost-ghost.negative { color: #ff4c4c; }
+
+@media(max-width:992px) {
+  .mobile-total-bar {
+    bottom: 20px !important; left: 50% !important; transform: translateX(-50%) !important;
+    width: 92% !important; max-width: 400px !important;
+    border-radius: 50px !important; background: rgba(20, 20, 20, 0.85) !important;
+    backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(212,175,55,0.4) !important;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.6) !important; padding: 12px 24px !important;
+    transition: all 0.3s cubic-bezier(0.2,0.8,0.2,1) !important;
+  }
+}
+
+.dep-warn {
+  color: #ffb84d; font-size: 12px; display: inline-flex; align-items: center; 
+  margin-right: 6px; margin-left: 6px; cursor: help; animation: pulse-warn 2s infinite;
+}
+@keyframes pulse-warn { 0% { opacity:0.6; transform:scale(0.9); } 50% { opacity:1; transform:scale(1.1); } 100% { opacity:0.6; transform:scale(0.9); } }
+
 </style>
 
 <style>
@@ -853,9 +892,9 @@ a, button, input, select, textarea, .type-card, .equip-card, .region-card, .step
         <label class="ar-only">أيام التصوير:</label>
         <label class="en-only">Shooting Days:</label>
         <div class="days-input">
-          <button onclick="changeDays(-1)">−</button>
+          <button onclick="changeDays(-1, event)">−</button>
           <span id="daysDisplay">1</span>
-          <button onclick="changeDays(1)">+</button>
+          <button onclick="changeDays(1, event)">+</button>
         </div>
         <span id="daysHint" class="days-hint"></span>
       </div>
@@ -1625,8 +1664,8 @@ function renderCrewTable() {
         <input type="checkbox" id="cb-${r.id}" ${s.enabled?'checked':''} onchange="toggleRole('${r.id}',this.checked)" onclick="event.stopPropagation()">
       </td>
       <td class="role-info-td" style="position:relative; cursor:pointer;" onclick="document.getElementById('cb-' + '${r.id}').click()">
-        <div class="role-name">${r.name}</div>
-        <div class="role-name-ar">${r.ar}</div>
+        <div class="role-name">${depWarn}${r.name}</div>
+        <div class="role-name-ar">${depWarn}${r.ar}</div>
         ${r.hint ? `<div class="hint-tooltip" style="bottom: 80%; right: 0; transform: translateY(5px); z-index: 1000;">${L(r.hintAr, r.hint)}</div>` : ''}
       </td>
       <td>
@@ -1667,9 +1706,11 @@ function setRate(id, val) {
   saveState();
 }
 
-function setQty(id, d) {
+function setQty(id, d, e) {
   const s = state.crew[id];
   if(!s) return;
+  if(e && d > 0) spawnCostGhost(e, '+' + (s.rate * (state.days||1)) + ' ' + (state.currency||'JOD'));
+  if(e && d < 0 && s.qty > 1) spawnCostGhost(e, '-' + (s.rate * (state.days||1)) + ' ' + (state.currency||'JOD'));
   s.qty = Math.max(1, (s.qty||1)+d);
   document.getElementById('qty-'+id).textContent = s.qty;
   updateRowTotal(id);
@@ -3135,6 +3176,77 @@ window.L = function(ar, en) {
   }
   return res;
 };
+
+// --- Masterclass UX Scripts ---
+function spawnCostGhost(e, text, isTextOnly = false) {
+  if(!e) return;
+  let clientX, clientY;
+  if(e.touches && e.touches.length > 0) {
+    clientX = e.touches[0].clientX; clientY = e.touches[0].clientY;
+  } else {
+    clientX = e.clientX; clientY = e.clientY;
+  }
+  const ghost = document.createElement('div');
+  ghost.className = 'cost-ghost' + (text.toString().includes('-') ? ' negative' : '');
+  ghost.textContent = text;
+  ghost.style.left = clientX + 'px';
+  ghost.style.top = clientY + 'px';
+  document.body.appendChild(ghost);
+  setTimeout(() => ghost.remove(), 800);
+}
+
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('.pt-card, .equip-card, .post-option, .role-info-td, button.btn-primary');
+  if(!target || e.target.tagName === 'INPUT') return;
+  const rect = target.getBoundingClientRect();
+  const circle = document.createElement('span');
+  const diameter = Math.max(rect.width, rect.height);
+  circle.style.width = circle.style.height = diameter + 'px';
+  circle.style.left = (e.clientX - rect.left - diameter/2) + 'px';
+  circle.style.top = (e.clientY - rect.top - diameter/2) + 'px';
+  circle.classList.add('ripple');
+  
+  const compStyle = window.getComputedStyle(target);
+  if(compStyle.position === 'static') target.style.position = 'relative';
+  if(compStyle.overflow !== 'hidden' && !target.classList.contains('role-info-td')) target.style.overflow = 'hidden';
+  
+  target.appendChild(circle);
+  setTimeout(() => circle.remove(), 600);
+});
+
+let longPressTimer;
+function handleDown(e) {
+  const btn = e.target.closest('button');
+  if(!btn || btn.textContent.trim() !== '−') return;
+  
+  let clientX, clientY;
+  if(e.touches && e.touches.length > 0) {
+    clientX = e.touches[0].clientX; clientY = e.touches[0].clientY;
+  } else {
+    clientX = e.clientX; clientY = e.clientY;
+  }
+  
+  const onclick = btn.getAttribute('onclick') || '';
+  let idMatch = onclick.match(/setQty\('([^']+)',\s*-1/);
+  
+  longPressTimer = setTimeout(() => {
+    if(idMatch) {
+      toggleRole(idMatch[1], false);
+      const ghost = document.createElement('div');
+      ghost.className = 'cost-ghost negative'; ghost.textContent = L('تم المسح', 'Cleared');
+      ghost.style.left = clientX+'px'; ghost.style.top = clientY+'px';
+      document.body.appendChild(ghost);
+      setTimeout(()=>ghost.remove(), 800);
+      if(navigator.vibrate) navigator.vibrate(50);
+    }
+  }, 600);
+}
+function handleUp() { clearTimeout(longPressTimer); }
+document.addEventListener('mousedown', handleDown);
+document.addEventListener('mouseup', handleUp);
+document.addEventListener('touchstart', handleDown, {passive:true});
+document.addEventListener('touchend', handleUp);
+// ------------------------------
 </script>
 </body>
 </html>

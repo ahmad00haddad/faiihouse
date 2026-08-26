@@ -1664,8 +1664,9 @@ function renderCrewTable() {
     const s = state.crew[r.id] || {enabled:false, rate:r.rate, qty:1};
     const total = s.enabled ? (s.rate*s.qty*state.days) : 0;
     let depWarn = '';
-    if(r.id === 'cam_assistant' && (!state.crew['cinematographer'] || !state.crew['cinematographer'].enabled)) {
-      depWarn = `<span class="dep-warn" title="${L('نوصي باختيار مصور سينمائي أولاً','DOP recommended first')}">⚠️</span>`;
+    if(r.id === 'cam_assistant') {
+      const showWarn = !state.crew['cinematographer'] || !state.crew['cinematographer'].enabled;
+      depWarn = `<span id="warn-cam_assistant" class="dep-warn" style="display:${showWarn ? 'inline-flex' : 'none'};" title="${L('نوصي باختيار مصور سينمائي أولاً ليقود عمل المساعد','DOP recommended first')}">⚠️</span>`;
     }
     rows += `<tr>
       <td onclick="document.getElementById('cb-' + '${r.id}').click()" style="cursor:pointer; text-align:center;">
@@ -2190,6 +2191,12 @@ function calcQuote() {
 // SIDEBAR UPDATE
 // ══════════════════════════════════════════════════════════════
 function updateQuote() {
+  const warnCamAss = document.getElementById('warn-cam_assistant');
+  if(warnCamAss) {
+    const dopEnabled = state.crew['cinematographer'] && state.crew['cinematographer'].enabled;
+    warnCamAss.style.display = dopEnabled ? 'none' : 'inline-flex';
+  }
+
   // Sync state from inputs
   const sync = (id, key) => { const el=document.getElementById(id); if(el) state[key]=el.value; };
   sync('clientName','clientName'); sync('clientCompany','clientCompany');

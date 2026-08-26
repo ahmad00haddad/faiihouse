@@ -1753,8 +1753,8 @@ function renderPostOptions() {
 
     const extraNote = p.scriptNote ? `<div class="post-option-desc" style="color:var(--text3);margin-top:3px;">50–100 ${state.currency||"JOD"} ${L('حسب المشروع','depending on project')}</div>` : '';
 
-    return `<div class="post-option grain-card ${sel.enabled?'sel':''}" onclick="togglePost('${p.id}')">
-      <div class="post-option-left">
+    return `<div class="post-option grain-card ${sel.enabled?'sel':''}">
+      <div class="post-option-left" onclick="togglePost('${p.id}')" style="flex:1; cursor:pointer;">
         <input type="checkbox" ${sel.enabled?'checked':''} onchange="togglePost('${p.id}', this.checked)" onclick="event.stopPropagation()">
         <div>
           <div class="post-option-name">${L(p.ar, p.name)}</div>
@@ -1764,7 +1764,7 @@ function renderPostOptions() {
       </div>
       <div class="post-price-wrap" style="display:flex; align-items:center;">
         
-        <div class="post-qty-box" onclick="event.stopPropagation()" style="margin-right:15px; margin-left:15px;">
+        <div class="post-qty-box" style="margin-right:15px; margin-left:15px;">
           <button onclick="setPostQty('${p.id}', ${sel.qty-1})">−</button>
           <span>${sel.qty}</span>
           <button onclick="setPostQty('${p.id}', ${sel.qty+1})">+</button>
@@ -1772,7 +1772,7 @@ function renderPostOptions() {
 
         <div class="post-price" style="min-width: 50px; text-align: end;">
           <span class="rate-display">${sel.qty > 1 ? sel.qty + ' × ' : ''}${sel.rate} ${state.currency||"JOD"}</span>
-          <div class="rate-input-wrap" onclick="event.stopPropagation()">
+          <div class="rate-input-wrap">
             <input type="number" class="post-rate-input" value="${sel.rate}" onchange="setPostRate('${p.id}', this.value)" style="width:60px;">
           </div>
         </div>
@@ -2670,7 +2670,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 .owner-only { display: none; }
 .owner-mode .owner-only { display: flex; align-items:center; gap:5px; margin-right:10px; }
-.owner-mode .post-price { flex-direction: column; align-items: flex-end; gap:5px; }
+.owner-mode .post-price { display: flex; flex-direction: column; align-items: flex-end; gap:5px; }
 .post-qty-box { display:flex; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
 .post-qty-box button { background:transparent; border:none; color:var(--text); padding:4px 8px; cursor:pointer; font-weight:bold; }
 .post-qty-box button:hover { background:var(--gold-dim); color:var(--gold); }

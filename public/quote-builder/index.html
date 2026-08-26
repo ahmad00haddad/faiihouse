@@ -1114,6 +1114,9 @@ const OWNER_LS  = 'faii_owner_mode';
 
 function applyOwnerMode(active) {
   isOwnerMode = active;
+  if(active) document.body.classList.add('owner-mode');
+  else document.body.classList.remove('owner-mode');
+  
   const crewSection = document.querySelector('#sec-3');
   if(crewSection) {
     if(active) crewSection.classList.add('owner-mode');
@@ -1508,7 +1511,7 @@ function renderCrewTable() {
       </td>
       <td>
         <span class="rate-display">${s.rate}</span>
-        <div class="rate-input-wrap">
+        <div class="rate-input-wrap" onclick="event.stopPropagation()">
           <input type="number" value="${s.rate}" min="0" step="10" style="width:72px" onchange="setRate('${r.id}',this.value)">
         </div>
       </td>
@@ -1764,7 +1767,7 @@ function renderPostOptions() {
       </div>
       <div class="post-price-wrap" style="display:flex; align-items:center;">
         
-        <div class="post-qty-box" style="margin-right:15px; margin-left:15px;">
+        <div class="post-qty-box" onclick="event.stopPropagation()" style="margin-right:15px; margin-left:15px;">
           <button onclick="setPostQty('${p.id}', ${sel.qty-1})">−</button>
           <span>${sel.qty}</span>
           <button onclick="setPostQty('${p.id}', ${sel.qty+1})">+</button>
@@ -1772,7 +1775,7 @@ function renderPostOptions() {
 
         <div class="post-price" style="min-width: 50px; text-align: end;">
           <span class="rate-display">${sel.qty > 1 ? sel.qty + ' × ' : ''}${sel.rate} ${state.currency||"JOD"}</span>
-          <div class="rate-input-wrap">
+          <div class="rate-input-wrap" onclick="event.stopPropagation()">
             <input type="number" class="post-rate-input" value="${sel.rate}" onchange="setPostRate('${p.id}', this.value)" style="width:60px;">
           </div>
         </div>

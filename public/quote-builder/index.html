@@ -869,7 +869,7 @@ a, button, input, select, textarea, .type-card, .equip-card, .region-card, .step
     </div>
 
 
-    <div style="width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:14px; padding-bottom:4px;">
+    <div style="width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:14px; padding-bottom:4px; padding-top: 150px; margin-top: -150px;">
       <table class="crew-table" id="crewTable" style="margin-bottom:0;">
           <colgroup>
     <col style="width:40px">
@@ -1625,7 +1625,7 @@ function renderCrewTable() {
       <td class="role-info-td" style="position:relative; cursor:help;">
         <div class="role-name">${r.name}</div>
         <div class="role-name-ar">${r.ar}</div>
-        ${r.hint ? `<div class="hint-tooltip" style="bottom: 80%; right: 20%; transform: translateY(5px); z-index: 1000;">${L(r.hintAr, r.hint)}</div>` : ''}
+        ${r.hint ? `<div class="hint-tooltip" style="bottom: 80%; right: 0; transform: translateY(5px); z-index: 1000;">${L(r.hintAr, r.hint)}</div>` : ''}
       </td>
       <td>
         <span class="rate-display">${s.rate}</span>

@@ -1512,7 +1512,7 @@ function renderCrewTable() {
       <td>
         <span class="rate-display">${s.rate}</span>
         <div class="rate-input-wrap" onclick="event.stopPropagation()">
-          <input type="number" value="${s.rate}" min="0" step="10" style="width:72px" onchange="setRate('${r.id}',this.value)">
+          <input type="number" value="${s.rate}" min="0" step="10" style="width:72px" oninput="setRate('${r.id}',this.value)">
         </div>
       </td>
       <td>
@@ -1713,19 +1713,39 @@ function setPostRate(id, val) {
   }
   sel.rate = parseInt(val) || 0;
   state.post[id] = sel;
-  renderPostOptions();
+  
+  // Update the visible rate text so it syncs if user exits owner mode
+  const cards = document.querySelectorAll('.post-option');
+  cards.forEach(card => {
+    if(card.innerHTML.includes(`'${id}'`)) {
+      const display = card.querySelector('.rate-display');
+      if(display) display.textContent = (sel.qty > 1 ? sel.qty + ' × ' : '') + sel.rate + ' ' + (state.currency||'JOD');
+    }
+  });
+
   updateQuote();
   saveState();
 }
 
-function setPostQty(id, val) {
+function setPostQty(id, d) {
   let sel = state.post[id];
   if(typeof sel === 'boolean' || !sel) {
     sel = { enabled: false, rate: POST_OPTIONS.find(p=>p.id===id)?.basePrice||150, qty: 1 };
   }
-  sel.qty = Math.max(1, parseInt(val) || 1);
+  sel.qty = Math.max(1, (sel.qty||1) + d);
   state.post[id] = sel;
-  renderPostOptions();
+  
+  // Update the visible quantity text manually to avoid re-rendering and stealing focus
+  const cards = document.querySelectorAll('.post-option');
+  cards.forEach(card => {
+    if(card.innerHTML.includes(`'${id}'`)) {
+      const qtySpan = card.querySelector('.post-qty-box span');
+      if(qtySpan) qtySpan.textContent = sel.qty;
+      const display = card.querySelector('.rate-display');
+      if(display) display.textContent = (sel.qty > 1 ? sel.qty + ' × ' : '') + sel.rate + ' ' + (state.currency||'JOD');
+    }
+  });
+
   updateQuote();
   saveState();
 }
@@ -1768,15 +1788,15 @@ function renderPostOptions() {
       <div class="post-price-wrap" style="display:flex; align-items:center;">
         
         <div class="post-qty-box" onclick="event.stopPropagation()" style="margin-right:15px; margin-left:15px;">
-          <button onclick="setPostQty('${p.id}', ${sel.qty-1})">−</button>
+          <button onclick="setPostQty('${p.id}', -1)">−</button>
           <span>${sel.qty}</span>
-          <button onclick="setPostQty('${p.id}', ${sel.qty+1})">+</button>
+          <button onclick="setPostQty('${p.id}', 1)">+</button>
         </div>
 
         <div class="post-price" style="min-width: 50px; text-align: end;">
           <span class="rate-display">${sel.qty > 1 ? sel.qty + ' × ' : ''}${sel.rate} ${state.currency||"JOD"}</span>
           <div class="rate-input-wrap" onclick="event.stopPropagation()">
-            <input type="number" class="post-rate-input" value="${sel.rate}" onchange="setPostRate('${p.id}', this.value)" style="width:60px;">
+            <input type="number" value="${sel.rate}" min="0" step="10" oninput="setPostRate('${p.id}', this.value)" style="width:72px; background:var(--dark4); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--foreground); font-size:13px; padding:5px 8px; text-align:center;">
           </div>
         </div>
       </div>

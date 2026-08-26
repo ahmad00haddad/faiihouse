@@ -874,6 +874,18 @@ a, button, input, select, textarea, .type-card, .equip-card, .region-card, .step
         <option value="net_30">Net 30 on delivery</option>
       </select>
     </div>
+    <div class="form-group" style="margin-top:10px;">
+      <label style="font-size:10px;">Discount Override</label>
+      <div style="display:flex; gap:5px;">
+        <select id="ownerDiscountMode" onchange="state.discountMode = this.value; document.getElementById('ownerDiscountVal').style.display = (this.value==='custom_pct'||this.value==='custom_amt') ? 'block' : 'none'; saveState(); updateQuote();" class="select-css" style="padding:6px; font-size:12px; height:auto; flex:1;">
+          <option value="auto">Auto (Volume)</option>
+          <option value="none">None (0)</option>
+          <option value="custom_pct">Custom %</option>
+          <option value="custom_amt">Custom Amount</option>
+        </select>
+        <input type="number" id="ownerDiscountVal" placeholder="Val" onchange="state.discountVal = Number(this.value); saveState(); updateQuote();" onkeyup="if(event.key==='Enter')this.blur()" style="display:none; width:60px; font-size:12px; padding:6px; background:var(--surface-elevated); border:1px solid var(--border); color:var(--text); border-radius:4px; text-align:center;">
+      </div>
+    </div>
   </div>
 
   <div class="sb-header">
@@ -1758,12 +1770,11 @@ function renderPostOptions() {
           <button onclick="setPostQty('${p.id}', ${sel.qty+1})">+</button>
         </div>
 
-        <div class="owner-only" onclick="event.stopPropagation()">
-          <input type="number" class="post-rate-input" value="${sel.rate}" onchange="setPostRate('${p.id}', this.value)">
-        </div>
-        
         <div class="post-price" style="min-width: 50px; text-align: end;">
-          ${sel.qty > 1 ? sel.qty + ' × ' : ''}${sel.rate} ${state.currency||"JOD"}
+          <span class="rate-display">${sel.qty > 1 ? sel.qty + ' × ' : ''}${sel.rate} ${state.currency||"JOD"}</span>
+          <div class="rate-input-wrap" onclick="event.stopPropagation()">
+            <input type="number" class="post-rate-input" value="${sel.rate}" onchange="setPostRate('${p.id}', this.value)" style="width:60px;">
+          </div>
         </div>
       </div>
     </div>`;
@@ -1924,21 +1935,38 @@ function calcQuote() {
   const t2 = 1500 * exScale;
   const t3 = 3000 * exScale;
 
-  if (subtotal >= t3) {
-    discountPct = 10; 
-    discountLabel = 'Premium Volume Discount −10%'; 
-    discountLabelAr = 'خصم ذهبي (حجم عمل) −10%';
-  } else if (subtotal >= t2) {
-    discountPct = 7; 
-    discountLabel = 'Volume Discount −7%'; 
-    discountLabelAr = 'خصم فضي (حجم عمل) −7%';
-  } else if (subtotal >= t1) {
-    discountPct = 5; 
-    discountLabel = 'Project Discount −5%'; 
-    discountLabelAr = 'خصم تشجيعي −5%';
+  if (state.discountMode === 'none') {
+    discountPct = 0;
+  } else if (state.discountMode === 'custom_pct') {
+    discountPct = state.discountVal || 0;
+    discountLabel = `Special Discount −${discountPct}%`;
+    discountLabelAr = `خصم خاص −${discountPct}%`;
+  } else if (state.discountMode === 'custom_amt') {
+    // Custom amount will be handled below
+    discountPct = 0;
+  } else {
+    // Auto Volume Discount
+    if (subtotal >= t3) {
+      discountPct = 10; 
+      discountLabel = 'Premium Volume Discount −10%'; 
+      discountLabelAr = 'خصم ذهبي (حجم عمل) −10%';
+    } else if (subtotal >= t2) {
+      discountPct = 7; 
+      discountLabel = 'Volume Discount −7%'; 
+      discountLabelAr = 'خصم فضي (حجم عمل) −7%';
+    } else if (subtotal >= t1) {
+      discountPct = 5; 
+      discountLabel = 'Project Discount −5%'; 
+      discountLabelAr = 'خصم تشجيعي −5%';
+    }
   }
 
-  const discountAmt = Math.round(subtotal * discountPct/100);
+  let discountAmt = Math.round(subtotal * discountPct/100);
+  if (state.discountMode === 'custom_amt') {
+    discountAmt = state.discountVal || 0;
+    discountLabel = 'Special Discount';
+    discountLabelAr = 'خصم خاص';
+  }
   const afterDiscount = subtotal - discountAmt;
   const totalRounded = Math.round(afterDiscount/50)*50 || afterDiscount;
 
@@ -2919,6 +2947,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const pSel = document.getElementById('ownerPayment');
       if(cSel) cSel.value = state.currency;
       if(pSel) pSel.value = state.paymentTerms;
+      const dModeSel = document.getElementById('ownerDiscountMode');
+      const dValInp = document.getElementById('ownerDiscountVal');
+      if(dModeSel && state.discountMode) {
+        dModeSel.value = state.discountMode;
+        if(state.discountMode === 'custom_pct' || state.discountMode === 'custom_amt') {
+          dValInp.style.display = 'block';
+          dValInp.value = state.discountVal || '';
+        }
+      }
     }
   }, 500);
 });

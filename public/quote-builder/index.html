@@ -1621,8 +1621,10 @@ function renderCrewTable() {
     const s = state.crew[r.id] || {enabled:false, rate:r.rate, qty:1};
     const total = s.enabled ? (s.rate*s.qty*state.days) : 0;
     rows += `<tr>
-      <td><input type="checkbox" ${s.enabled?'checked':''} onchange="toggleRole('${r.id}',this.checked)"></td>
-      <td class="role-info-td" style="position:relative; cursor:help;">
+      <td onclick="document.getElementById('cb-' + '${r.id}').click()" style="cursor:pointer; text-align:center;">
+        <input type="checkbox" id="cb-${r.id}" ${s.enabled?'checked':''} onchange="toggleRole('${r.id}',this.checked)" onclick="event.stopPropagation()">
+      </td>
+      <td class="role-info-td" style="position:relative; cursor:pointer;" onclick="document.getElementById('cb-' + '${r.id}').click()">
         <div class="role-name">${r.name}</div>
         <div class="role-name-ar">${r.ar}</div>
         ${r.hint ? `<div class="hint-tooltip" style="bottom: 80%; right: 0; transform: translateY(5px); z-index: 1000;">${L(r.hintAr, r.hint)}</div>` : ''}

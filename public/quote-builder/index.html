@@ -577,17 +577,16 @@ textarea{resize:vertical;min-height:80px;}
   box-shadow: 0 8px 16px rgba(0,0,0,0.4);
   pointer-events: none;
 }
-.hint-icon:hover .hint-tooltip {
+.role-info-td:hover .hint-tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateX(50%) translateY(0);
+  transform: translateY(0) !important;
 }
 .hint-tooltip::after {
   content: '';
   position: absolute;
   top: 100%;
-  right: 50%;
-  transform: translateX(50%);
+  right: 15px; /* position it near the start of the text */
   border-width: 5px;
   border-style: solid;
   border-color: var(--surface-elevated) transparent transparent transparent;
@@ -1623,15 +1622,10 @@ function renderCrewTable() {
     const total = s.enabled ? (s.rate*s.qty*state.days) : 0;
     rows += `<tr>
       <td><input type="checkbox" ${s.enabled?'checked':''} onchange="toggleRole('${r.id}',this.checked)"></td>
-      <td>
-        <div class="role-name" style="display:flex; align-items:center;">
-          ${r.name}
-          ${r.hint ? `<span class="hint-icon">?<span class="hint-tooltip">${L(r.hintAr, r.hint)}</span></span>` : ''}
-        </div>
-        <div class="role-name-ar" style="display:flex; align-items:center;">
-          ${r.ar}
-          ${r.hintAr ? `<span class="hint-icon">?<span class="hint-tooltip">${L(r.hintAr, r.hint)}</span></span>` : ''}
-        </div>
+      <td class="role-info-td" style="position:relative; cursor:help;">
+        <div class="role-name">${r.name}</div>
+        <div class="role-name-ar">${r.ar}</div>
+        ${r.hint ? `<div class="hint-tooltip" style="bottom: 80%; right: 20%; transform: translateY(5px); z-index: 1000;">${L(r.hintAr, r.hint)}</div>` : ''}
       </td>
       <td>
         <span class="rate-display">${s.rate}</span>

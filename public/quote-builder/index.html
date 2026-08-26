@@ -1184,10 +1184,10 @@ const ROLES = [
   {id:'photographer',   name:'Photographer',            ar:'مصور فوتوغرافي',      rate:200, hint:'Captures high-res moments for campaigns and social media.', hintAr:'لتوثيق اللحظات بصور عالية الدقة لاستخدامها في الحملات الإعلانية والسوشيال ميديا.'},
   {id:'driver',         name:'Driver / Transportation', ar:'سائق',               rate:50,  hint:'Safe and fast transport for crew and equipment between locations.', hintAr:'نقل آمن وسريع للطاقم والمعدات بين مواقع التصوير لتوفير الوقت والجهد.'},
   {id:'art_director',   name:'Art Director',            ar:'مدير فني',            rate:100, hint:'Aesthetics engineer. Responsible for set design, colors, and props.', hintAr:'مهندس الجماليات. مسؤول عن الديكور، الألوان، الأزياء، وشكل المكان أمام الكاميرا.'},
-  {id:'voiceover_talent',name:'Voice Over Artist',      ar:'مؤدي صوتي',          rate:75,  hint:'Professional voice telling your brand\'s story with an impactful tone.', hintAr:'صوت احترافي يروي قصة علامتك التجارية ويوصل رسالتك بنبرة مؤثرة.'},
-  {id:'preprod',        name:'Pre-Production',          ar:'ما قبل الإنتاج',      rate:100, hint:'Planning phase: scripting, storyboarding, and scheduling to avoid surprises.', hintAr:'مرحلة التخطيط المسبق، تشمل كتابة السيناريو، الستوري بورد، وجدولة التصوير لتجنب المفاجآت.'},
-  {id:'location_scout', name:'Location Scouting',       ar:'اختيار موقع',        rate:150, hint:'Finding the best locations for the story and securing permits.', hintAr:'البحث عن أفضل الأماكن التي تناسب قصة الفيديو واستخراج التصاريح اللازمة.'},
-  {id:'casting',        name:'Casting',                 ar:'اختيار ممثلين',      rate:200, hint:'Auditioning and selecting the best faces to represent your brand.', hintAr:'البحث واختبار الأداء لاختيار أفضل الوجوه التي تمثل علامتك التجارية.'},
+  {id:'voiceover_talent',name:'Voice Over Artist',      ar:'مؤدي صوتي',          rate:75, flatRate:true,  hint:'Professional voice telling your brand\'s story with an impactful tone.', hintAr:'صوت احترافي يروي قصة علامتك التجارية ويوصل رسالتك بنبرة مؤثرة.'},
+  {id:'preprod',        name:'Pre-Production',          ar:'ما قبل الإنتاج',      rate:100, flatRate:true, hint:'Planning phase: scripting, storyboarding, and scheduling to avoid surprises.', hintAr:'مرحلة التخطيط المسبق، تشمل كتابة السيناريو، الستوري بورد، وجدولة التصوير لتجنب المفاجآت.'},
+  {id:'location_scout', name:'Location Scouting',       ar:'اختيار موقع',        rate:150, flatRate:true, hint:'Finding the best locations for the story and securing permits.', hintAr:'البحث عن أفضل الأماكن التي تناسب قصة الفيديو واستخراج التصاريح اللازمة.'},
+  {id:'casting',        name:'Casting',                 ar:'اختيار ممثلين',      rate:200, flatRate:true, hint:'Auditioning and selecting the best faces to represent your brand.', hintAr:'البحث واختبار الأداء لاختيار أفضل الوجوه التي تمثل علامتك التجارية.'},
   {id:'actor',          name:'Actor/Actress',           ar:'ممثل/ممثلة',         rate:50,  hint:'The faces that will deliver the message and interact with the product.', hintAr:'الوجوه التي ستنقل رسالة الفيديو وتتفاعل مع المنتج أو الخدمة.'},
 ];
 
@@ -1662,7 +1662,8 @@ function renderCrewTable() {
   ROLES.forEach(r=>{
     if(r.id==='editor') return;
     const s = state.crew[r.id] || {enabled:false, rate:r.rate, qty:1};
-    const total = s.enabled ? (s.rate*s.qty*state.days) : 0;
+    const daysMult = r.flatRate ? 1 : state.days;
+    const total = s.enabled ? (s.rate * s.qty * daysMult) : 0;
     let depWarn = '';
     if(r.id === 'cam_assistant') {
       const showWarn = !state.crew['cinematographer'] || !state.crew['cinematographer'].enabled;
@@ -1718,8 +1719,10 @@ function setRate(id, val) {
 function setQty(id, d, e) {
   const s = state.crew[id];
   if(!s) return;
-  if(e && d > 0) spawnCostGhost(e, '+' + (s.rate * (state.days||1)) + ' ' + (state.currency||'JOD'));
-  if(e && d < 0 && s.qty > 1) spawnCostGhost(e, '-' + (s.rate * (state.days||1)) + ' ' + (state.currency||'JOD'));
+  const roleDef = ROLES.find(role=>role.id===id);
+  const daysMult = (roleDef && roleDef.flatRate) ? 1 : (state.days||1);
+  if(e && d > 0) spawnCostGhost(e, '+' + (s.rate * daysMult) + ' ' + (state.currency||'JOD'));
+  if(e && d < 0 && s.qty > 1) spawnCostGhost(e, '-' + (s.rate * daysMult) + ' ' + (state.currency||'JOD'));
   s.qty = Math.max(1, (s.qty||1)+d);
   document.getElementById('qty-'+id).textContent = s.qty;
   updateRowTotal(id);
@@ -2014,9 +2017,10 @@ function calcQuote() {
       crewLines.push({name:r.name, nameAr:r.ar, rate:s.rate, qty:s.qty, days:state.days, total:0, isFree:true});
       return;
     }
-    const total = s.rate * s.qty * state.days;
+    const daysMult = r.flatRate ? 1 : state.days;
+    const total = s.rate * s.qty * daysMult;
     crewTotal += total;
-    crewLines.push({name:r.name, nameAr:r.ar, rate:s.rate, qty:s.qty, days:state.days, total});
+    crewLines.push({name:r.name, nameAr:r.ar, rate:s.rate, qty:s.qty, days: r.flatRate ? 'مقطوع' : state.days, total});
   });
 
   // REEL PRODUCTION (separate from crew)

@@ -1984,14 +1984,25 @@ function calcQuote() {
     }
   }
 
-  let discountAmt = Math.round(subtotal * discountPct/100);
+  let rawDiscount = Math.round(subtotal * discountPct/100);
   if (state.discountMode === 'custom_amt') {
-    discountAmt = state.discountVal || 0;
+    rawDiscount = state.discountVal || 0;
     discountLabel = 'Special Discount';
     discountLabelAr = 'خصم خاص';
   }
-  const afterDiscount = subtotal - discountAmt;
-  const totalRounded = Math.round(afterDiscount/50)*50 || afterDiscount;
+  let afterDiscount = subtotal - rawDiscount;
+  let totalRounded = Math.round(afterDiscount/50)*50 || afterDiscount;
+  
+  // If custom discount, don't round the final total to preserve exact math
+  if (state.discountMode === 'custom_amt' || state.discountMode === 'custom_pct') {
+    totalRounded = afterDiscount;
+  }
+  
+  // Calculate EXACT discount amount so UI math adds up perfectly
+  let discountAmt = 0;
+  if (discountPct > 0 || state.discountMode === 'custom_amt') {
+    discountAmt = Math.max(0, subtotal - totalRounded);
+  }
 
   return {
     crewTotal, crewLines,
@@ -2097,6 +2108,11 @@ function updateQuote() {
     const reg = REGIONS.find(r=>r.id===state.region);
     html+=`<div class="sb-section"><div class="sb-section-title">${L('السفر','Travel')}</div>
     <div class="sb-line"><span class="sb-line-label">${L(reg?.ar||'سفر',reg?.name||'Travel')}</span><span class="sb-line-val">${q.travelFee} ${state.currency||"JOD"}</span></div></div>`;
+  }
+  
+  if(q.discountAmt > 0) {
+    html+=`<div class="sb-section"><div class="sb-section-title" style="color:var(--gold)">${L('الخصم','Discount')}</div>
+    <div class="sb-line"><span class="sb-line-label" style="color:var(--gold); font-weight:700;">${L(q.discountLabelAr, q.discountLabel)}</span><span class="sb-line-val" style="color:var(--gold); font-weight:700;">− ${q.discountAmt} ${state.currency||"JOD"}</span></div></div>`;
   }
 
   html+=`<hr class="sb-divider" style="margin-top:18px;border-top:2px solid var(--gold-b);">
@@ -2313,7 +2329,13 @@ function showPreview() {
             <th>Price</th>
           </tr>
         </thead>
-        <tbody>${rows}</tbody>
+        <tbody>
+          ${rows}
+          ${q.discountAmt > 0 ? `<tr>
+            <td colspan="3" style="text-align:right; font-weight:700; color:var(--gold);">${q.discountLabel}</td>
+            <td style="font-weight:700; color:var(--gold);">− ${q.discountAmt} ${state.currency||"JOD"}</td>
+          </tr>` : ''}
+        </tbody>
       </table>
       <div class="q-subtotal">
         <div>

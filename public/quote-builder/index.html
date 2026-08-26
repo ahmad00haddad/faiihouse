@@ -1663,6 +1663,10 @@ function renderCrewTable() {
     if(r.id==='editor') return;
     const s = state.crew[r.id] || {enabled:false, rate:r.rate, qty:1};
     const total = s.enabled ? (s.rate*s.qty*state.days) : 0;
+    let depWarn = '';
+    if(r.id === 'cam_assistant' && (!state.crew['cinematographer'] || !state.crew['cinematographer'].enabled)) {
+      depWarn = `<span class="dep-warn" title="${L('نوصي باختيار مصور سينمائي أولاً','DOP recommended first')}">⚠️</span>`;
+    }
     rows += `<tr>
       <td onclick="document.getElementById('cb-' + '${r.id}').click()" style="cursor:pointer; text-align:center;">
         <input type="checkbox" id="cb-${r.id}" ${s.enabled?'checked':''} onchange="toggleRole('${r.id}',this.checked)" onclick="event.stopPropagation()">

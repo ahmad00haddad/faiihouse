@@ -2183,18 +2183,9 @@ function calcQuote() {
     discountLabelAr = 'خصم خاص';
   }
   let afterDiscount = subtotal - rawDiscount;
-  let totalRounded = Math.round(afterDiscount/50)*50 || afterDiscount;
+  let totalRounded = afterDiscount; // Removed illogical 50 JOD rounding
   
-  // If custom discount, don't round the final total to preserve exact math
-  if (state.discountMode === 'custom_amt' || state.discountMode === 'custom_pct') {
-    totalRounded = afterDiscount;
-  }
-  
-  // Calculate EXACT discount amount so UI math adds up perfectly
-  let discountAmt = 0;
-  if (discountPct > 0 || state.discountMode === 'custom_amt') {
-    discountAmt = Math.max(0, subtotal - totalRounded);
-  }
+  let discountAmt = rawDiscount;
 
   return {
     crewTotal, crewLines,

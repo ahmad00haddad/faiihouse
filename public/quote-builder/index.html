@@ -1751,7 +1751,7 @@ function renderCrewTable() {
       <td class="role-info-td" style="position:relative; cursor:pointer;" onclick="document.getElementById('cb-' + '${r.id}').click()">
         <div class="role-name">${depWarn}${r.name}</div>
         <div class="role-name-ar">${depWarn}${r.ar}</div>
-        ${r.hint ? `<div class="role-hint" style="font-size:10px; color:var(--text3); margin-top:4px; line-height:1.4;">${L(r.hintAr, r.hint)}</div>` : ''}
+        ${r.hint ? `<div class="hint-tooltip" style="bottom: 80%; right: 0; transform: translateY(5px); z-index: 1000;">${L(r.hintAr, r.hint)}</div>` : ''}
       </td>
       <td>
         <span class="rate-display">${s.rate}</span>

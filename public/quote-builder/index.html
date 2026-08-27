@@ -2182,10 +2182,20 @@ function calcQuote() {
     discountLabel = 'Special Discount';
     discountLabelAr = 'خصم خاص';
   }
-  let afterDiscount = subtotal - rawDiscount;
-  let totalRounded = afterDiscount; // Removed illogical 50 JOD rounding
   
-  let discountAmt = rawDiscount;
+  let afterDiscount = subtotal - rawDiscount;
+  
+  // Round DOWN to the nearest 5 to guarantee a clean number and a better deal for the customer
+  let totalRounded = Math.floor(afterDiscount / 5) * 5; 
+  
+  // The final discount amount they saved is the exact difference
+  let discountAmt = subtotal - totalRounded;
+
+  // If there was no formal discount, but rounding triggered a discount, give it a nice name
+  if (discountAmt > 0 && discountPct === 0 && state.discountMode !== 'custom_amt') {
+    discountLabel = 'Promo Discount';
+    discountLabelAr = 'خصم تشجيعي';
+  }
 
   return {
     crewTotal, crewLines,

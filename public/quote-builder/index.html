@@ -1173,19 +1173,15 @@ loadState();
 // DATA
 // ══════════════════════════════════════════════════════════════
 const PROJECT_TYPES = [
-  {id:'reels',   icon:'📱',name:'Instagram Reels',   ar:'ريلز انستغرام',    range:`100–250 ${state.currency||"JOD"}`, crew:['cinematographer'],  pack:true,  reelBased:true,
-   defaultEquip:'basic', defaultPost:['editing']},
-  {id:'interview',icon:'🎙',name:'Interview / Podcast',ar:'مقابلة / بودكاست',range:`300–800 ${state.currency||"JOD"}`,   crew:['cinematographer','sound'],
-   defaultEquip:'standard', defaultPost:['editing','graphics']},
-  {id:'corporate',icon:'🏢',name:'Corporate Video',   ar:'فيديو مؤسسي',      range:`600–2,000 ${state.currency||"JOD"}`, crew:['director','cinematographer','sound','cam_assistant','driver']},
-  {id:'commercial',icon:'📺',name:'Commercial / TVC', ar:'إعلان تجاري',      range:`800–4,000 ${state.currency||"JOD"}`, crew:['director','cinematographer','producer','gaffer','sound','cam_assistant','driver']},
-  {id:'documentary',icon:'🎥',name:'Documentary',     ar:'فيلم وثائقي',       range:`600–3,000 ${state.currency||"JOD"}`, crew:['director','cinematographer','sound','driver']},
-  {id:'shortfilm',icon:'🎞',name:'Short Film',        ar:'فيلم قصير',          range:`800–3,800 ${state.currency||"JOD"}`, crew:['director','cinematographer','producer','cam_assistant','gaffer','sound','driver']},
-  {id:'event',   icon:'🎤',name:'Event Coverage',     ar:'تغطية فعالية',       range:`300–1,500 ${state.currency||"JOD"}`, crew:['cinematographer','sound']},
-  {id:'photovideo',icon:'📷',name:'Photo + Video',    ar:'صور + فيديو',        range:`500–2,500 ${state.currency||"JOD"}`, crew:['cinematographer','photographer','sound','driver']},
-  
-  // NEW PROJECT TEMPLATES
-  {id:'realestate', icon:'🏢', name:'Real Estate Tour', ar:'تصوير عقاري ومعماري', range:`400–1,500 ${state.currency||"JOD"}`, crew:['cinematographer','photographer'], defaultEquip:'standard', defaultPost:['editing','colorgrade']},
+  {id:'reels',   icon:'📱',name:'Instagram Reels',   ar:'ريلز انستغرام',    range:`100–250 ${state.currency||"JOD"}`, crew:['cinematographer'],  pack:true,  reelBased:true, defaultEquip:'basic', defaultPost:['editing']},
+  {id:'interview',icon:'🎙',name:'Interview / Podcast',ar:'مقابلة / بودكاست',range:`300–800 ${state.currency||"JOD"}`,   crew:['cinematographer','sound'], defaultEquip:'standard', defaultPost:['editing','graphics']},
+  {id:'corporate',icon:'🏢',name:'Corporate Video',   ar:'فيديو مؤسسي',      range:`600–2,000 ${state.currency||"JOD"}`, crew:['director','cinematographer','producer'], defaultEquip:'standard', defaultPost:['editing','colorgrade','graphics']},
+  {id:'commercial',icon:'📺',name:'Commercial / TVC', ar:'إعلان تجاري',      range:`800–4,000 ${state.currency||"JOD"}`, crew:['director','cinematographer','producer','gaffer','art_director'], defaultEquip:'pro', defaultPost:['editing','colorgrade','sound_design','motion']},
+  {id:'documentary',icon:'🎥',name:'Documentary',     ar:'فيلم وثائقي',       range:`600–3,000 ${state.currency||"JOD"}`, crew:['director','cinematographer','sound','location_scout'], defaultEquip:'standard', defaultPost:['editing','colorgrade','subtitles']},
+  {id:'shortfilm',icon:'🎞',name:'Short Film',        ar:'فيلم قصير',          range:`800–3,800 ${state.currency||"JOD"}`, crew:['director','cinematographer','producer','sound','main_actor'], defaultEquip:'pro', defaultPost:['editing','colorgrade','sound_design']},
+  {id:'event',   icon:'🎤',name:'Event Coverage',     ar:'تغطية فعالية',       range:`300–1,500 ${state.currency||"JOD"}`, crew:['cinematographer','photographer'], defaultEquip:'standard', defaultPost:['editing']},
+  {id:'photovideo',icon:'📷',name:'Photo + Video',    ar:'صور + فيديو',        range:`500–2,500 ${state.currency||"JOD"}`, crew:['cinematographer','photographer','art_director'], defaultEquip:'standard', defaultPost:['editing','colorgrade']},
+  {id:'realestate', icon:'🏢', name:'Real Estate Tour', ar:'تصوير عقاري ومعماري', range:`400–1,500 ${state.currency||"JOD"}`, crew:['cinematographer','photographer'], defaultEquip:'standard', defaultPost:['editing','colorgrade']}
 ];
 
 const ROLES = [
@@ -1526,7 +1522,7 @@ function selectType(id) {
   state.projectType = id;
   const type = PROJECT_TYPES.find(t=>t.id===id);
 
-  // Set default crew — for reels: only cinematographer; for interview: 2 cinematographers + sound
+  // Set default crew
   ROLES.forEach(r=>{
     let enabled = false;
     let qty = 1;
@@ -1536,44 +1532,44 @@ function selectType(id) {
       if(r.id==='cinematographer') { enabled=true; qty=2; }
       else if(r.id==='sound') { enabled=true; }
     } else {
-      enabled = type.crew.includes(r.id);
+      enabled = type.crew && type.crew.includes(r.id);
     }
     state.crew[r.id] = {enabled, rate:r.rate, qty};
   });
 
   // Set default equipment
-  if(id==='reels') {
-    state.equipment = 'basic'; // basic = مشمول (cost=0 for reels)
-    state.equipMode = 'tier';
-    state.reelsEquipFree = true;
-  } else if(id==='interview') {
-    state.equipment = 'standard';
-    state.equipMode = 'tier';
-    state.reelsEquipFree = false;
+  if(type.defaultEquip) {
+     state.equipment = type.defaultEquip;
   } else {
-    state.reelsEquipFree = false;
+     state.equipment = 'basic';
   }
+  
+  if (id === 'reels') {
+      state.reelsEquipFree = true;
+  } else {
+      state.reelsEquipFree = false;
+  }
+  state.equipMode = 'tier';
 
   // Set default post-production
   state.post = {};
-  if(id==='reels') {
-    state.post['editing'] = true; // included in price (cost=0 for reels)
-    state.reelsEditingFree = true;
-  } else if(id==='interview') {
-    state.post['editing'] = true;
-    state.post['graphics'] = true;
-    state.reelsEditingFree = false;
-  } else {
-    state.reelsEditingFree = false;
+  if(type.defaultPost) {
+     type.defaultPost.forEach(p => {
+         state.post[p] = { enabled: true, rate: POST_OPTIONS.find(o=>o.id===p)?.basePrice||150, qty: 1 };
+     });
   }
+  
+  state.reelsEditingFree = (id === 'reels');
 
   const isReels = id==='reels';
-  document.getElementById('reelWrap').style.display = isReels?'block':'none';
+  const reelWrap = document.getElementById('reelWrap');
+  if(reelWrap) reelWrap.style.display = isReels?'block':'none';
+  
   renderTypeGrid();
   renderCrewTable();
   renderEquipGrid();
   renderPostOptions();
-  updateReelBreakdown();
+  if(isReels) updateReelBreakdown();
   updateQuote();
   saveState();
 }

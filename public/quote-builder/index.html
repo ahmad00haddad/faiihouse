@@ -1207,6 +1207,7 @@ const ROLES = [
 ];
 
 const EQUIPMENT_TIERS = [
+  {id:'none', tier:'None', tierAr:'بدون', name:'No Equipment', nameAr:'مقدمة من العميل', items:'Client provided or not required', itemsAr:'مقدمة من طرف العميل أو غير مطلوبة', price:0},
   {id:'basic',   tier:'Basic',    tierAr:'أساسي',    name:'Standard Setup',    nameAr:'إعداد قياسي',     items:'Sony FX3/A7SIII · 2 Lenses · LED Panel · Wireless Audio',              itemsAr:'سوني FX3/A7SIII · عدستان · إضاءة LED · صوت لاسلكي',                   price:100},
   {id:'standard',tier:'Standard', tierAr:'قياسي',    name:'Full Camera Kit',   nameAr:'طقم كاميرا كامل', items:'Sony FX3 + A7SIII · 3–4 Lenses · LED + HMI · Sound Mixer · Stabilizer', itemsAr:'FX3 + A7SIII · 4 عدسات · LED + HMI · ميكسر صوت · ستابلايزر',         price:200},
   {id:'pro',     tier:'Pro',      tierAr:'احترافي',  name:'Cinema Package',    nameAr:'باقة سينمائية',   items:'Cinema Camera · Full Lens Set · Full Lighting · Multi-Cam · Drone',      itemsAr:'كاميرا سينمائية · طقم عدسات · إضاءة كاملة · متعدد الكاميرات · درون',  price:350},
@@ -2072,7 +2073,7 @@ function calcQuote() {
     const tier = EQUIPMENT_TIERS.find(e=>e.id===state.equipment);
     if(tier) {
       equipTotal = tier.price * state.days;
-      equipLines.push({name:`Equipment — ${tier.name}`, nameAr:`معدات — ${tier.nameAr}`, rate:tier.price, qty:1, days:state.days, total:equipTotal});
+      equipLines.push({name:`Equipment — ${tier.name}`, nameAr:`معدات — ${tier.nameAr}`, rate:tier.price, qty:1, days:state.days, total:equipTotal, isZero: tier.price===0});
     }
   }
 
@@ -2234,7 +2235,7 @@ function updateQuote() {
 
   // Discount bar
   const db = document.getElementById('discountBar');
-  if(q.discountPct>0) {
+  if(q.discountAmt>0) {
     db.classList.add('show');
     document.getElementById('discountPct').textContent = L(q.discountLabelAr, q.discountLabel);
   } else { db.classList.remove('show'); }
@@ -2283,9 +2284,9 @@ function updateQuote() {
   if(state.projectType==='reels' && (state.equipment==='basic' || !state.equipment)) {
     html+=`<div class="sb-section"><div class="sb-section-title">${L('المعدات','Equipment')}</div>
     <div class="sb-line"><span class="sb-line-label">📦 ${L('المعدات الأساسية','Basic Equipment')}</span><span class="sb-line-val" style="color:var(--green)">✓ ${L('مشمولة','Included')}</span></div></div>`;
-  } else if(q.equipTotal>0) {
+  } else if(q.equipTotal>0 || q.equipLines.some(l=>l.isZero)) {
     html+=`<div class="sb-section"><div class="sb-section-title">${L('المعدات','Equipment')}</div>`;
-    html+=`<div class="sb-line ${window.activePulseId==='equip' ? 'pulse-update' : ''}"><span class="sb-line-label">${L('إيجار معدات','Equipment Rental')}</span><span class="sb-line-val">${q.equipTotal} ${state.currency||"JOD"}</span></div>`;
+    html+=`<div class="sb-line ${window.activePulseId==='equip' ? 'pulse-update' : ''}"><span class="sb-line-label">${q.equipLines.some(l=>l.isZero) ? L('معدات — من العميل', 'Equipment — Provided') : L('إيجار معدات','Equipment Rental')}</span><span class="sb-line-val" ${q.equipLines.some(l=>l.isZero) ? 'style="color:var(--green);font-size:11px;"' : ''}>${q.equipLines.some(l=>l.isZero) ? '✓ ' + L('مجاناً','Included') : q.equipTotal + ' ' + (state.currency||"JOD")}</span></div>`;
     html+=`</div>`;
   }
 
@@ -2316,11 +2317,11 @@ function updateQuote() {
   <div class="sb-total">
     <div>
       <div class="sb-total-label">${L('المجموع الكلي','Total Quote')}</div>
-      ${q.discountPct>0?`<div class="sb-total-old">${q.rawTotal} ${state.currency||"JOD"}</div>`:''}
+      ${q.discountAmt>0?`<div class="sb-total-old">${q.rawTotal} ${state.currency||"JOD"}</div>`:''}
     </div>
     <div style="text-align:end">
       <div class="sb-total-new">${q.total} ${state.currency||"JOD"}</div>
-      ${q.discountPct>0?`<div class="sb-discount-badge">${L('توفير','SAVE')} ${q.discountAmt} ${state.currency||"JOD"}</div>`:''}
+      ${q.discountAmt>0?`<div class="sb-discount-badge">${L('توفير','SAVE')} ${q.discountAmt} ${state.currency||"JOD"}</div>`:''}
     </div>
   </div>`;
 
@@ -2540,11 +2541,11 @@ function showPreview() {
           <div style="font-size:11px;color:var(--text3)">All services included · Tax-exempt</div>
         </div>
         <div style="display:flex;align-items:baseline;gap:12px">
-          ${q.discountPct>0?`<span class="q-sub-old">${q.rawTotal} ${state.currency||"JOD"}</span>`:''}
+          ${q.discountAmt>0?`<span class="q-sub-old">${q.rawTotal} ${state.currency||"JOD"}</span>`:''}
           <span class="q-sub-new">${q.total} ${state.currency||"JOD"}</span>
         </div>
       </div>
-      ${q.discountPct>0?`<div style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.2);padding:10px 14px;font-size:12px;color:var(--gold);margin-bottom:18px;">
+      ${q.discountAmt>0?`<div style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.2);padding:10px 14px;font-size:12px;color:var(--gold);margin-bottom:18px;">
         🎯 ${q.discountLabel} applied — You save ${q.discountAmt} ${state.currency||"JOD"}
       </div>`:''}
       
@@ -2635,7 +2636,7 @@ function sendWhatsApp() {
   if(q.postTotal>0) msg += `🎞 *Post-Production:* ${q.postTotal} ${state.currency||"JOD"}\n`;
   if(q.travelFee>0) msg += `🚗 *Travel:* ${q.travelFee} ${state.currency||"JOD"}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-  if(q.discountPct>0) msg += `💚 *${q.discountLabel}* — Save ${q.discountAmt} ${state.currency||"JOD"}\n`;
+  if(q.discountAmt>0) msg += `💚 *${q.discountLabel}* — Save ${q.discountAmt} ${state.currency||"JOD"}\n`;
   msg += `💰 *TOTAL: ${q.total} ${state.currency||"JOD"}*\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━\n`;
   msg += `Down payment 50% upon contract signing.\nFaii.House.jo@gmail.com`;

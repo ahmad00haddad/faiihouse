@@ -1241,13 +1241,13 @@ const PROJECT_TYPES = [
 ];
 
 const ROLES = [
-  {id:'director',       name:'Director',                ar:'مخرج',                rate:200, hint:'Vision of the project. Directs performance to ensure the best outcome.', hintAr:'رؤية المشروع. يدير الأداء الفني ويوجه الممثلين والطاقم لضمان خروج الفيديو بأفضل شكل.'},
-  {id:'cinematographer',name:'Cinematographer / DOP',   ar:'مصور سينمائي',        rate:200, hint:'The visual creator. Responsible for camera movement, angles, and the cinematic touch.', hintAr:'صانع الصورة. مسؤول عن حركة الكاميرا، زوايا التصوير، واللمسة السينمائية.'},
-  {id:'producer',       name:'Producer',                ar:'منتج',                rate:150, hint:'The Maestro. Manages budget, schedule, and logistics to ensure smooth execution.', hintAr:'المايسترو. يدير ميزانية المشروع، المواعيد، وتنسيق كافة التفاصيل اللوجستية لضمان سير العمل.'},
-  {id:'cam_assistant',  name:'Camera Assistant / AC',   ar:'مساعد كاميرا',        rate:100, hint:'Essential for shooting speed. Pulls focus and preps lenses.', hintAr:'الداعم الأساسي لسرعة التصوير. يتأكد من وضوح الفوكس (التركيز) وتجهيز العدسات.'},
-  {id:'gaffer',         name:'Gaffer',                  ar:'مضيء',                rate:150, hint:'Master of shadows and light. Adds depth and mood to avoid flat images.', hintAr:'مهندس الظلال والضوء. يضيف العمق والمزاج للقطات لتجنب الصورة المسطحة أو الباهتة.'},
+  {id:'director',       name:'Director',                ar:'مخرج',                rate:200, hint:'Vision of the project. Directs performance to ensure the best outcome.', hintAr:'يضمن خروج الفيديو كقصة احترافية ويدير أداء الممثلين.'},
+  {id:'cinematographer',name:'Cinematographer / DOP',   ar:'مصور سينمائي',        rate:200, hint:'The visual creator. Responsible for camera movement, angles, and the cinematic touch.', hintAr:'يتحكم بالكاميرا ليضمن خروج الصورة بأجمل شكل سينمائي جذاب.'},
+  {id:'producer',       name:'Producer',                ar:'منتج',                rate:150, hint:'The Maestro. Manages budget, schedule, and logistics to ensure smooth execution.', hintAr:'المدير اللوجستي الذي يحل المشاكل في الموقع لتجلس أنت وترتاح.'},
+  {id:'cam_assistant',  name:'Camera Assistant / AC',   ar:'مساعد كاميرا',        rate:100, hint:'Essential for shooting speed. Pulls focus and preps lenses.', hintAr:'يضمن وضوح الصورة (الفوكس) لتجنب إعادة اللقطات وتضييع وقتك.'},
+  {id:'gaffer',         name:'Gaffer',                  ar:'مضيء',                rate:150, hint:'Master of shadows and light. Adds depth and mood to avoid flat images.', hintAr:'الإضاءة هي سر السينما؛ هو من يمنع صورتك من أن تبدو باهتة.'},
   {id:'sound',          name:'Sound / Boom Operator',   ar:'مشغل صوت',            rate:100, hint:'50% of video quality is sound. Ensures crisp dialogue and noise isolation.', hintAr:'لأن 50% من جودة الفيديو هي الصوت. يضمن نقاء الحوار وعزل الضوضاء.'},
-  {id:'photographer',   name:'Photographer',            ar:'مصور فوتوغرافي',      rate:200, hint:'Captures high-res moments for campaigns and social media.', hintAr:'لتوثيق اللحظات بصور عالية الدقة لاستخدامها في الحملات الإعلانية والسوشيال ميديا.'},
+  {id:'photographer',   name:'Photographer',            ar:'مصور فوتوغرافي',      rate:200, hint:'Captures high-res moments for campaigns and social media.', hintAr:'توثيق عالي الدقة جاهز للاستخدام المباشر في السوشيال ميديا.'},
   {id:'driver',         name:'Driver / Transportation', ar:'سائق',               rate:50,  hint:'Safe and fast transport for crew and equipment between locations.', hintAr:'نقل آمن وسريع للطاقم والمعدات بين مواقع التصوير لتوفير الوقت والجهد.'},
   {id:'art_director',   name:'Art Director',            ar:'مدير فني',            rate:150, hint:'Aesthetics engineer. Responsible for set design, colors, and props.', hintAr:'مهندس الجماليات. مسؤول عن الديكور، الألوان، الأزياء، وشكل المكان أمام الكاميرا.'},
   {id:'voiceover_talent',name:'Voice Over Artist',      ar:'مؤدي صوتي',          rate:75, flatRate:true,  hint:'Professional voice telling your brand\'s story with an impactful tone.', hintAr:'صوت احترافي يروي قصة علامتك التجارية ويوصل رسالتك بنبرة مؤثرة.'},
@@ -1259,11 +1259,11 @@ const ROLES = [
 ];
 
 const EQUIPMENT_TIERS = [
-  {id:'none', tier:'None', tierAr:'بدون', name:'No Equipment', nameAr:'مقدمة من العميل', items:'Client provided or not required', itemsAr:'مقدمة من طرف العميل أو غير مطلوبة', price:0},
-  {id:'basic',   tier:'Basic',    tierAr:'أساسي',    name:'Standard Setup',    nameAr:'إعداد قياسي',     items:'Sony FX3/A7SIII · 2 Lenses · LED Panel · Wireless Audio',              itemsAr:'سوني FX3/A7SIII · عدستان · إضاءة LED · صوت لاسلكي',                   price:100},
-  {id:'standard',tier:'Standard', tierAr:'قياسي',    name:'Full Camera Kit',   nameAr:'طقم كاميرا كامل', items:'Sony FX3 + A7SIII · 3–4 Lenses · LED + HMI · Sound Mixer · Stabilizer', itemsAr:'FX3 + A7SIII · 4 عدسات · LED + HMI · ميكسر صوت · ستابلايزر',         price:200},
-  {id:'pro',     tier:'Pro',      tierAr:'احترافي',  name:'Cinema Package',    nameAr:'باقة سينمائية',   items:'Cinema Camera · Full Lens Set · Full Lighting · Multi-Cam · Drone',      itemsAr:'كاميرا سينمائية · طقم عدسات · إضاءة كاملة · متعدد الكاميرات · درون',  price:350},
-  {id:'red',     tier:'Premium',  tierAr:'بريميوم',  name:'RED / ALEXA Kit',   nameAr:'طقم RED / ALEXA', items:'RED Camera ×2 · Cinema Lenses · Studio Lighting · Full Sound Dept.',      itemsAr:'كاميرا RED ×2 · عدسات سينمائية · إضاءة استوديو · قسم صوت كامل',       price:550},
+  {id:'none', tier:'None', tierAr:'بدون', name:'No Equipment', nameAr:'مقدمة من العميل', items:'Client provided', itemsAr:'مقدمة من طرف العميل', price:0, badge:'', badgeAr:''},
+  {id:'basic',   tier:'Basic',    tierAr:'أساسي',    name:'Standard Setup',    nameAr:'إعداد قياسي',     items:'Sony FX3/A7SIII', itemsAr:'كاميرا Sony وعدسات وإضاءة بسيطة', price:100, badge:'Ideal for Social Media 📱', badgeAr:'مثالي للسوشيال ميديا 📱'},
+  {id:'standard',tier:'Standard', tierAr:'قياسي',    name:'Full Camera Kit',   nameAr:'طقم كاميرا كامل', items:'Multiple Lenses + Lighting', itemsAr:'معدات إضاءة متكاملة وصوت نقي', price:200, badge:'Corporate & Interviews 🏢', badgeAr:'للشركات والمقابلات 🏢'},
+  {id:'pro',     tier:'Pro',      tierAr:'احترافي',  name:'Cinema Package',    nameAr:'باقة سينمائية',   items:'Cinema Camera + Drone', itemsAr:'معدات ضخمة وحركة كاميرا احترافية', price:350, badge:'TV Quality 📺', badgeAr:'جودة إعلانات التلفزيون 📺'},
+  {id:'red',     tier:'Premium',  tierAr:'بريميوم',  name:'RED / ALEXA Kit',   nameAr:'طقم RED / ALEXA', items:'RED Camera + Studio Gear', itemsAr:'أعلى كاميرات السينما العالمية (رد / ألكسا)', price:550, badge:'Netflix Standard 🍿', badgeAr:'جودة سينما عالمية 🍿'}
 ];
 
 // Individual Equipment Items from Ahmad's Inventory
@@ -1310,10 +1310,10 @@ const EQUIPMENT_ITEMS = [
 ];
 
 const POST_OPTIONS = [
-  {id:'editing',     name:'Video Editing',             ar:'مونتاج فيديو',                  desc:'Cut, sync, music, color correction',  descAr:'قص، مزامنة، موسيقى، تصحيح لون',   basePrice:150, reelPrice:50},
-  {id:'colorgrade',  name:'Color Grading (DaVinci Resolve)',   ar:'تلوين سينمائي (DaVinci Resolve)',        desc:'Full cinematic grade — DaVinci Resolve',descAr:'تصحيح سينمائي كامل — DaVinci Resolve',   basePrice:150,  reelPrice:50},
-  {id:'voiceover',   name:'Voice Over',                ar:'تعليق صوتي',                    desc:'Arabic/English VO recording',         descAr:'تسجيل تعليق صوتي عربي/إنجليزي',   basePrice:100,  fixed:true},
-  {id:'graphics',    name:'Motion Graphics / Titles',  ar:'موشن جرافيك',                   desc:'Animated titles, lower thirds, end cards', descAr:'عناوين متحركة وتأثيرات', basePrice:80,  fixed:true},
+  {id:'editing',     name:'Video Editing',             ar:'مونتاج فيديو',                  desc:'Cut, sync, music, color correction',  descAr:'قص وتجميع اللقطات لاختيار الأفضل وبناء القصة.',   basePrice:150, reelPrice:50},
+  {id:'colorgrade',  name:'Color Grading (DaVinci Resolve)',   ar:'تلوين سينمائي (DaVinci Resolve)',        desc:'Full cinematic grade — DaVinci Resolve',descAr:'نقلة نوعية تجعل ألوان الفيديو تبدو كفيلم سينمائي.',   basePrice:150,  reelPrice:50},
+  {id:'voiceover',   name:'Voice Over',                ar:'تعليق صوتي',                    desc:'Arabic/English VO recording',         descAr:'تسجيل صوت احترافي يروي قصة إعلانك بأسلوب مقنع.',   basePrice:100,  fixed:true},
+  {id:'graphics',    name:'Motion Graphics / Titles',  ar:'موشن جرافيك',                   desc:'Animated titles, lower thirds, end cards', descAr:'تحريك النصوص والشعارات لشرح الأفكار بصرياً.', basePrice:80,  fixed:true},
   {id:'sound_design',name:'Sound Design & Mix',        ar:'تصميم صوتي ومكس',               desc:'Full audio mix, SFX, music licensing', descAr:'مكس صوتي كامل ومؤثرات',          basePrice:150, fixed:true},
   {id:'screenplay',  name:'Screenplay / Script',       ar:'كتابة سيناريو',                  desc:`External scriptwriter — 50–100 ${state.currency||"JOD"} depending on project`, descAr:`كاتب خارجي متعاون — 50 إلى 100 ${state.currency||"JOD"} حسب المشروع`, basePrice:75, fixed:true, scriptNote:true},
 ];
@@ -1619,6 +1619,12 @@ function selectType(id) {
   state.reelsEditingFree = (id === 'reels');
 
   const isReels = id==='reels';
+  const trustBanner = document.getElementById('trust-banner');
+  const typeName = L(type.ar, type.name);
+  if(trustBanner) {
+    trustBanner.style.display = 'block';
+    document.getElementById('trust-banner-text').textContent = L(`بناءً على اختيارك لمشروع (${typeName})، قمنا بتحديد الطاقم والمعدات الموصى بها لضمان أفضل نتيجة لك. يمكنك التعديل كما تشاء.`, `Based on your selection (${typeName}), we've pre-selected the optimal crew and equipment. Feel free to adjust.`);
+  }
   const reelWrap = document.getElementById('reelWrap');
   if(reelWrap) reelWrap.style.display = isReels?'block':'none';
   
@@ -1745,7 +1751,7 @@ function renderCrewTable() {
       <td class="role-info-td" style="position:relative; cursor:pointer;" onclick="document.getElementById('cb-' + '${r.id}').click()">
         <div class="role-name">${depWarn}${r.name}</div>
         <div class="role-name-ar">${depWarn}${r.ar}</div>
-        ${r.hint ? `<div class="hint-tooltip" style="bottom: 80%; right: 0; transform: translateY(5px); z-index: 1000;">${L(r.hintAr, r.hint)}</div>` : ''}
+        ${r.hint ? `<div class="role-hint" style="font-size:10px; color:var(--text3); margin-top:4px; line-height:1.4;">${L(r.hintAr, r.hint)}</div>` : ''}
       </td>
       <td>
         <span class="rate-display">${s.rate}</span>

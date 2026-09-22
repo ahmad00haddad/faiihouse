@@ -6,7 +6,7 @@ const schema = z.object({
   token: z.string().min(10).max(200),
   filename: z.string().min(1).max(200),
   contentType: z.string().min(1).max(100),
-  base64: z.string().min(1),
+  base64: z.string().min(1).max(14000000),
 });
 
 export const uploadImage = createServerFn({ method: "POST" })
@@ -23,8 +23,8 @@ export const uploadImage = createServerFn({ method: "POST" })
     }
 
     const buf = Buffer.from(data.base64, "base64");
-    const safeName = data.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safeName}`;
+    const extension = data.filename.split('.').pop() || "bin";
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
 
     const { error } = await supabaseAdmin.storage
       .from("site-images")

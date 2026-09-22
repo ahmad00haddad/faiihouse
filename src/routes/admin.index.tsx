@@ -45,7 +45,7 @@ function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
 
-  const token = useMemo(() => (typeof window !== "undefined" ? localStorage.getItem("faii_admin_token") : null), []);
+  const token = typeof window !== "undefined" ? localStorage.getItem("faii_admin_token") : null;
 
   const mergeFromDb = (remote: Partial<SiteContent> | null | undefined): SiteContent => {
     if (!remote) return defaultContent;
@@ -281,10 +281,15 @@ function ImageUploadButton({ onUploaded }: { onUploaded: (url: string) => void }
     if (file.size > 8 * 1024 * 1024) { alert("الحد الأقصى 8MB"); return; }
     setBusy(true);
     try {
-      const buf = new Uint8Array(await file.arrayBuffer());
-      let bin = "";
-      for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
-      const base64 = btoa(bin);
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const res = reader.result as string;
+          resolve(res.split(",")[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
       const res = await upload({ data: { token, filename: file.name, contentType: file.type || "image/jpeg", base64 } });
       onUploaded(res.url);
     } catch (e) {
@@ -434,7 +439,7 @@ function ListEditor<T extends Record<string, string>>({
                 next[idx] = { ...next[idx], [k]: v };
                 setItems(next);
               }}
-              onRemove={() => setItems(items.filter((_, i) => i !== idx))}
+              onRemove={() => { if(window.confirm("هل أنت متأكد من الحذف؟")) setItems(items.filter((_, i) => i !== idx)); }}
             />
           ))}
         </SortableContext>

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/login")({
 function AdminLoginPage() {
   const login = useServerFn(adminLogin);
   const navigate = useNavigate();
-  const [username, setU] = useState("admin");
+  const [username, setU] = useState("");
   const [password, setP] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ function AdminLoginPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!username.trim() || !password.trim()) {
+    if (!username.trim() || !password) {
       setError("الرجاء إدخال اسم المستخدم وكلمة المرور");
       return;
     }
@@ -46,7 +46,7 @@ function AdminLoginPage() {
         <p className="text-muted-foreground text-sm">سجّل دخولك للتحكم بمحتوى الموقع.</p>
         <div className="space-y-2">
           <label className="text-xs text-muted-foreground">اسم المستخدم</label>
-          <input value={username} onChange={(e) => setU(e.target.value)} className="w-full bg-background border border-border rounded-lg px-4 py-3 outline-none focus:border-primary" />
+          <input required value={username} onChange={(e) => setU(e.target.value)} className="w-full bg-background border border-border rounded-lg px-4 py-3 outline-none focus:border-primary" />
         </div>
         <div className="space-y-2">
           <label className="text-xs text-muted-foreground">كلمة المرور</label>

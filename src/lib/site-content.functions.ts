@@ -51,6 +51,7 @@ const statSchema = z.object({
 });
 
 const serviceSchema = z.object({
+  icon: z.string().optional(),
   title: z.string().max(200),
   desc: z.string().max(1000),
 });

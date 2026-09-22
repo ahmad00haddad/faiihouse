@@ -56,7 +56,7 @@ const serviceSchema = z.object({
 });
 
 const portfolioItemSchema = z.object({
-  image: z.string().max(2000),
+  image: z.string().max(10000),
   title: z.string().max(300),
   category: z.enum(["film", "documentary", "ads"]),
   behance: z.string().max(500),
@@ -64,7 +64,7 @@ const portfolioItemSchema = z.object({
 
 const clientSchema = z.object({
   name: z.string().max(200),
-  image: z.string().max(2000),
+  image: z.string().max(10000),
 });
 
 const siteContentSchema = z.object({

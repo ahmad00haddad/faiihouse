@@ -2685,8 +2685,7 @@ function showPreview() {
           <p><strong>From:</strong></p>
           <p>${state.preparedBy}</p>
           <p>Faii House Production</p>
-          <p>Faii.House.jo@gmail.com</p>
-          <p>+962799256345</p>
+          <p>${state.customContact || 'saif.haimour.sh@gmail.com<br>0962797215987'}</p>
         </div>
         <div class="q-meta-block">
           ${state.clientName?`<p><strong>To:</strong></p><p>${state.clientName}</p>${state.clientCompany?`<p>${state.clientCompany}</p>`:''}`:''}
